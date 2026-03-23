@@ -17,13 +17,18 @@ const ARCH_MAP = {
 
 function getBinaryName() {
   const platform = PLATFORM_MAP[os.platform()];
-  const arch = ARCH_MAP[os.arch()];
+  let arch = ARCH_MAP[os.arch()];
 
   if (!platform || !arch) {
     throw new Error(
       `Unsupported platform: ${os.platform()}-${os.arch()}\n` +
-        "Supported: darwin-x64, darwin-arm64, linux-x64, linux-arm64, win-x64"
+        "Supported: darwin-arm64, linux-x64, linux-arm64, win-x64"
     );
+  }
+
+  // macOS x64 uses arm64 binary via Rosetta
+  if (platform === "darwin" && arch === "x64") {
+    arch = "arm64";
   }
 
   const ext = os.platform() === "win32" ? ".exe" : "";

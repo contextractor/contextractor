@@ -66,7 +66,7 @@ async function main() {
     console.error(
       `Failed to download binary: ${err.message}\n\n` +
         `Your platform (${process.platform}-${process.arch}) may not be supported.\n` +
-        `Supported: darwin-x64, darwin-arm64, linux-x64, linux-arm64, win-x64\n` +
+        `Supported: darwin-arm64, linux-x64, linux-arm64, win-x64\n` +
         `See https://github.com/${REPO}/releases for available binaries.`
     );
     process.exit(1);
