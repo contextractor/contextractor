@@ -132,8 +132,9 @@ jobs:
         run: npm version "${{ steps.version.outputs.version }}" --no-git-tag-version --allow-same-version
         working-directory: apps/contextractor-standalone/npm
 
+      - name: Configure npm auth
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > apps/contextractor-standalone/npm/.npmrc
+
       - name: Publish to npm
         run: npm publish --access public
         working-directory: apps/contextractor-standalone/npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
