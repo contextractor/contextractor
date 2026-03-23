@@ -19,6 +19,7 @@ permissions:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-22.04
@@ -27,7 +28,7 @@ jobs:
           - os: ubuntu-22.04-arm
             platform: linux
             arch: arm64
-          - os: macos-13
+          - os: macos-13-large
             platform: darwin
             arch: x64
           - os: macos-14
@@ -53,22 +54,27 @@ jobs:
       - name: Install dependencies
         run: uv sync --directory apps/contextractor-standalone
 
-      - name: Install PyInstaller
+      - name: Install PyInstaller (Unix)
+        if: matrix.platform != 'win'
         run: uv pip install pyinstaller --python .venv/bin/python
-        shell: bash
+
+      - name: Install PyInstaller (Windows)
+        if: matrix.platform == 'win'
+        run: uv pip install pyinstaller --python .venv\Scripts\python.exe
+        shell: cmd
 
       - name: Build binary
         run: uv run python build.py
         working-directory: apps/contextractor-standalone
 
-      - name: Verify binary
-        run: |
-          if [ "${{ matrix.platform }}" = "win" ]; then
-            ./apps/contextractor-standalone/dist/contextractor-${{ matrix.platform }}-${{ matrix.arch }}.exe --help
-          else
-            ./apps/contextractor-standalone/dist/contextractor-${{ matrix.platform }}-${{ matrix.arch }} --help
-          fi
-        shell: bash
+      - name: Verify binary (Unix)
+        if: matrix.platform != 'win'
+        run: ./apps/contextractor-standalone/dist/contextractor-${{ matrix.platform }}-${{ matrix.arch }} --help
+
+      - name: Verify binary (Windows)
+        if: matrix.platform == 'win'
+        run: .\apps\contextractor-standalone\dist\contextractor-${{ matrix.platform }}-${{ matrix.arch }}.exe --help
+        shell: cmd
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -116,7 +122,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           registry-url: "https://registry.npmjs.org"
 
       - name: Determine version
