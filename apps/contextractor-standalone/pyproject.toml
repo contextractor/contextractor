@@ -1,6 +1,6 @@
 [project]
 name = "contextractor-standalone"
-version = "0.1.0"
+version = "0.1.1"
 description = "Standalone CLI for web content extraction"
 requires-python = ">=3.12"
 dependencies = [
