@@ -33,7 +33,7 @@ npm install contextractor → postinstall downloads platform binary from GitHub 
                           → npx contextractor config.yaml
 ```
 
-GitHub Actions builds PyInstaller binaries for 5 platforms (linux-x64, linux-arm64, darwin-x64, darwin-arm64, win-x64) and uploads to GitHub releases on `contextractor/contextractor`. The npm package (`contextractor` on npmjs.com) is a ~2KB wrapper that downloads the correct binary at install time.
+GitHub Actions builds PyInstaller binaries for 4 platforms (linux-x64, linux-arm64, darwin-arm64, win-x64) and uploads to GitHub releases. macOS x64 users run the arm64 binary via Rosetta. The npm package (`contextractor` on npmjs.com) is a ~2KB wrapper that downloads the correct binary at install time.
 
 ## Key Implementation Details
 
@@ -191,7 +191,16 @@ npx contextractor config.yaml  # Or run via npx
 ```
 
 ### Release flow
-1. Push tag `v*` to `contextractor/contextractor`
-2. GitHub Actions builds binaries on 5 platforms
+1. Run `/git:release` (or manually push a `v*` tag)
+2. GitHub Actions (`release.yml`) builds binaries on 4 platforms
 3. Binaries uploaded to GitHub release
-4. npm package published with matching version
+4. npm package published via OIDC trusted publishing (no tokens needed)
+
+### Platforms
+- linux-x64
+- linux-arm64
+- darwin-arm64 (macOS x64 runs via Rosetta)
+- win-x64
+
+### Publishing
+npm publishing uses OIDC trusted publishing — GitHub Actions authenticates directly with npmjs.com, no NPM_TOKEN secret required. Configured at https://www.npmjs.com/package/contextractor/access.

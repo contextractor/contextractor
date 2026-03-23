@@ -88,7 +88,7 @@ One file per crawled page, named from the URL slug (e.g. `example-com-page.md`).
 ## Platforms
 
 Binaries are available for:
-- macOS (x64, arm64)
+- macOS arm64 (Apple Silicon; Intel Macs run via Rosetta)
 - Linux (x64, arm64)
 - Windows (x64)
 
