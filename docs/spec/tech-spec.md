@@ -9,6 +9,7 @@
 - contextractor-engine library (Trafilatura wrapper)
 - Typer CLI (standalone app)
 - npm package with PyInstaller binaries (standalone distribution)
+- Docker image on GHCR (standalone distribution)
 
 ## Architecture
 
@@ -30,7 +31,7 @@ Config file (YAML/JSON) → PlaywrightCrawler → ContentExtractor → Output fi
 ### npm Distribution
 ```
 npm install contextractor → postinstall downloads platform binary from GitHub releases
-                          → npx contextractor config.yaml
+                          → npx contextractor https://example.com
 ```
 
 GitHub Actions builds PyInstaller binaries for 4 platforms (linux-x64, linux-arm64, darwin-arm64, win-x64) and uploads to GitHub releases. macOS x64 users run the arm64 binary via Rosetta. The npm package (`contextractor` on npmjs.com) is a ~2KB wrapper that downloads the correct binary at install time.
@@ -62,19 +63,22 @@ async with Actor:
 
 ### Standalone CLI
 
-YAML/JSON config file → `CrawlConfig.from_file()` → crawlee PlaywrightCrawler → output files.
+CLI args / Config file (optional) → `CrawlConfig` → crawlee PlaywrightCrawler → output files.
 
 ```bash
-# Run with config file
-contextractor config.yaml
+# Zero-config with URL
+contextractor https://example.com
 
-# Override extraction options via CLI flags
-contextractor config.yaml --precision --no-comments -o ./results -f markdown
+# With flags
+contextractor https://example.com --precision --format json -o ./results
+
+# With config file
+contextractor --config config.yaml --max-pages 10
 ```
 
-Config merge order: `defaults → config file → CLI flags`
+Config merge order: `defaults → config file (if provided) → CLI args`
 
-CLI shortcut flags: `--precision`, `--recall`, `--no-links`, `--no-comments`
+All CrawlConfig and TrafilaturaConfig fields have CLI flag equivalents. URLs are positional args, config file is optional via `--config`.
 
 ### Content-Type Headers
 
@@ -169,6 +173,8 @@ uv run python apps/contextractor-standalone/build.py
 
 ## Docker
 
+### Apify Actor (root Dockerfile)
+
 uv-based install with frozen lockfile:
 ```dockerfile
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -177,6 +183,19 @@ COPY packages/contextractor_engine/ ./packages/contextractor_engine/
 COPY apps/contextractor-apify/ ./apps/contextractor-apify/
 RUN uv sync --frozen --no-dev --directory apps/contextractor-apify
 ```
+
+### Standalone CLI (`apps/contextractor-standalone/Dockerfile`)
+
+Public Docker image for end users. Base: `mcr.microsoft.com/playwright/python:v1.50.0-noble` (Python 3.12, Chromium pre-installed).
+
+Registry: `ghcr.io/contextractor/contextractor`
+
+Build context must be the repo root (needs engine package + uv.lock):
+```bash
+docker build -f apps/contextractor-standalone/Dockerfile -t contextractor .
+```
+
+Multi-platform: linux/amd64, linux/arm64. Built and pushed to GHCR by the `publish-docker` job in `release.yml`, parallel to `publish-npm`.
 
 ## npm Distribution
 
@@ -187,7 +206,7 @@ The npm package is a lightweight wrapper (~2KB) that downloads the correct platf
 
 ```bash
 npm install -g contextractor   # Install globally
-npx contextractor config.yaml  # Or run via npx
+npx contextractor https://example.com  # Or run via npx
 ```
 
 ### Release flow
@@ -195,6 +214,7 @@ npx contextractor config.yaml  # Or run via npx
 2. GitHub Actions (`release.yml`) builds binaries on 4 platforms
 3. Binaries uploaded to GitHub release
 4. npm package published via OIDC trusted publishing (no tokens needed)
+5. Docker image built and pushed to GHCR (multi-platform: linux/amd64, linux/arm64)
 
 ### Platforms
 - linux-x64

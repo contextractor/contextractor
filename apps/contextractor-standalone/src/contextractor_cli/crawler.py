@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import os
 import re
 from datetime import timedelta
 from pathlib import Path
@@ -50,9 +51,15 @@ async def run_crawl(config: CrawlConfig) -> None:
     ext = FORMAT_EXTENSIONS.get(config.output_format, ".txt")
     pages_extracted = 0
 
+    # Disable Chromium sandbox in Docker (set CONTEXTRACTOR_NO_SANDBOX=1)
+    browser_launch_options: dict[str, object] = {}
+    if os.environ.get("CONTEXTRACTOR_NO_SANDBOX"):
+        browser_launch_options["args"] = ["--no-sandbox"]
+
     crawler = PlaywrightCrawler(
         headless=config.headless,
         browser_type="chromium",
+        browser_launch_options=browser_launch_options,
         max_requests_per_crawl=config.max_pages if config.max_pages > 0 else None,
         request_handler_timeout=timedelta(seconds=60),
     )
