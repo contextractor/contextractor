@@ -1,7 +1,4 @@
-# Required secrets:
-#   NPM_TOKEN — npmjs.com publish token
-
-name: Build and Release Binaries
+name: Release
 
 on:
   push:
