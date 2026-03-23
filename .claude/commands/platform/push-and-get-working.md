@@ -18,7 +18,7 @@ Check `$ARGUMENTS` for the target:
 
 Set the target actor ID based on the argument and use it consistently throughout the workflow.
 
-**Actor location:** `apps/contextractor/`
+**Actor location:** `apps/contextractor-apify/`
 
 ## Step 0: Run Local Tests (REQUIRED)
 
@@ -45,13 +45,13 @@ If not logged in, stop and inform the user to run `apify login` first.
 ### 2. Verify Actor Target
 
 The `apify push` command uses:
-- **Actor name** from `apps/contextractor/.actor/actor.json` (`name` field)
+- **Actor name** from `apps/contextractor-apify/.actor/actor.json` (`name` field)
 - **Logged-in user** to form `<username>/<actor-name>`
 
 Check the current actor configuration:
 
 ```bash
-cat apps/contextractor/.actor/actor.json | grep '"name"'
+cat apps/contextractor-apify/.actor/actor.json | grep '"name"'
 apify info
 ```
 
@@ -70,7 +70,7 @@ Execute this loop until the build succeeds:
 Validate Python code compiles before pushing:
 
 ```bash
-python3 -m compileall -q apps/contextractor/src/
+python3 -m compileall -q apps/contextractor-apify/src/
 ```
 
 If local validation fails, fix Python errors before proceeding.
@@ -81,10 +81,10 @@ Deploy directly to Apify platform from the actor directory:
 
 ```bash
 # If --production argument was provided:
-cd apps/contextractor && apify push shortc/contextractor
+cd apps/contextractor-apify && apify push shortc/contextractor
 
 # Otherwise (default - test):
-cd apps/contextractor && apify push shortc/contextractor-test
+cd apps/contextractor-apify && apify push shortc/contextractor-test
 ```
 
 This uploads source code and triggers a build on Apify infrastructure.
@@ -114,11 +114,11 @@ If **FAILED**:
    ```
 
 2. Analyze the error type:
-   - Schema validation errors → Fix `apps/contextractor/.actor/*_schema.json` files
-   - Dockerfile errors → Fix `apps/contextractor/Dockerfile`
-   - Dependency errors → Fix `apps/contextractor/requirements.txt`, run `pip install -r apps/contextractor/requirements.txt`
-   - Python syntax errors → Fix source files, run `python3 -m compileall -q apps/contextractor/src/`
-   - Import errors → Check dependencies in `apps/contextractor/requirements.txt`
+   - Schema validation errors → Fix `apps/contextractor-apify/.actor/*_schema.json` files
+   - Dockerfile errors → Fix `apps/contextractor-apify/Dockerfile`
+   - Dependency errors → Fix `apps/contextractor-apify/requirements.txt`, run `pip install -r apps/contextractor-apify/requirements.txt`
+   - Python syntax errors → Fix source files, run `python3 -m compileall -q apps/contextractor-apify/src/`
+   - Import errors → Check dependencies in `apps/contextractor-apify/requirements.txt`
 
 3. Apply fix locally
 
@@ -163,14 +163,14 @@ $ARGUMENTS - Optional arguments:
 
 | Error Pattern | Fix Location |
 |--------------|--------------|
-| `Invalid input schema` | `apps/contextractor/.actor/input_schema.json` |
-| `Invalid output schema` | `apps/contextractor/.actor/output_schema.json` |
-| `Invalid dataset schema` | `apps/contextractor/.actor/dataset_schema.json` |
-| `COPY failed` | `apps/contextractor/Dockerfile` |
-| `pip ERR` | `apps/contextractor/requirements.txt` |
-| `SyntaxError:` | Python source files in `apps/contextractor/src/` |
-| `IndentationError:` | Python source files in `apps/contextractor/src/` |
-| `ModuleNotFoundError:` | Missing dependency in `apps/contextractor/requirements.txt` |
+| `Invalid input schema` | `apps/contextractor-apify/.actor/input_schema.json` |
+| `Invalid output schema` | `apps/contextractor-apify/.actor/output_schema.json` |
+| `Invalid dataset schema` | `apps/contextractor-apify/.actor/dataset_schema.json` |
+| `COPY failed` | `apps/contextractor-apify/Dockerfile` |
+| `pip ERR` | `apps/contextractor-apify/requirements.txt` |
+| `SyntaxError:` | Python source files in `apps/contextractor-apify/src/` |
+| `IndentationError:` | Python source files in `apps/contextractor-apify/src/` |
+| `ModuleNotFoundError:` | Missing dependency in `apps/contextractor-apify/requirements.txt` |
 | `ImportError:` | Missing dependency or wrong import |
 
 ## Apify CLI Commands Reference
@@ -183,8 +183,8 @@ apify info
 apify login
 
 # Push to Apify from actor directory (triggers build)
-cd apps/contextractor && apify push shortc/contextractor-test  # test
-cd apps/contextractor && apify push shortc/contextractor       # production (with --production flag)
+cd apps/contextractor-apify && apify push shortc/contextractor-test  # test
+cd apps/contextractor-apify && apify push shortc/contextractor       # production (with --production flag)
 
 # List recent builds
 apify builds ls
@@ -193,7 +193,7 @@ apify builds ls
 apify builds log <BUILD_ID>
 
 # Run the actor locally
-cd apps/contextractor && apify run
+cd apps/contextractor-apify && apify run
 
 # Call the actor on platform (waits for completion)
 apify call <TARGET_ACTOR> --input '{"startUrls": [{"url": "https://en.wikipedia.org/wiki/List_of_sovereign_states"}], "maxPagesPerCrawl": 1}'
@@ -212,7 +212,7 @@ apify datasets get-items <DATASET_ID>
 
 The workflow completes when:
 - Pre-flight checks pass (logged in)
-- Local `python3 -m compileall -q apps/contextractor/src/` passes
+- Local `python3 -m compileall -q apps/contextractor-apify/src/` passes
 - `apify push` succeeds
 - Build status is `SUCCEEDED`
 - No errors in build log

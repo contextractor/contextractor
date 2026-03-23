@@ -19,17 +19,17 @@ uv sync 2>/dev/null || pip install -e .
 pytest -v
 ```
 
-### 2. Main Actor (`apps/contextractor`)
+### 2. Main Actor (`apps/contextractor-apify`)
 
 ```bash
 cd /Users/miroslavsekera/r/contextractor
-uv run pytest apps/contextractor/tests/ -v 2>/dev/null || echo "No tests found in apps/contextractor"
+uv run pytest apps/contextractor-apify/tests/ -v 2>/dev/null || echo "No tests found in apps/contextractor-apify"
 ```
 
 ## Execution Steps
 
 1. Build and test `tools/generated-unit-tests` first
-2. Build and test `apps/contextractor`
+2. Build and test `apps/contextractor-apify`
 3. Report summary of all test results
 
 ## Output
