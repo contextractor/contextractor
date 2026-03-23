@@ -1,0 +1,13 @@
+{
+    "waitUntil": "DOMCONTENTLOADED",
+    "saveRawHtmlToKeyValueStore": false,
+    "saveExtractedMarkdownToKeyValueStore": true,
+    "saveExtractedTextToKeyValueStore": false,
+    "saveExtractedJsonToKeyValueStore": false,
+    "trafilaturaConfig": {},
+    "maxRequestRetries": 3,
+    "pageLoadTimeoutSecs": 60,
+    "maxPagesPerCrawl": 5,
+    "maxResultsPerCrawl": 2,
+    "linkSelector": "a"
+}

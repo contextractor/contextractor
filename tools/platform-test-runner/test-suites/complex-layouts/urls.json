@@ -1,0 +1,10 @@
+[
+    {
+        "slug": "github-blog-post",
+        "url": "https://github.blog/news-insights/"
+    },
+    {
+        "slug": "stackoverflow-question",
+        "url": "https://stackoverflow.com/questions/tagged/python?sort=votes"
+    }
+]

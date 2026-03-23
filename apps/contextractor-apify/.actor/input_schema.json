@@ -1,0 +1,257 @@
+{
+    "title": "Contextractor",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "startUrls": {
+            "title": "Start URLs",
+            "type": "array",
+            "description": "URLs to extract content from",
+            "editor": "requestListSources",
+            "prefill": [{"url": "https://blog.apify.com/what-is-web-scraping/"}]
+        },
+        "globs": {
+            "sectionCaption": "Crawler settings",
+            "title": "Include URLs (globs)",
+            "type": "array",
+            "description": "Glob patterns matching URLs of pages that will be included in crawling. Setting this option allows you to customize the crawling scope. For example `https://{store,docs}.example.com/**` lets the crawler access all URLs starting with `https://store.example.com/` or `https://docs.example.com/`.",
+            "editor": "globs",
+            "default": []
+        },
+        "excludes": {
+            "title": "Exclude URLs (globs)",
+            "type": "array",
+            "description": "Glob patterns matching URLs of pages that will be excluded from crawling. Note that this affects only links found on pages, but not Start URLs, which are always crawled.",
+            "editor": "globs",
+            "default": []
+        },
+        "pseudoUrls": {
+            "title": "Pseudo-URLs",
+            "type": "array",
+            "description": "Pseudo-URLs to match links in the page that you want to enqueue. Alternative to glob patterns. Combine with Link selector to tell the scraper where to find links.",
+            "editor": "pseudoUrls",
+            "default": []
+        },
+        "linkSelector": {
+            "title": "Link Selector",
+            "type": "string",
+            "description": "CSS selector for links to enqueue. Leave empty to disable link enqueueing.",
+            "editor": "textfield",
+            "default": ""
+        },
+        "keepUrlFragments": {
+            "title": "Keep URL fragments",
+            "type": "boolean",
+            "description": "URL fragments (the parts of URL after a #) are not considered when the scraper determines whether a URL has already been visited. Turn this on to treat URLs with different fragments as different pages.",
+            "default": false
+        },
+        "respectRobotsTxtFile": {
+            "title": "Respect robots.txt",
+            "type": "boolean",
+            "description": "If enabled, the crawler will consult the robots.txt file for each domain before crawling pages.",
+            "default": false
+        },
+        "initialCookies": {
+            "title": "Initial cookies",
+            "type": "array",
+            "description": "Cookies that will be pre-set to all pages the scraper opens. This is useful for pages that require login. The value is expected to be a JSON array of objects with `name` and `value` properties. For example: \n\n```json\n[\n  {\n    \"name\": \"cookieName\",\n    \"value\": \"cookieValue\",\n    \"path\": \"/\",\n    \"domain\": \".example.com\"\n  }\n]\n```\n\nYou can use the [EditThisCookie](https://docs.apify.com/academy/tools/edit-this-cookie) browser extension to copy browser cookies in this format, and paste it here.\n\nNote that the value is secret and encrypted to protect your login cookies.",
+            "prefill": [],
+            "editor": "json",
+            "isSecret": true
+        },
+        "customHttpHeaders": {
+            "title": "Custom HTTP headers",
+            "type": "object",
+            "description": "HTTP headers that will be added to all requests made by the crawler. This is useful for setting custom authentication headers or other headers required by the target website. The value is expected to be a JSON object with header names as keys and header values as values. For example: `{ \"Authorization\": \"Bearer token123\", \"X-Custom-Header\": \"value\" }`.",
+            "prefill": {},
+            "editor": "json"
+        },
+        "maxPagesPerCrawl": {
+            "title": "Max pages",
+            "type": "integer",
+            "description": "Maximum pages to crawl. Includes start URLs and pagination pages. The crawler will automatically finish after reaching this number. 0 means unlimited.",
+            "default": 0,
+            "minimum": 0
+        },
+        "maxResultsPerCrawl": {
+            "title": "Max results",
+            "type": "integer",
+            "description": "Maximum number of results that will be saved to dataset. The scraper will terminate after reaching this number. 0 means unlimited.",
+            "default": 0,
+            "minimum": 0,
+            "unit": "results"
+        },
+        "maxCrawlingDepth": {
+            "title": "Max crawling depth",
+            "type": "integer",
+            "description": "Maximum link depth from Start URLs. Pages discovered further from start URLs than this limit will not be crawled. 0 means unlimited.",
+            "default": 0,
+            "minimum": 0
+        },
+        "maxConcurrency": {
+            "title": "Max concurrency",
+            "type": "integer",
+            "description": "Maximum number of browser pages running in parallel. This setting is useful to avoid overloading target websites and getting blocked.",
+            "default": 50,
+            "minimum": 1
+        },
+        "maxRequestRetries": {
+            "title": "Max request retries",
+            "type": "integer",
+            "description": "Maximum number of retries for failed requests on network, proxy, or server errors.",
+            "default": 3,
+            "minimum": 0
+        },
+        "trafilaturaConfig": {
+            "sectionCaption": "Content extraction",
+            "title": "Trafilatura options",
+            "type": "object",
+            "description": "Trafilatura library extraction settings. Leave empty for balanced defaults. Keys: fast, favorPrecision, favorRecall, includeComments, includeTables, includeImages, includeFormatting, includeLinks, deduplicate, targetLanguage, withMetadata, onlyWithMetadata, teiValidation, pruneXpath.",
+            "editor": "json"
+        },
+        "saveRawHtmlToKeyValueStore": {
+            "sectionCaption": "Output settings",
+            "title": "Save raw HTML to key-value store",
+            "type": "boolean",
+            "description": "If enabled, the crawler saves the raw HTML of all pages to the default key-value store and includes the URL link in the dataset output.",
+            "default": false
+        },
+        "saveExtractedTextToKeyValueStore": {
+            "title": "Save extracted text to key-value store",
+            "type": "boolean",
+            "description": "If enabled, the crawler extracts plain text from all pages, saves it to the key-value store, and includes the URL link in the dataset output.",
+            "default": false
+        },
+        "saveExtractedJsonToKeyValueStore": {
+            "title": "Save extracted JSON to key-value store",
+            "type": "boolean",
+            "description": "If enabled, the crawler extracts JSON with metadata from all pages, saves it to the key-value store, and includes the URL link in the dataset output.",
+            "default": false
+        },
+        "saveExtractedMarkdownToKeyValueStore": {
+            "title": "Save extracted Markdown to key-value store",
+            "type": "boolean",
+            "description": "If enabled, the crawler extracts Markdown from all pages, saves it to the key-value store, and includes the URL link in the dataset output.",
+            "default": true
+        },
+        "saveExtractedXmlToKeyValueStore": {
+            "title": "Save extracted XML to key-value store",
+            "type": "boolean",
+            "description": "If enabled, the crawler extracts XML from all pages, saves it to the key-value store, and includes the URL link in the dataset output.",
+            "default": false
+        },
+        "saveExtractedXmlTeiToKeyValueStore": {
+            "title": "Save extracted XML-TEI to key-value store",
+            "type": "boolean",
+            "description": "If enabled, the crawler extracts XML-TEI (scholarly format) from all pages, saves it to the key-value store, and includes the URL link in the dataset output.",
+            "default": false
+        },
+        "datasetName": {
+            "title": "Dataset name",
+            "type": "string",
+            "description": "Name or ID of the dataset for storing results. Leave empty to use the default run dataset.",
+            "editor": "textfield"
+        },
+        "keyValueStoreName": {
+            "title": "Key-value store name",
+            "type": "string",
+            "description": "Name or ID of the key-value store for content files. Leave empty to use the default store.",
+            "editor": "textfield"
+        },
+        "requestQueueName": {
+            "title": "Request queue name",
+            "type": "string",
+            "description": "Name of the request queue for pending URLs. Leave empty to use the default queue.",
+            "editor": "textfield"
+        },
+        "proxyConfiguration": {
+            "sectionCaption": "Proxy",
+            "title": "Proxy configuration",
+            "type": "object",
+            "description": "Enables loading websites from IP addresses in specific geographies and to circumvent blocking.",
+            "editor": "proxy"
+        },
+        "proxyRotation": {
+            "title": "Proxy rotation",
+            "type": "string",
+            "description": "Proxy rotation strategy. RECOMMENDED automatically picks the best proxies. PER_REQUEST uses a new proxy for each request. UNTIL_FAILURE uses one proxy until it fails.",
+            "default": "RECOMMENDED",
+            "editor": "select",
+            "enum": ["RECOMMENDED", "PER_REQUEST", "UNTIL_FAILURE"],
+            "enumTitles": ["Recommended", "Rotate per request", "Use until failure"]
+        },
+        "pageLoadTimeoutSecs": {
+            "sectionCaption": "Browser",
+            "title": "Page load timeout",
+            "type": "integer",
+            "description": "Maximum time to wait for page load in seconds",
+            "default": 60,
+            "minimum": 1,
+            "unit": "seconds"
+        },
+        "waitUntil": {
+            "title": "Navigation wait until",
+            "type": "string",
+            "description": "When to consider navigation finished",
+            "editor": "select",
+            "default": "NETWORKIDLE",
+            "enum": ["NETWORKIDLE", "LOAD", "DOMCONTENTLOADED"],
+            "enumTitles": ["Network idle", "Load event", "DOM content loaded"]
+        },
+        "launcher": {
+            "title": "Browser type",
+            "type": "string",
+            "description": "Browser to use for crawling",
+            "editor": "select",
+            "default": "CHROMIUM",
+            "enum": ["CHROMIUM", "FIREFOX"],
+            "enumTitles": ["Chromium", "Firefox"]
+        },
+        "headless": {
+            "title": "Headless mode",
+            "type": "boolean",
+            "description": "Run browser in headless mode",
+            "default": true
+        },
+        "ignoreCorsAndCsp": {
+            "title": "Ignore CORS and CSP",
+            "type": "boolean",
+            "description": "Ignore Content Security Policy and Cross-Origin Resource Sharing restrictions. Enables free XHR/Fetch requests from pages.",
+            "default": false
+        },
+        "closeCookieModals": {
+            "title": "Close cookie modals",
+            "type": "boolean",
+            "description": "Automatically dismiss cookie consent modals",
+            "default": false
+        },
+        "maxScrollHeightPixels": {
+            "title": "Max scroll height",
+            "type": "integer",
+            "description": "Maximum pixels to scroll down the page until all content is loaded. Setting to 0 disables scrolling.",
+            "default": 5000,
+            "minimum": 0,
+            "unit": "pixels"
+        },
+        "ignoreSslErrors": {
+            "title": "Ignore SSL errors",
+            "type": "boolean",
+            "description": "Ignore SSL certificate errors. Use at your own risk.",
+            "default": false
+        },
+        "debugLog": {
+            "sectionCaption": "Diagnostics",
+            "title": "Debug log",
+            "type": "boolean",
+            "description": "Include debug messages in the log output.",
+            "default": false
+        },
+        "browserLog": {
+            "title": "Browser log",
+            "type": "boolean",
+            "description": "Include browser console messages in the log. May flood logs with errors at high concurrency.",
+            "default": false
+        }
+    },
+    "required": ["startUrls"]
+}

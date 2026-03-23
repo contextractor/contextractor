@@ -1,0 +1,18 @@
+{
+    "actorSpecification": 1,
+    "name": "contextractor",
+    "title": "Contextractor - Web Content Extractor",
+    "description": "Crawls websites and extracts text content using trafilatura. Supports multiple output formats: HTML, TXT, JSON, Markdown, XML, and XML-TEI.",
+    "version": "0.1",
+    "buildTag": "latest",
+    "meta": {
+        "templateId": "python-crawlee-playwright",
+        "generatedBy": "claude-opus-4-5-20251101"
+    },
+    "input": "./input_schema.json",
+    "output": "./output_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    },
+    "dockerfile": "./Dockerfile"
+}

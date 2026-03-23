@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="30"
+   height="30"
+   viewBox="0 0 30 30"
+   id="svg2"
+   version="1.1"
+   sodipodi:docname="logo.src.svg"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="8.5290726"
+     inkscape:cx="12.076342"
+     inkscape:cy="1.5241985"
+     inkscape:window-width="1512"
+     inkscape:window-height="863"
+     inkscape:window-x="2880"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <defs
+     id="defs4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <rect
+     y="-1.7382812e-05"
+     x="0"
+     height="30"
+     width="30"
+     id="rect4800"
+     style="fill:#8759ff;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <rect
+     style="fill:#6b75e3;fill-opacity:1;stroke-width:1.00157;stroke-dasharray:3.00472, 3.00472"
+     id="rect7"
+     width="15.593723"
+     height="5.979548"
+     x="13.131557"
+     y="1.0552144" />
+  <rect
+     style="fill:#6b75e3;fill-opacity:1;stroke-width:0.894146;stroke-dasharray:2.68245, 2.68245"
+     id="rect7-1"
+     width="12.428081"
+     height="5.979548"
+     x="5.5780611"
+     y="8.9100227" />
+  <rect
+     style="fill:#6b75e3;fill-opacity:1;stroke-width:1.00907;stroke-dasharray:3.02723, 3.02723"
+     id="rect7-1-8"
+     width="15.828216"
+     height="5.979548"
+     x="2.2263229"
+     y="15.986365" />
+  <text
+     xml:space="preserve"
+     style="font-weight:bold;font-size:6.15902px;line-height:1.2;font-family:'Courier New';-inkscape-font-specification:'Courier New Bold';writing-mode:lr-tb;direction:ltr;fill:#90a0be;fill-opacity:1;stroke-width:0.308434;stroke-dasharray:0.925306, 0.925306"
+     x="1.9519387"
+     y="5.6877198"
+     id="text1-2"><tspan
+       sodipodi:role="line"
+       x="1.9519387"
+       y="5.6877198"
+       id="tspan4-7"
+       style="fill:#90a0be;fill-opacity:1;stroke-width:0.308434">   tent</tspan><tspan
+       sodipodi:role="line"
+       x="1.9519387"
+       y="13.078544"
+       style="fill:#90a0be;fill-opacity:1;stroke-width:0.308434"
+       id="tspan7-1"> ext</tspan><tspan
+       sodipodi:role="line"
+       x="1.9519387"
+       y="20.469368"
+       id="tspan5-5"
+       style="fill:#90a0be;fill-opacity:1;stroke-width:0.308434">ract</tspan><tspan
+       sodipodi:role="line"
+       x="1.9519387"
+       y="27.860193"
+       id="tspan6-2"
+       style="fill:#90a0be;fill-opacity:1;stroke-width:0.308434" /></text>
+  <text
+     xml:space="preserve"
+     style="font-weight:bold;font-size:6.15902px;line-height:1.2;font-family:'Courier New';-inkscape-font-specification:'Courier New Bold';writing-mode:lr-tb;direction:ltr;fill:#1e2329;fill-opacity:1;stroke-width:0.308434;stroke-dasharray:0.925306, 0.925306"
+     x="1.9519387"
+     y="5.6877198"
+     id="text1"><tspan
+       sodipodi:role="line"
+       x="1.9519387"
+       y="5.6877198"
+       id="tspan4"
+       style="stroke-width:0.308434">con</tspan><tspan
+       sodipodi:role="line"
+       x="1.9519387"
+       y="13.078544"
+       style="stroke-width:0.308434"
+       id="tspan7">text</tspan><tspan
+       sodipodi:role="line"
+       x="1.9519387"
+       y="20.469368"
+       id="tspan5"
+       style="stroke-width:0.308434">r</tspan><tspan
+       sodipodi:role="line"
+       x="1.9519387"
+       y="27.860193"
+       id="tspan6"
+       style="stroke-width:0.308434">actor</tspan></text>
+</svg>

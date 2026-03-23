@@ -1,0 +1,10 @@
+[
+    {
+        "slug": "python-docs-tutorial",
+        "url": "https://docs.python.org/3/tutorial/index.html"
+    },
+    {
+        "slug": "wikipedia-long-article",
+        "url": "https://en.wikipedia.org/wiki/History_of_the_Internet"
+    }
+]

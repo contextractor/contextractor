@@ -1,0 +1,22 @@
+[
+    {
+        "slug": "wikipedia-german-berlin",
+        "url": "https://de.wikipedia.org/wiki/Berlin"
+    },
+    {
+        "slug": "wikipedia-french-paris",
+        "url": "https://fr.wikipedia.org/wiki/Paris"
+    },
+    {
+        "slug": "wikipedia-spanish-madrid",
+        "url": "https://es.wikipedia.org/wiki/Madrid"
+    },
+    {
+        "slug": "wikipedia-japanese-tokyo",
+        "url": "https://ja.wikipedia.org/wiki/%E6%9D%B1%E4%BA%AC"
+    },
+    {
+        "slug": "wikipedia-chinese-beijing",
+        "url": "https://zh.wikipedia.org/wiki/%E5%8C%97%E4%BA%AC%E5%B8%82"
+    }
+]

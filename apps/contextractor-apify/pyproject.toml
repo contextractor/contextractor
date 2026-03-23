@@ -1,0 +1,20 @@
+[project]
+name = "contextractor-apify"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "apify>=2.0.0,<4.0.0",
+    "crawlee[playwright]>=0.4.0",
+    "contextractor-engine",
+    "browserforge<1.2.4",
+]
+
+[tool.uv.sources]
+contextractor-engine = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

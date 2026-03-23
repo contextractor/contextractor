@@ -1,0 +1,84 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "loadedUrl": {
+            "type": "string",
+            "title": "Loaded URL",
+            "description": "The URL that was loaded"
+        },
+        "httpStatus": {
+            "type": "integer",
+            "title": "HTTP Status",
+            "description": "HTTP response status code"
+        },
+        "loadedAt": {
+            "type": "string",
+            "title": "Loaded At",
+            "description": "ISO 8601 timestamp when the page was loaded"
+        },
+        "metadata": {
+            "type": "object",
+            "title": "Metadata",
+            "description": "Extracted page metadata"
+        },
+        "rawHtml": {
+            "type": "object",
+            "title": "Raw HTML",
+            "description": "Info about raw HTML (hash, length, optionally key and url)"
+        },
+        "extractedMarkdown": {
+            "type": "object",
+            "title": "Extracted Markdown",
+            "description": "Info about extracted Markdown content"
+        },
+        "extractedText": {
+            "type": "object",
+            "title": "Extracted Text",
+            "description": "Info about extracted plain text content"
+        },
+        "extractedJson": {
+            "type": "object",
+            "title": "Extracted JSON",
+            "description": "Info about extracted JSON content"
+        },
+        "extractedXml": {
+            "type": "object",
+            "title": "Extracted XML",
+            "description": "Info about extracted XML content"
+        },
+        "extractedXmlTei": {
+            "type": "object",
+            "title": "Extracted XML-TEI",
+            "description": "Info about extracted XML-TEI content"
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": ["loadedUrl", "httpStatus", "metadata.title", "metadata.lang"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "loadedUrl": {
+                        "label": "URL",
+                        "format": "link"
+                    },
+                    "httpStatus": {
+                        "label": "Status",
+                        "format": "number"
+                    },
+                    "metadata.title": {
+                        "label": "Title",
+                        "format": "text"
+                    },
+                    "metadata.lang": {
+                        "label": "Language",
+                        "format": "text"
+                    }
+                }
+            }
+        }
+    }
+}
