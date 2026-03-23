@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields as dataclass_fields
 from pathlib import Path
 from typing import Any
 
 import yaml
 
 from contextractor_engine import TrafilaturaConfig
+
+
+# TrafilaturaConfig field names for routing in merge()
+_EXTRACTION_FIELDS = {f.name for f in dataclass_fields(TrafilaturaConfig)}
 
 
 @dataclass
@@ -54,20 +58,19 @@ class CrawlConfig:
             extraction=extraction,
         )
 
-    def apply_cli_overrides(
-        self,
-        *,
-        precision: bool = False,
-        recall: bool = False,
-        no_links: bool = False,
-        no_comments: bool = False,
-    ) -> None:
-        """Apply CLI flag overrides to extraction config."""
-        if precision:
-            self.extraction.favor_precision = True
-        if recall:
-            self.extraction.favor_recall = True
-        if no_links:
-            self.extraction.include_links = False
-        if no_comments:
-            self.extraction.include_comments = False
+    def merge(self, overrides: dict[str, Any]) -> None:
+        """Merge non-None overrides into this config.
+
+        Keys matching TrafilaturaConfig fields are routed to self.extraction.
+        Keys matching CrawlConfig fields are set directly.
+        Unknown keys are ignored.
+        """
+        crawl_fields = {f.name for f in dataclass_fields(self)} - {"extraction"}
+
+        for key, value in overrides.items():
+            if value is None:
+                continue
+            if key in crawl_fields:
+                setattr(self, key, value)
+            elif key in _EXTRACTION_FIELDS:
+                setattr(self.extraction, key, value)
