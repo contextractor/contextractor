@@ -35,7 +35,7 @@
       "Bash(poetry:*)",
       "Bash(python:*)",
       "Bash(python3:*)",
-      "Bash(npm:*)",
+      "Bash(uv:*)",
       "Bash(cat:*)",
       "Bash(pwd:*)",
       "Bash(wc:*)",
@@ -44,7 +44,7 @@
       "Bash(whoami:*)",
       "Bash(date:*)",
       "Bash(env:*)",
-      "Write(//Users/miroslavsekera/r/**)",
+      "Write(/Users/miroslavsekera/r/**)",
       "Edit(/Users/miroslavsekera/r/**)"
     ],
     "deny": [
