@@ -1,6 +1,6 @@
 {
   "name": "contextractor",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Extract web content from URLs with configurable extraction options",
   "license": "MIT",
   "repository": {
@@ -29,7 +29,8 @@
   "files": [
     "cli.js",
     "index.js",
-    "postinstall.js"
+    "postinstall.js",
+    "README.md"
   ],
   "scripts": {
     "postinstall": "node postinstall.js"
