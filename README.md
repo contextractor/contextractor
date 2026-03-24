@@ -95,6 +95,7 @@ All options go under the `extraction` key in config files, or use the equivalent
 | `includeFormatting` | bool | true | Preserve formatting |
 | `includeLinks` | bool | true | Include links |
 | `deduplicate` | bool | false | Deduplicate content |
+| `withMetadata` | bool | true | Extract metadata (title, author, date) |
 | `targetLanguage` | string | null | Filter by language (e.g. `"en"`) |
 | `fast` | bool | false | Fast mode (less thorough) |
 
