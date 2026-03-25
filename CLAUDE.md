@@ -13,6 +13,11 @@ apify push                             # Deploy to Apify platform
 apify help                             # List all commands
 ```
 
+## Git Rules
+
+- NEVER add `Co-Authored-By`, `Signed-off-by`, or any other trailer attributing Claude/AI to commit messages
+- Keep commit messages clean — just the subject and optional body, no footers about AI authorship
+
 ## Safety and Permissions
 
 Allowed without prompt:
