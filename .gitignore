@@ -4,6 +4,9 @@ storage
 .claude/settings.local.json
 tools/platform-test-runner/test-suites-output/
 
+# Build artifacts
+apps/contextractor-standalone/npm/bin/
+
 # Node.js
 node_modules/
 package-lock.json
