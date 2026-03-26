@@ -1,6 +1,6 @@
 [project]
 name = "contextractor-engine"
-version = "0.3.1"
+version = "0.3.2"
 description = "Trafilatura extraction wrapper with configurable options"
 requires-python = ">=3.12"
 dependencies = [
