@@ -47,7 +47,7 @@ Proxy:
 
 Browser:
   --launcher            Browser engine: chromium, firefox (default: chromium)
-  --wait-until          Page load event: networkidle, load, domcontentloaded
+  --wait-until          Page load event: load, networkidle, domcontentloaded (default: load)
   --page-load-timeout   Timeout in seconds (default: 60)
   --ignore-cors         Disable CORS/CSP restrictions
   --close-cookie-modals Auto-dismiss cookie banners
@@ -141,7 +141,7 @@ Supports both JSON and YAML format. JSON examples shown below:
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `launcher` | string | `"chromium"` | Browser engine: `chromium`, `firefox` |
-| `waitUntil` | string | `"networkidle"` | Page load event: `networkidle`, `load`, `domcontentloaded` |
+| `waitUntil` | string | `"load"` | Page load event: `load`, `networkidle`, `domcontentloaded` |
 | `pageLoadTimeout` | int | 60 | Page load timeout in seconds |
 | `ignoreCors` | bool | false | Disable CORS/CSP restrictions |
 | `closeCookieModals` | bool | false | Auto-dismiss cookie consent banners |

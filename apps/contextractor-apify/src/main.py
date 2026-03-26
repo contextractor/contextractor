@@ -8,6 +8,7 @@ from datetime import timedelta
 from apify import Actor
 from crawlee import Request
 from crawlee.crawlers import PlaywrightCrawler
+from crawlee.crawlers._playwright._types import GotoOptions
 
 from .config import (
     build_browser_context_options,
@@ -98,6 +99,9 @@ async def _create_crawler(actor_input: dict) -> PlaywrightCrawler:
 
     # Create crawler
     max_pages = actor_input.get('maxPagesPerCrawl', 0)
+    # Wire wait_until to PlaywrightCrawler goto_options
+    wait_until = actor_input.get('waitUntil', 'LOAD').lower()
+
     return PlaywrightCrawler(
         headless=actor_input.get('headless', True),
         browser_type=actor_input.get('launcher', 'CHROMIUM').lower(),
@@ -107,4 +111,5 @@ async def _create_crawler(actor_input: dict) -> PlaywrightCrawler:
         proxy_configuration=proxy_cfg,
         browser_launch_options=browser_launch_options,
         browser_new_context_options=browser_context_options,
+        goto_options=GotoOptions(wait_until=wait_until),
     )

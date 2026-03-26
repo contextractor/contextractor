@@ -194,7 +194,7 @@
             "type": "string",
             "description": "When to consider navigation finished",
             "editor": "select",
-            "default": "NETWORKIDLE",
+            "default": "LOAD",
             "enum": ["NETWORKIDLE", "LOAD", "DOMCONTENTLOADED"],
             "enumTitles": ["Network idle", "Load event", "DOM content loaded"]
         },

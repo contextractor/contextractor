@@ -13,6 +13,7 @@ from typing import Any
 from crawlee import Request
 from crawlee._autoscaling.autoscaled_pool import ConcurrencySettings
 from crawlee.crawlers import PlaywrightCrawler, PlaywrightCrawlingContext
+from crawlee.crawlers._playwright._types import GotoOptions
 from crawlee.proxy_configuration import ProxyConfiguration
 
 from contextractor_engine import ContentExtractor
@@ -94,6 +95,11 @@ async def run_crawl(config: CrawlConfig) -> None:
     if config.proxy_urls:
         proxy_cfg = ProxyConfiguration(proxy_urls=config.proxy_urls)
         logger.info(f"Using {len(config.proxy_urls)} proxy URL(s), rotation: {config.proxy_rotation}")
+        if config.proxy_rotation == "until_failure":
+            logger.warning(
+                "proxy_rotation 'until_failure' uses round-robin rotation; "
+                "full sticky-session behavior requires Crawlee SessionPool integration"
+            )
 
     # Build browser options
     browser_launch_options = _build_browser_launch_options(config)
@@ -113,6 +119,7 @@ async def run_crawl(config: CrawlConfig) -> None:
         ),
         "respect_robots_txt_file": config.respect_robots_txt,
         "max_crawl_depth": config.crawl_depth if config.crawl_depth > 0 else None,
+        "goto_options": GotoOptions(wait_until=config.wait_until),
     }
     if proxy_cfg:
         crawler_kwargs["proxy_configuration"] = proxy_cfg
@@ -234,12 +241,9 @@ async def run_crawl(config: CrawlConfig) -> None:
 
         pages_extracted += 1
 
-        # Enqueue links if crawl depth allows
-        current_depth = context.request.user_data.get("depth", 0)
-        if config.crawl_depth > 0 and current_depth < config.crawl_depth:
-            enqueue_kwargs: dict[str, Any] = {
-                "user_data": {"depth": current_depth + 1},
-            }
+        # Enqueue links if crawl depth is configured (Crawlee handles depth limiting natively)
+        if config.crawl_depth > 0:
+            enqueue_kwargs: dict[str, Any] = {}
             if config.link_selector:
                 enqueue_kwargs["selector"] = config.link_selector
             if config.globs:
@@ -253,7 +257,6 @@ async def run_crawl(config: CrawlConfig) -> None:
     requests = [
         Request.from_url(
             url,
-            user_data={"depth": 0},
             keep_url_fragment=config.keep_url_fragments,
         )
         for url in config.urls

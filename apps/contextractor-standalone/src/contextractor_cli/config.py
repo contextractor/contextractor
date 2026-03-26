@@ -35,7 +35,7 @@ class CrawlConfig:
 
     # Browser
     launcher: str = "chromium"
-    wait_until: str = "networkidle"
+    wait_until: str = "load"
     page_load_timeout: int = 60
     ignore_cors: bool = False
     close_cookie_modals: bool = False
@@ -108,7 +108,7 @@ class CrawlConfig:
             proxy_rotation=proxy_rotation,
             # Browser
             launcher=data.get("launcher", "chromium").lower(),
-            wait_until=data.get("waitUntil", "networkidle").lower(),
+            wait_until=data.get("waitUntil", "load").lower(),
             page_load_timeout=data.get("pageLoadTimeoutSecs", data.get("pageLoadTimeout", 60)),
             ignore_cors=data.get("ignoreCorsAndCsp", data.get("ignoreCors", False)),
             close_cookie_modals=data.get("closeCookieModals", False),

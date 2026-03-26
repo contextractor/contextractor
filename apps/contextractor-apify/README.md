@@ -105,7 +105,7 @@ Try the interactive web app at **[contextractor.com](https://contextractor.com)*
 |-----------|------|---------|-------------|
 | `launcher` | string | `"CHROMIUM"` | Browser engine: `CHROMIUM`, `FIREFOX` |
 | `headless` | bool | true | Run browser in headless mode |
-| `waitUntil` | string | `"NETWORKIDLE"` | Page load event: `NETWORKIDLE`, `LOAD`, `DOMCONTENTLOADED` |
+| `waitUntil` | string | `"LOAD"` | Page load event: `LOAD`, `NETWORKIDLE`, `DOMCONTENTLOADED` |
 | `pageLoadTimeoutSecs` | int | 60 | Page load timeout in seconds |
 | `ignoreCorsAndCsp` | bool | false | Disable CORS/CSP restrictions |
 | `closeCookieModals` | bool | false | Auto-dismiss cookie consent banners |
