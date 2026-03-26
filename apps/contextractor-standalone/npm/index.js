@@ -51,7 +51,7 @@ function getBinaryPath() {
  * @param {boolean} [options.noLinks] - Exclude links
  * @param {boolean} [options.noComments] - Exclude comments
  * @param {string} [options.outputDir] - Output directory
- * @param {string} [options.format] - Output format (txt, markdown, json, xml, xmltei)
+ * @param {string} [options.format] - Output format (txt, markdown, json, jsonl, xml, xmltei)
  * @param {number} [options.maxPages] - Max pages to crawl
  * @param {number} [options.crawlDepth] - Max crawl depth
  * @param {boolean} [options.headless] - Run headless (default true)
@@ -71,6 +71,7 @@ function getBinaryPath() {
  * @param {boolean} [options.closeCookieModals] - Auto-dismiss cookie banners
  * @param {number} [options.maxScrollHeight] - Max scroll height in pixels
  * @param {boolean} [options.ignoreSslErrors] - Skip SSL verification
+ * @param {string} [options.userAgent] - Custom User-Agent string
  * @param {string|string[]} [options.globs] - Glob patterns to include
  * @param {string|string[]} [options.excludes] - Glob patterns to exclude
  * @param {string} [options.linkSelector] - CSS selector for links
@@ -133,6 +134,7 @@ function extract(urls, options = {}) {
     if (options.closeCookieModals) args.push("--close-cookie-modals");
     if (options.maxScrollHeight != null) args.push("--max-scroll-height", String(options.maxScrollHeight));
     if (options.ignoreSslErrors) args.push("--ignore-ssl-errors");
+    if (options.userAgent) args.push("--user-agent", options.userAgent);
 
     // Crawl filtering
     if (options.globs) {

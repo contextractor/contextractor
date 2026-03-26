@@ -132,3 +132,101 @@ def test_bool_flag_pairs():
         assert cfg.extraction.include_formatting is False
         assert cfg.extraction.with_metadata is False
         assert cfg.headless is False
+
+
+# --- Tests for v0.3.0+ CLI flags ---
+
+
+def test_proxy_flags():
+    with _mock_run_crawl() as mock_crawl:
+        result = runner.invoke(app, [
+            "https://example.com",
+            "--proxy-urls", "http://p1:8080,http://p2:8080",
+            "--proxy-rotation", "per_request",
+        ])
+        assert result.exit_code == 0
+        cfg = mock_crawl.call_args[0][0]
+        assert cfg.proxy_urls == ["http://p1:8080", "http://p2:8080"]
+        assert cfg.proxy_rotation == "per_request"
+
+
+def test_browser_flags():
+    with _mock_run_crawl() as mock_crawl:
+        result = runner.invoke(app, [
+            "https://example.com",
+            "--launcher", "firefox",
+            "--wait-until", "networkidle",
+            "--page-load-timeout", "120",
+        ])
+        assert result.exit_code == 0
+        cfg = mock_crawl.call_args[0][0]
+        assert cfg.launcher == "firefox"
+        assert cfg.wait_until == "networkidle"
+        assert cfg.page_load_timeout == 120
+
+
+def test_user_agent_flag():
+    with _mock_run_crawl() as mock_crawl:
+        result = runner.invoke(app, [
+            "https://example.com",
+            "--user-agent", "Mozilla/5.0 Custom",
+        ])
+        assert result.exit_code == 0
+        cfg = mock_crawl.call_args[0][0]
+        assert cfg.user_agent == "Mozilla/5.0 Custom"
+
+
+def test_crawl_filter_flags():
+    with _mock_run_crawl() as mock_crawl:
+        result = runner.invoke(app, [
+            "https://example.com",
+            "--globs", "*.html,*.htm",
+            "--excludes", "*.pdf,*.zip",
+        ])
+        assert result.exit_code == 0
+        cfg = mock_crawl.call_args[0][0]
+        assert cfg.globs == ["*.html", "*.htm"]
+        assert cfg.excludes == ["*.pdf", "*.zip"]
+
+
+def test_cookie_header_flags():
+    with _mock_run_crawl() as mock_crawl:
+        result = runner.invoke(app, [
+            "https://example.com",
+            "--cookies", '[{"name":"s","value":"v","domain":".example.com"}]',
+            "--headers", '{"Authorization":"Bearer tok"}',
+        ])
+        assert result.exit_code == 0
+        cfg = mock_crawl.call_args[0][0]
+        assert cfg.cookies == [{"name": "s", "value": "v", "domain": ".example.com"}]
+        assert cfg.headers == {"Authorization": "Bearer tok"}
+
+
+def test_output_toggle_flags():
+    with _mock_run_crawl() as mock_crawl:
+        result = runner.invoke(app, [
+            "https://example.com",
+            "--save-raw-html",
+            "--save-text",
+            "--save-json",
+            "--save-xml",
+            "--save-xml-tei",
+        ])
+        assert result.exit_code == 0
+        cfg = mock_crawl.call_args[0][0]
+        assert cfg.save_raw_html is True
+        assert cfg.save_text is True
+        assert cfg.save_json is True
+        assert cfg.save_xml is True
+        assert cfg.save_xml_tei is True
+
+
+def test_jsonl_format():
+    with _mock_run_crawl() as mock_crawl:
+        result = runner.invoke(app, [
+            "https://example.com",
+            "--format", "jsonl",
+        ])
+        assert result.exit_code == 0
+        cfg = mock_crawl.call_args[0][0]
+        assert cfg.output_format == "jsonl"

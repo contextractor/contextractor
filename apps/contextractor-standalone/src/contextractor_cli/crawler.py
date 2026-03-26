@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import logging
 import os
 import re
@@ -26,6 +27,7 @@ FORMAT_EXTENSIONS = {
     "txt": ".txt",
     "markdown": ".md",
     "json": ".json",
+    "jsonl": ".jsonl",
     "xml": ".xml",
     "xmltei": ".tei.xml",
 }
@@ -50,6 +52,10 @@ def _build_browser_launch_options(config: CrawlConfig) -> dict[str, Any]:
     """Build browser launch options from config."""
     options: dict[str, Any] = {}
     args = []
+
+    # Anti-detection: prevent navigator.webdriver=true (Chromium only)
+    if config.launcher == "chromium":
+        args.append("--disable-blink-features=AutomationControlled")
 
     # Disable Chromium sandbox in Docker (set CONTEXTRACTOR_NO_SANDBOX=1)
     if os.environ.get("CONTEXTRACTOR_NO_SANDBOX"):
@@ -77,6 +83,9 @@ def _build_browser_context_options(config: CrawlConfig) -> dict[str, Any] | None
     if config.headers:
         options["extra_http_headers"] = config.headers
 
+    if config.user_agent:
+        options["user_agent"] = config.user_agent
+
     return options if options else None
 
 
@@ -90,9 +99,12 @@ async def run_crawl(config: CrawlConfig) -> None:
     pages_extracted = 0
     max_results = config.max_results
 
-    # Configure proxy
+    # Configure proxy (tiered takes precedence over flat proxy_urls)
     proxy_cfg = None
-    if config.proxy_urls:
+    if config.proxy_tiered:
+        proxy_cfg = ProxyConfiguration(tiered_proxy_urls=config.proxy_tiered)
+        logger.info(f"Using tiered proxy with {len(config.proxy_tiered)} tier(s)")
+    elif config.proxy_urls:
         proxy_cfg = ProxyConfiguration(proxy_urls=config.proxy_urls)
         logger.info(f"Using {len(config.proxy_urls)} proxy URL(s), rotation: {config.proxy_rotation}")
         if config.proxy_rotation == "until_failure":
@@ -191,8 +203,9 @@ async def run_crawl(config: CrawlConfig) -> None:
 
         html = await context.page.content()
 
-        # Extract primary format
-        result = extractor.extract(html, url=url, output_format=config.output_format)
+        # Extract primary format (jsonl extracts as markdown internally)
+        extract_format = "markdown" if config.output_format == "jsonl" else config.output_format
+        result = extractor.extract(html, url=url, output_format=extract_format)
         if result is None:
             logger.warning(f"No content extracted from {url}")
             return
@@ -200,29 +213,43 @@ async def run_crawl(config: CrawlConfig) -> None:
         # Extract metadata for header
         metadata = extractor.extract_metadata(html, url=url)
 
-        # Build output content with metadata header
-        output_parts = []
-        if metadata.title or metadata.author or metadata.date:
-            if config.output_format in ("markdown", "txt"):
-                if metadata.title:
-                    output_parts.append(f"Title: {metadata.title}")
-                if metadata.author:
-                    output_parts.append(f"Author: {metadata.author}")
-                if metadata.date:
-                    output_parts.append(f"Date: {metadata.date}")
-                output_parts.append(f"URL: {url}")
-                output_parts.append("")
-                output_parts.append("---")
-                output_parts.append("")
+        if config.output_format == "jsonl":
+            # JSONL: append one JSON line per page to a single output file
+            jsonl_path = output_dir / "output.jsonl"
+            entry = {
+                "url": url,
+                "title": metadata.title or "",
+                "author": metadata.author or "",
+                "date": metadata.date or "",
+                "content": result.content,
+            }
+            with open(jsonl_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+            logger.info(f"Appended to {jsonl_path}")
+        else:
+            # Build output content with metadata header
+            output_parts = []
+            if metadata.title or metadata.author or metadata.date:
+                if config.output_format in ("markdown", "txt"):
+                    if metadata.title:
+                        output_parts.append(f"Title: {metadata.title}")
+                    if metadata.author:
+                        output_parts.append(f"Author: {metadata.author}")
+                    if metadata.date:
+                        output_parts.append(f"Date: {metadata.date}")
+                    output_parts.append(f"URL: {url}")
+                    output_parts.append("")
+                    output_parts.append("---")
+                    output_parts.append("")
 
-        output_parts.append(result.content)
-        content = "\n".join(output_parts)
+            output_parts.append(result.content)
+            content = "\n".join(output_parts)
 
-        # Write primary format
-        filename = _url_to_filename(url) + ext
-        filepath = output_dir / filename
-        filepath.write_text(content, encoding="utf-8")
-        logger.info(f"Saved {filepath}")
+            # Write primary format
+            filename = _url_to_filename(url) + ext
+            filepath = output_dir / filename
+            filepath.write_text(content, encoding="utf-8")
+            logger.info(f"Saved {filepath}")
 
         # Write extra output formats
         slug = _url_to_filename(url)

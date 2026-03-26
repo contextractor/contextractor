@@ -33,7 +33,7 @@ contextractor [OPTIONS] [URLS...]
 Crawl Settings:
   --config, -c          Path to YAML or JSON config file
   --output-dir, -o      Output directory
-  --format, -f          Output format (txt, markdown, json, xml, xmltei)
+  --format, -f          Output format (txt, markdown, json, jsonl, xml, xmltei)
   --max-pages           Max pages to crawl (0 = unlimited)
   --crawl-depth         Max link depth from start URLs (0 = start only)
   --headless/--no-headless  Browser headless mode (default: headless)
@@ -53,6 +53,7 @@ Browser:
   --close-cookie-modals Auto-dismiss cookie banners
   --max-scroll-height   Max scroll height in pixels (default: 5000)
   --ignore-ssl-errors   Skip SSL certificate verification
+  --user-agent          Custom User-Agent string
 
 Crawl Filtering:
   --globs               Comma-separated glob patterns to include
@@ -121,7 +122,7 @@ Supports both JSON and YAML format. JSON examples shown below:
 |-------|------|---------|-------------|
 | `urls` | array | `[]` | URLs to extract content from |
 | `maxPages` | int | 0 | Max pages to crawl (0 = unlimited) |
-| `outputFormat` | string | `"markdown"` | `txt`, `markdown`, `json`, `xml`, `xmltei` |
+| `outputFormat` | string | `"markdown"` | `txt`, `markdown`, `json`, `jsonl`, `xml`, `xmltei` |
 | `outputDir` | string | `"./output"` | Directory for extracted content |
 | `crawlDepth` | int | 0 | How deep to follow links (0 = start URLs only) |
 | `headless` | bool | true | Browser headless mode |
@@ -135,6 +136,7 @@ Supports both JSON and YAML format. JSON examples shown below:
 |-------|------|---------|-------------|
 | `proxy.urls` | array | `[]` | Proxy URLs (`http://user:pass@host:port` or `socks5://host:port`) |
 | `proxy.rotation` | string | `"recommended"` | `recommended`, `per_request`, `until_failure` |
+| `proxy.tiered` | array | `[]` | Tiered proxy escalation (config-file only) |
 
 ### Browser Settings
 
@@ -147,6 +149,7 @@ Supports both JSON and YAML format. JSON examples shown below:
 | `closeCookieModals` | bool | false | Auto-dismiss cookie consent banners |
 | `maxScrollHeight` | int | 5000 | Max scroll height in pixels (0 = disable) |
 | `ignoreSslErrors` | bool | false | Skip SSL certificate verification |
+| `userAgent` | string | `""` | Custom User-Agent string |
 
 ### Crawl Filtering
 

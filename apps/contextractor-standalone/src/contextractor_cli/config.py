@@ -32,6 +32,7 @@ class CrawlConfig:
     # Proxy
     proxy_urls: list[str] = field(default_factory=list)
     proxy_rotation: str = "recommended"
+    proxy_tiered: list[list[str | None]] = field(default_factory=list)
 
     # Browser
     launcher: str = "chromium"
@@ -41,6 +42,7 @@ class CrawlConfig:
     close_cookie_modals: bool = False
     max_scroll_height: int = 5000
     ignore_ssl_errors: bool = False
+    user_agent: str = ""
 
     # Crawl filtering
     globs: list[str] = field(default_factory=list)
@@ -106,6 +108,7 @@ class CrawlConfig:
             # Proxy
             proxy_urls=proxy_urls,
             proxy_rotation=proxy_rotation,
+            proxy_tiered=proxy_section.get("tiered", []) if isinstance(proxy_section, dict) else [],
             # Browser
             launcher=data.get("launcher", "chromium").lower(),
             wait_until=data.get("waitUntil", "load").lower(),
@@ -114,6 +117,7 @@ class CrawlConfig:
             close_cookie_modals=data.get("closeCookieModals", False),
             max_scroll_height=data.get("maxScrollHeightPixels", data.get("maxScrollHeight", 5000)),
             ignore_ssl_errors=data.get("ignoreSslErrors", False),
+            user_agent=data.get("userAgent", ""),
             # Crawl filtering
             globs=data.get("globs", []),
             excludes=data.get("excludes", []),

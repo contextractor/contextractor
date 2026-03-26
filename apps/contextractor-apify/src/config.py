@@ -54,7 +54,7 @@ def build_browser_launch_options(actor_input: dict[str, Any]) -> dict[str, Any]:
         Browser launch options for PlaywrightCrawler.
     """
     options: dict[str, Any] = {
-        'args': ['--disable-gpu'],
+        'args': ['--disable-gpu', '--disable-blink-features=AutomationControlled'],
     }
     if actor_input.get('ignoreSslErrors', False):
         options['ignore_https_errors'] = True

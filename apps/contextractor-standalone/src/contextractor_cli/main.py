@@ -50,7 +50,7 @@ def extract(
     output_format: Annotated[
         Optional[str],
         typer.Option("--format", "-f",
-                     help="Output format (txt, markdown, json, xml, xmltei)"),
+                     help="Output format (txt, markdown, json, jsonl, xml, xmltei)"),
     ] = None,
     # -- Proxy --
     proxy_urls: Annotated[
@@ -92,6 +92,10 @@ def extract(
     ignore_ssl_errors: Annotated[
         Optional[bool],
         typer.Option("--ignore-ssl-errors", help="Skip SSL certificate verification"),
+    ] = None,
+    user_agent: Annotated[
+        Optional[str],
+        typer.Option("--user-agent", help="Custom User-Agent string"),
     ] = None,
     # -- Crawl filtering --
     globs: Annotated[
@@ -252,6 +256,7 @@ def extract(
         "close_cookie_modals": close_cookie_modals,
         "max_scroll_height": max_scroll_height,
         "ignore_ssl_errors": ignore_ssl_errors,
+        "user_agent": user_agent,
         # Crawl filtering
         "globs": [g.strip() for g in globs.split(",")] if globs else None,
         "excludes": [e.strip() for e in excludes.split(",")] if excludes else None,
