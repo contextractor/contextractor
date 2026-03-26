@@ -197,6 +197,7 @@ All options go under the `extraction` key in config files, or use the equivalent
 | `withMetadata` | bool | true | Extract metadata (title, author, date) |
 | `targetLanguage` | string | null | Filter by language (e.g. `"en"`) |
 | `fast` | bool | false | Fast mode (less thorough) |
+| `pruneXpath` | array | null | XPath patterns to remove from content |
 
 ## Docker
 
