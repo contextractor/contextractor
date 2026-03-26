@@ -1,6 +1,6 @@
 [project]
 name = "contextractor-apify"
-version = "0.1.1"
+version = "0.3.1"
 requires-python = ">=3.12"
 dependencies = [
     "apify>=2.0.0,<4.0.0",
