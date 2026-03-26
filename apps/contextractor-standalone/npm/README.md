@@ -22,7 +22,7 @@ Works with zero config. Pass URLs directly, or use a config file for complex set
 
 ```bash
 contextractor https://example.com --precision --format json -o ./results
-contextractor --config config.yaml --max-pages 10
+contextractor --config config.json --max-pages 10
 ```
 
 ### CLI Options
@@ -31,7 +31,7 @@ contextractor --config config.yaml --max-pages 10
 contextractor [OPTIONS] [URLS...]
 
 Crawl Settings:
-  --config, -c          Path to YAML or JSON config file
+  --config, -c          Path to JSON config file
   --output-dir, -o      Output directory
   --format, -f          Output format (txt, markdown, json, jsonl, xml, xmltei)
   --max-pages           Max pages to crawl (0 = unlimited)
@@ -95,7 +95,7 @@ CLI flags override config file settings. Merge order: `defaults → config file 
 
 ### Config File (optional)
 
-Supports both JSON and YAML format. JSON examples shown below:
+Use a JSON config file to set options:
 
 ```json
 {
@@ -214,7 +214,7 @@ docker run -v ./output:/output ghcr.io/contextractor/contextractor https://examp
 Use a config file:
 
 ```bash
-docker run -v ./config.yaml:/config.yaml ghcr.io/contextractor/contextractor --config /config.yaml
+docker run -v ./config.json:/config.json ghcr.io/contextractor/contextractor --config /config.json
 ```
 
 All CLI flags work the same inside Docker.
