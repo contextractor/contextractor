@@ -25,6 +25,6 @@ run /Users/miroslavsekera/r/tools/apps/contextractor-site and using Claude  agen
 
 also, you will need to "import:contextractor-engine" at /Users/miroslavsekera/r/tools/package.json
 
-use free proxies to test it - see this ressearch /Users/miroslavsekera/r/contextractor/prompts/free-proxies-for-web-scraping-testing.md
+use free proxies for testing of all of it - see this ressearch /Users/miroslavsekera/r/contextractor/prompts/free-proxies-for-web-scraping-testing.md
 
 then publish everything - docker, apify actor, into npm js
