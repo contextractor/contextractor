@@ -1,6 +1,6 @@
 {
   "name": "contextractor",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Extract web content from URLs with configurable extraction options",
   "license": "MIT",
   "repository": {
