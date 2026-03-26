@@ -62,6 +62,30 @@ function getBinaryPath() {
  * @param {string} [options.targetLanguage] - Filter by language
  * @param {boolean} [options.withMetadata] - Extract metadata
  * @param {string|string[]} [options.pruneXpath] - XPath patterns to prune
+ * @param {string|string[]} [options.proxyUrls] - Proxy URLs
+ * @param {string} [options.proxyRotation] - Proxy rotation strategy
+ * @param {string} [options.launcher] - Browser engine (chromium, firefox)
+ * @param {string} [options.waitUntil] - Page load event (networkidle, load, domcontentloaded)
+ * @param {number} [options.pageLoadTimeout] - Page load timeout in seconds
+ * @param {boolean} [options.ignoreCors] - Disable CORS/CSP
+ * @param {boolean} [options.closeCookieModals] - Auto-dismiss cookie banners
+ * @param {number} [options.maxScrollHeight] - Max scroll height in pixels
+ * @param {boolean} [options.ignoreSslErrors] - Skip SSL verification
+ * @param {string|string[]} [options.globs] - Glob patterns to include
+ * @param {string|string[]} [options.excludes] - Glob patterns to exclude
+ * @param {string} [options.linkSelector] - CSS selector for links
+ * @param {boolean} [options.keepUrlFragments] - Preserve URL fragments
+ * @param {boolean} [options.respectRobotsTxt] - Honor robots.txt
+ * @param {object[]} [options.cookies] - Initial cookies array
+ * @param {object} [options.headers] - Custom HTTP headers
+ * @param {number} [options.maxConcurrency] - Max parallel requests
+ * @param {number} [options.maxRetries] - Max request retries
+ * @param {number} [options.maxResults] - Max results (0 = unlimited)
+ * @param {boolean} [options.saveRawHtml] - Save raw HTML
+ * @param {boolean} [options.saveText] - Save extracted text
+ * @param {boolean} [options.saveJson] - Save extracted JSON
+ * @param {boolean} [options.saveXml] - Save extracted XML
+ * @param {boolean} [options.saveXmlTei] - Save extracted XML-TEI
  * @param {boolean} [options.verbose] - Verbose logging
  * @param {string} [options.stdio] - stdio option for child process
  * @returns {Promise<void>}
@@ -93,6 +117,51 @@ function extract(urls, options = {}) {
     if (options.headless === false) args.push("--no-headless");
     if (options.outputDir) args.push("--output-dir", options.outputDir);
     if (options.format) args.push("--format", options.format);
+
+    // Proxy
+    if (options.proxyUrls) {
+      const proxyList = Array.isArray(options.proxyUrls) ? options.proxyUrls : [options.proxyUrls];
+      args.push("--proxy-urls", proxyList.join(","));
+    }
+    if (options.proxyRotation) args.push("--proxy-rotation", options.proxyRotation);
+
+    // Browser settings
+    if (options.launcher) args.push("--launcher", options.launcher);
+    if (options.waitUntil) args.push("--wait-until", options.waitUntil);
+    if (options.pageLoadTimeout != null) args.push("--page-load-timeout", String(options.pageLoadTimeout));
+    if (options.ignoreCors) args.push("--ignore-cors");
+    if (options.closeCookieModals) args.push("--close-cookie-modals");
+    if (options.maxScrollHeight != null) args.push("--max-scroll-height", String(options.maxScrollHeight));
+    if (options.ignoreSslErrors) args.push("--ignore-ssl-errors");
+
+    // Crawl filtering
+    if (options.globs) {
+      const globList = Array.isArray(options.globs) ? options.globs : [options.globs];
+      args.push("--globs", globList.join(","));
+    }
+    if (options.excludes) {
+      const excludeList = Array.isArray(options.excludes) ? options.excludes : [options.excludes];
+      args.push("--excludes", excludeList.join(","));
+    }
+    if (options.linkSelector) args.push("--link-selector", options.linkSelector);
+    if (options.keepUrlFragments) args.push("--keep-url-fragments");
+    if (options.respectRobotsTxt) args.push("--respect-robots-txt");
+
+    // Cookies & headers
+    if (options.cookies) args.push("--cookies", JSON.stringify(options.cookies));
+    if (options.headers) args.push("--headers", JSON.stringify(options.headers));
+
+    // Concurrency & retries
+    if (options.maxConcurrency != null) args.push("--max-concurrency", String(options.maxConcurrency));
+    if (options.maxRetries != null) args.push("--max-retries", String(options.maxRetries));
+    if (options.maxResults != null) args.push("--max-results", String(options.maxResults));
+
+    // Output toggles
+    if (options.saveRawHtml) args.push("--save-raw-html");
+    if (options.saveText) args.push("--save-text");
+    if (options.saveJson) args.push("--save-json");
+    if (options.saveXml) args.push("--save-xml");
+    if (options.saveXmlTei) args.push("--save-xml-tei");
 
     // Extraction options
     if (options.precision) args.push("--precision");

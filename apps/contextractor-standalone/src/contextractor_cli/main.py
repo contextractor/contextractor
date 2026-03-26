@@ -52,6 +52,111 @@ def extract(
         typer.Option("--format", "-f",
                      help="Output format (txt, markdown, json, xml, xmltei)"),
     ] = None,
+    # -- Proxy --
+    proxy_urls: Annotated[
+        Optional[str],
+        typer.Option("--proxy-urls",
+                     help="Comma-separated proxy URLs (http://user:pass@host:port)"),
+    ] = None,
+    proxy_rotation: Annotated[
+        Optional[str],
+        typer.Option("--proxy-rotation",
+                     help="Proxy rotation: recommended, per_request, until_failure"),
+    ] = None,
+    # -- Browser settings --
+    launcher: Annotated[
+        Optional[str],
+        typer.Option("--launcher", help="Browser engine: chromium, firefox"),
+    ] = None,
+    wait_until: Annotated[
+        Optional[str],
+        typer.Option("--wait-until",
+                     help="Page load event: networkidle, load, domcontentloaded"),
+    ] = None,
+    page_load_timeout: Annotated[
+        Optional[int],
+        typer.Option("--page-load-timeout", help="Page load timeout in seconds"),
+    ] = None,
+    ignore_cors: Annotated[
+        Optional[bool],
+        typer.Option("--ignore-cors", help="Disable CORS/CSP restrictions"),
+    ] = None,
+    close_cookie_modals: Annotated[
+        Optional[bool],
+        typer.Option("--close-cookie-modals", help="Auto-dismiss cookie banners"),
+    ] = None,
+    max_scroll_height: Annotated[
+        Optional[int],
+        typer.Option("--max-scroll-height", help="Max scroll height in pixels"),
+    ] = None,
+    ignore_ssl_errors: Annotated[
+        Optional[bool],
+        typer.Option("--ignore-ssl-errors", help="Skip SSL certificate verification"),
+    ] = None,
+    # -- Crawl filtering --
+    globs: Annotated[
+        Optional[str],
+        typer.Option("--globs", help="Comma-separated glob patterns to include"),
+    ] = None,
+    excludes: Annotated[
+        Optional[str],
+        typer.Option("--excludes", help="Comma-separated glob patterns to exclude"),
+    ] = None,
+    link_selector: Annotated[
+        Optional[str],
+        typer.Option("--link-selector", help="CSS selector for links to follow"),
+    ] = None,
+    keep_url_fragments: Annotated[
+        Optional[bool],
+        typer.Option("--keep-url-fragments", help="Preserve URL fragments"),
+    ] = None,
+    respect_robots_txt: Annotated[
+        Optional[bool],
+        typer.Option("--respect-robots-txt", help="Honor robots.txt"),
+    ] = None,
+    # -- Cookies & headers --
+    cookies: Annotated[
+        Optional[str],
+        typer.Option("--cookies", help="JSON array of cookie objects"),
+    ] = None,
+    headers: Annotated[
+        Optional[str],
+        typer.Option("--headers", help="JSON object of custom HTTP headers"),
+    ] = None,
+    # -- Concurrency & retries --
+    max_concurrency: Annotated[
+        Optional[int],
+        typer.Option("--max-concurrency", help="Max parallel requests"),
+    ] = None,
+    max_retries: Annotated[
+        Optional[int],
+        typer.Option("--max-retries", help="Max request retries"),
+    ] = None,
+    max_results: Annotated[
+        Optional[int],
+        typer.Option("--max-results", help="Max results per crawl (0 = unlimited)"),
+    ] = None,
+    # -- Output toggles --
+    save_raw_html: Annotated[
+        Optional[bool],
+        typer.Option("--save-raw-html", help="Save raw HTML to output"),
+    ] = None,
+    save_text: Annotated[
+        Optional[bool],
+        typer.Option("--save-text", help="Save extracted text"),
+    ] = None,
+    save_json: Annotated[
+        Optional[bool],
+        typer.Option("--save-json", help="Save extracted JSON"),
+    ] = None,
+    save_xml: Annotated[
+        Optional[bool],
+        typer.Option("--save-xml", help="Save extracted XML"),
+    ] = None,
+    save_xml_tei: Annotated[
+        Optional[bool],
+        typer.Option("--save-xml-tei", help="Save extracted XML-TEI"),
+    ] = None,
     # -- TrafilaturaConfig fields --
     precision: Annotated[
         Optional[bool],
@@ -110,6 +215,8 @@ def extract(
     ] = False,
 ) -> None:
     """Extract content from web pages."""
+    import json as json_mod
+
     # Set up logging
     log_level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(
@@ -134,6 +241,36 @@ def extract(
         "headless": headless,
         "output_dir": output_dir,
         "output_format": output_format,
+        # Proxy
+        "proxy_urls": [u.strip() for u in proxy_urls.split(",")] if proxy_urls else None,
+        "proxy_rotation": proxy_rotation,
+        # Browser
+        "launcher": launcher.lower() if launcher else None,
+        "wait_until": wait_until.lower() if wait_until else None,
+        "page_load_timeout": page_load_timeout,
+        "ignore_cors": ignore_cors,
+        "close_cookie_modals": close_cookie_modals,
+        "max_scroll_height": max_scroll_height,
+        "ignore_ssl_errors": ignore_ssl_errors,
+        # Crawl filtering
+        "globs": [g.strip() for g in globs.split(",")] if globs else None,
+        "excludes": [e.strip() for e in excludes.split(",")] if excludes else None,
+        "link_selector": link_selector,
+        "keep_url_fragments": keep_url_fragments,
+        "respect_robots_txt": respect_robots_txt,
+        # Cookies & headers
+        "cookies": json_mod.loads(cookies) if cookies else None,
+        "headers": json_mod.loads(headers) if headers else None,
+        # Concurrency & retries
+        "max_concurrency": max_concurrency,
+        "max_retries": max_retries,
+        "max_results": max_results,
+        # Output toggles
+        "save_raw_html": save_raw_html,
+        "save_text": save_text,
+        "save_json": save_json,
+        "save_xml": save_xml,
+        "save_xml_tei": save_xml_tei,
         # Extraction settings
         "fast": fast,
         "favor_precision": precision,

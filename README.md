@@ -30,13 +30,49 @@ contextractor --config config.yaml --max-pages 10
 ```
 contextractor [OPTIONS] [URLS...]
 
-Options:
+Crawl Settings:
   --config, -c          Path to YAML or JSON config file
   --output-dir, -o      Output directory
   --format, -f          Output format (txt, markdown, json, xml, xmltei)
   --max-pages           Max pages to crawl (0 = unlimited)
   --crawl-depth         Max link depth from start URLs (0 = start only)
   --headless/--no-headless  Browser headless mode (default: headless)
+  --max-concurrency     Max parallel requests (default: 50)
+  --max-retries         Max request retries (default: 3)
+  --max-results         Max results per crawl (0 = unlimited)
+
+Proxy:
+  --proxy-urls          Comma-separated proxy URLs (http://user:pass@host:port)
+  --proxy-rotation      Rotation: recommended, per_request, until_failure
+
+Browser:
+  --launcher            Browser engine: chromium, firefox (default: chromium)
+  --wait-until          Page load event: networkidle, load, domcontentloaded
+  --page-load-timeout   Timeout in seconds (default: 60)
+  --ignore-cors         Disable CORS/CSP restrictions
+  --close-cookie-modals Auto-dismiss cookie banners
+  --max-scroll-height   Max scroll height in pixels (default: 5000)
+  --ignore-ssl-errors   Skip SSL certificate verification
+
+Crawl Filtering:
+  --globs               Comma-separated glob patterns to include
+  --excludes            Comma-separated glob patterns to exclude
+  --link-selector       CSS selector for links to follow
+  --keep-url-fragments  Preserve URL fragments
+  --respect-robots-txt  Honor robots.txt
+
+Cookies & Headers:
+  --cookies             JSON array of cookie objects
+  --headers             JSON object of custom HTTP headers
+
+Output Toggles:
+  --save-raw-html       Save raw HTML to output
+  --save-text           Save extracted text
+  --save-json           Save extracted JSON
+  --save-xml            Save extracted XML
+  --save-xml-tei        Save extracted XML-TEI
+
+Content Extraction:
   --precision           High precision mode (less noise)
   --recall              High recall mode (more content)
   --fast                Fast extraction mode (less thorough)
@@ -49,6 +85,8 @@ Options:
   --target-language     Filter by language (e.g. "en")
   --with-metadata/--no-metadata  Extract metadata (default: with)
   --prune-xpath         XPath patterns to remove from content
+
+Diagnostics:
   --verbose, -v         Enable verbose logging
 ```
 
@@ -56,20 +94,28 @@ CLI flags override config file settings. Merge order: `defaults → config file 
 
 ### Config File (optional)
 
-```yaml
-urls:
-  - https://example.com
-  - https://docs.example.com
-outputFormat: markdown
-outputDir: ./output
-crawlDepth: 1
+Supports both JSON and YAML format. JSON examples shown below:
 
-extraction:
-  favorPrecision: true
-  includeLinks: true
-  includeTables: true
-  deduplicate: true
+```json
+{
+  "urls": ["https://example.com", "https://docs.example.com"],
+  "outputFormat": "markdown",
+  "outputDir": "./output",
+  "crawlDepth": 1,
+  "proxy": {
+    "urls": ["http://user:pass@host:port"],
+    "rotation": "recommended"
+  },
+  "extraction": {
+    "favorPrecision": true,
+    "includeLinks": true,
+    "includeTables": true,
+    "deduplicate": true
+  }
+}
 ```
+
+### Crawl Settings
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
@@ -79,9 +125,59 @@ extraction:
 | `outputDir` | string | `"./output"` | Directory for extracted content |
 | `crawlDepth` | int | 0 | How deep to follow links (0 = start URLs only) |
 | `headless` | bool | true | Browser headless mode |
-| `extraction` | object | `{}` | Trafilatura extraction options (see below) |
+| `maxConcurrency` | int | 50 | Max parallel browser pages |
+| `maxRetries` | int | 3 | Max retries for failed requests |
+| `maxResults` | int | 0 | Max results per crawl (0 = unlimited) |
 
-### Extraction Options
+### Proxy Configuration
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `proxy.urls` | array | `[]` | Proxy URLs (`http://user:pass@host:port` or `socks5://host:port`) |
+| `proxy.rotation` | string | `"recommended"` | `recommended`, `per_request`, `until_failure` |
+
+### Browser Settings
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `launcher` | string | `"chromium"` | Browser engine: `chromium`, `firefox` |
+| `waitUntil` | string | `"networkidle"` | Page load event: `networkidle`, `load`, `domcontentloaded` |
+| `pageLoadTimeout` | int | 60 | Page load timeout in seconds |
+| `ignoreCors` | bool | false | Disable CORS/CSP restrictions |
+| `closeCookieModals` | bool | false | Auto-dismiss cookie consent banners |
+| `maxScrollHeight` | int | 5000 | Max scroll height in pixels (0 = disable) |
+| `ignoreSslErrors` | bool | false | Skip SSL certificate verification |
+
+### Crawl Filtering
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `globs` | array | `[]` | Glob patterns for URLs to include |
+| `excludes` | array | `[]` | Glob patterns for URLs to exclude |
+| `linkSelector` | string | `""` | CSS selector for links to follow |
+| `keepUrlFragments` | bool | false | Treat URLs with different fragments as different pages |
+| `respectRobotsTxt` | bool | false | Honor robots.txt |
+
+### Cookies & Headers
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `cookies` | array | `[]` | Initial cookies (`[{"name": "...", "value": "...", "domain": "..."}]`) |
+| `headers` | object | `{}` | Custom HTTP headers (`{"Authorization": "Bearer token"}`) |
+
+### Output Toggles
+
+Save additional formats alongside the primary output:
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `saveRawHtml` | bool | false | Save raw HTML |
+| `saveText` | bool | false | Save extracted plain text |
+| `saveJson` | bool | false | Save extracted JSON |
+| `saveXml` | bool | false | Save extracted XML |
+| `saveXmlTei` | bool | false | Save extracted XML-TEI |
+
+### Content Extraction
 
 All options go under the `extraction` key in config files, or use the equivalent CLI flags:
 

@@ -20,6 +20,7 @@ _EXTRACTION_FIELDS = {f.name for f in dataclass_fields(TrafilaturaConfig)}
 class CrawlConfig:
     """Configuration for a crawl run."""
 
+    # Core
     urls: list[str] = field(default_factory=list)
     max_pages: int = 0
     output_format: str = "markdown"
@@ -27,6 +28,42 @@ class CrawlConfig:
     crawl_depth: int = 0
     headless: bool = True
     extraction: TrafilaturaConfig = field(default_factory=TrafilaturaConfig.balanced)
+
+    # Proxy
+    proxy_urls: list[str] = field(default_factory=list)
+    proxy_rotation: str = "recommended"
+
+    # Browser
+    launcher: str = "chromium"
+    wait_until: str = "networkidle"
+    page_load_timeout: int = 60
+    ignore_cors: bool = False
+    close_cookie_modals: bool = False
+    max_scroll_height: int = 5000
+    ignore_ssl_errors: bool = False
+
+    # Crawl filtering
+    globs: list[str] = field(default_factory=list)
+    excludes: list[str] = field(default_factory=list)
+    link_selector: str = ""
+    keep_url_fragments: bool = False
+    respect_robots_txt: bool = False
+
+    # Cookies & headers
+    cookies: list[dict[str, Any]] = field(default_factory=list)
+    headers: dict[str, str] = field(default_factory=dict)
+
+    # Concurrency & retries
+    max_concurrency: int = 50
+    max_retries: int = 3
+    max_results: int = 0
+
+    # Output toggles
+    save_raw_html: bool = False
+    save_text: bool = False
+    save_json: bool = False
+    save_xml: bool = False
+    save_xml_tei: bool = False
 
     @classmethod
     def from_file(cls, path: Path) -> CrawlConfig:
@@ -48,6 +85,16 @@ class CrawlConfig:
     def from_dict(cls, data: dict[str, Any]) -> CrawlConfig:
         """Create config from a dictionary."""
         extraction = TrafilaturaConfig.from_json_dict(data.get("extraction"))
+
+        # Parse proxy section (nested object or flat keys)
+        proxy_section = data.get("proxy", {})
+        proxy_urls = proxy_section.get("urls", []) if isinstance(proxy_section, dict) else []
+        proxy_rotation = proxy_section.get("rotation", "recommended") if isinstance(proxy_section, dict) else "recommended"
+
+        # Parse cookies/headers (can be nested or flat)
+        cookies = data.get("initialCookies", data.get("cookies", []))
+        headers = data.get("customHttpHeaders", data.get("headers", {}))
+
         return cls(
             urls=data.get("urls", []),
             max_pages=data.get("maxPages", 0),
@@ -56,6 +103,36 @@ class CrawlConfig:
             crawl_depth=data.get("crawlDepth", 0),
             headless=data.get("headless", True),
             extraction=extraction,
+            # Proxy
+            proxy_urls=proxy_urls,
+            proxy_rotation=proxy_rotation,
+            # Browser
+            launcher=data.get("launcher", "chromium").lower(),
+            wait_until=data.get("waitUntil", "networkidle").lower(),
+            page_load_timeout=data.get("pageLoadTimeoutSecs", data.get("pageLoadTimeout", 60)),
+            ignore_cors=data.get("ignoreCorsAndCsp", data.get("ignoreCors", False)),
+            close_cookie_modals=data.get("closeCookieModals", False),
+            max_scroll_height=data.get("maxScrollHeightPixels", data.get("maxScrollHeight", 5000)),
+            ignore_ssl_errors=data.get("ignoreSslErrors", False),
+            # Crawl filtering
+            globs=data.get("globs", []),
+            excludes=data.get("excludes", []),
+            link_selector=data.get("linkSelector", ""),
+            keep_url_fragments=data.get("keepUrlFragments", False),
+            respect_robots_txt=data.get("respectRobotsTxtFile", data.get("respectRobotsTxt", False)),
+            # Cookies & headers
+            cookies=cookies,
+            headers=headers,
+            # Concurrency & retries
+            max_concurrency=data.get("maxConcurrency", 50),
+            max_retries=data.get("maxRequestRetries", data.get("maxRetries", 3)),
+            max_results=data.get("maxResultsPerCrawl", data.get("maxResults", 0)),
+            # Output toggles
+            save_raw_html=data.get("saveRawHtml", False),
+            save_text=data.get("saveText", False),
+            save_json=data.get("saveJson", False),
+            save_xml=data.get("saveXml", False),
+            save_xml_tei=data.get("saveXmlTei", False),
         )
 
     def merge(self, overrides: dict[str, Any]) -> None:

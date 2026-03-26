@@ -81,17 +81,76 @@ Try the interactive web app at **[contextractor.com](https://contextractor.com)*
 
 ## Input
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `startUrls` (required) | URLs to extract content from |  |
-| `globs` | Glob patterns for URLs to include in crawling | `[]` |
-| `excludes` | Glob patterns for URLs to exclude | `[]` |
-| `trafilaturaConfig` | Extraction options object (e.g., `{"favorPrecision": true}`) | `{}` (balanced) |
-| `maxPagesPerCrawl` | Limit total pages crawled (0 = unlimited) | `0` |
-| `maxCrawlingDepth` | Limit link depth from start URLs | `0` |
-| `saveExtractedMarkdownToKeyValueStore` | Save Markdown to key-value store | `true` |
+### Crawl Settings
 
-See the full input schema for browser settings, proxy configuration, cookies, and custom headers.
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `startUrls` (required) | array | | URLs to extract content from |
+| `maxPagesPerCrawl` | int | 0 | Max pages to crawl (0 = unlimited) |
+| `maxCrawlingDepth` | int | 0 | Max link depth from start URLs |
+| `maxConcurrency` | int | 50 | Max parallel browser pages |
+| `maxRequestRetries` | int | 3 | Max retries for failed requests |
+| `maxResultsPerCrawl` | int | 0 | Max results (0 = unlimited) |
+
+### Proxy Configuration
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `proxyConfiguration` | object | | Proxy settings (use the Apify proxy editor) |
+| `proxyRotation` | string | `"RECOMMENDED"` | `RECOMMENDED`, `PER_REQUEST`, `UNTIL_FAILURE` |
+
+### Browser Settings
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `launcher` | string | `"CHROMIUM"` | Browser engine: `CHROMIUM`, `FIREFOX` |
+| `headless` | bool | true | Run browser in headless mode |
+| `waitUntil` | string | `"NETWORKIDLE"` | Page load event: `NETWORKIDLE`, `LOAD`, `DOMCONTENTLOADED` |
+| `pageLoadTimeoutSecs` | int | 60 | Page load timeout in seconds |
+| `ignoreCorsAndCsp` | bool | false | Disable CORS/CSP restrictions |
+| `closeCookieModals` | bool | false | Auto-dismiss cookie consent banners |
+| `maxScrollHeightPixels` | int | 5000 | Max scroll height in pixels (0 = disable) |
+| `ignoreSslErrors` | bool | false | Skip SSL certificate verification |
+
+### Crawl Filtering
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `globs` | array | `[]` | Glob patterns for URLs to include |
+| `excludes` | array | `[]` | Glob patterns for URLs to exclude |
+| `pseudoUrls` | array | `[]` | Pseudo-URLs to match (alternative to globs) |
+| `linkSelector` | string | `""` | CSS selector for links to follow |
+| `keepUrlFragments` | bool | false | Treat URLs with different fragments as different pages |
+| `respectRobotsTxtFile` | bool | false | Honor robots.txt |
+
+### Cookies & Headers
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `initialCookies` | array | `[]` | Initial cookies (JSON array of `{name, value, domain, path}`) |
+| `customHttpHeaders` | object | `{}` | Custom HTTP headers (`{"Authorization": "Bearer token"}`) |
+
+### Output Settings
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `saveExtractedMarkdownToKeyValueStore` | bool | true | Save Markdown to key-value store |
+| `saveRawHtmlToKeyValueStore` | bool | false | Save raw HTML |
+| `saveExtractedTextToKeyValueStore` | bool | false | Save plain text |
+| `saveExtractedJsonToKeyValueStore` | bool | false | Save JSON |
+| `saveExtractedXmlToKeyValueStore` | bool | false | Save XML |
+| `saveExtractedXmlTeiToKeyValueStore` | bool | false | Save XML-TEI |
+| `datasetName` | string | | Custom dataset name |
+| `keyValueStoreName` | string | | Custom key-value store name |
+| `requestQueueName` | string | | Custom request queue name |
+
+### Content Extraction
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `trafilaturaConfig` | object | `{}` | Extraction options (see below) |
+
+Trafilatura config keys: `favorPrecision`, `favorRecall`, `includeComments`, `includeTables`, `includeImages`, `includeFormatting`, `includeLinks`, `deduplicate`, `withMetadata`, `targetLanguage`, `fast`.
 
 ## Output
 
