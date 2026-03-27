@@ -231,3 +231,6 @@ One file per crawled page, named from the URL slug (e.g. `example-com-page.md`).
 ## License
 
 MIT
+
+## Docs version
+2026-03-27T19:26:33Z
