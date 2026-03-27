@@ -60,9 +60,9 @@ Unlike many extraction tools, Trafilatura has peer-reviewed academic backing. It
 
 - Results vary on galleries, catalogs, and link-heavy pages where main content is ambiguous [[3]](#3-trafilatura-a-python-package--command-line-tool-to-gather-text-on-the-web)
 
-## Web App
+## Playground
 
-Try the interactive web app at **[contextractor.com](https://contextractor.com)** to configure extraction settings, preview commands, and explore all options before running at scale.
+Try the [Playground](https://contextractor.com) to configure extraction settings and preview commands before running at scale.
 
 ## Features
 

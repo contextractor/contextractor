@@ -2,7 +2,9 @@
 
 Extract clean, readable content from any website using [Trafilatura](https://trafilatura.readthedocs.io/).
 
-Available as: [npm CLI](#install) | [Docker](#docker) | [Apify actor](https://apify.com/glueo/contextractor) | [Web app](https://contextractor.com)
+Available as: [npm CLI](#install) | [Docker](#docker) | [Apify actor](https://apify.com/glueo/contextractor)
+
+Try the [Playground](https://contextractor.com) to configure extraction settings and preview commands before running.
 
 ## Install
 
