@@ -22,10 +22,10 @@ docker build -t contextractor .
 
 ```bash
 # Test actor first
-apify push  # pushes to shortc/contextractor-test by default
+apify push  # pushes to glueo/contextractor-test by default
 
 # Production (only when explicitly confirmed)
-# apify push --production  (pushes to shortc/contextractor)
+# apify push --production  (pushes to glueo/contextractor)
 ```
 
 See CLAUDE.md production protection rules.

@@ -48,9 +48,9 @@
       "Edit(/Users/miroslavsekera/r/**)"
     ],
     "deny": [
-      "Bash(apify push*shortc/contextractor:*)",
-      "Bash(*--actor-id shortc/contextractor:*)",
-      "Bash(*shortc/contextractor --*)",
+      "Bash(apify push*glueo/contextractor:*)",
+      "Bash(*--actor-id glueo/contextractor:*)",
+      "Bash(*glueo/contextractor --*)",
       "Read(.env)",
       "Read(.env.*)",
       "Read(**/.env)",

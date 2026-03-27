@@ -40,7 +40,7 @@ Test proxy config and full config parity across Docker, npm CLI, and Apify Actor
 3. Test all extraction options
 
 ### Apify Actor (platform)
-1. Push to test actor: `apify push` (defaults to `shortc/contextractor-test`)
+1. Push to test actor: `apify push` (defaults to `glueo/contextractor-test`)
 2. Run on platform with Apify proxy
 3. Verify results in dataset
 

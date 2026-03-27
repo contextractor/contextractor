@@ -12,7 +12,7 @@ Publish contextractor to all distribution channels in sequence. Runs tests first
 ## Arguments
 
 `$ARGUMENTS` — optional flags:
-- `--production` — Push Apify actor to **production** (`shortc/contextractor`) instead of test (`shortc/contextractor-test`)
+- `--production` — Push Apify actor to **production** (`glueo/contextractor`) instead of test (`glueo/contextractor-test`)
 - `--skip-tests` — Skip the local test step (use when tests were already verified)
 - Version string (e.g. `0.4.0` or `v0.4.0`) — Use this version for npm/Docker release instead of auto-bumping
 
@@ -43,8 +43,8 @@ Push the Apify actor. This does NOT use the GitHub release workflow — it pushe
    ```
 
 3. Push to target:
-   - If `--production` in `$ARGUMENTS`: `cd apps/contextractor-apify && apify push shortc/contextractor`
-   - Otherwise: `cd apps/contextractor-apify && apify push shortc/contextractor-test`
+   - If `--production` in `$ARGUMENTS`: `cd apps/contextractor-apify && apify push glueo/contextractor`
+   - Otherwise: `cd apps/contextractor-apify && apify push glueo/contextractor-test`
 
 4. Wait for build to succeed (poll `apify builds ls` every 15s). If build fails, fetch log with `apify builds log <BUILD_ID>`, fix, and retry.
 

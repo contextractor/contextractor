@@ -38,8 +38,8 @@ Ask first:
 
 **Production Protection:**
 
-- By default, push to the test actor `shortc/contextractor-test`
-- Only push to production `shortc/contextractor` when explicitly requested with `--production` flag
+- By default, push to the test actor `glueo/contextractor-test`
+- Only push to production `glueo/contextractor` when explicitly requested with `--production` flag
 - Use `/platform:push-and-get-working --production` for production deployments
 
 ## Project Structure

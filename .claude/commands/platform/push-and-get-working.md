@@ -13,8 +13,8 @@ Automated workflow to push code directly to Apify platform, wait for build, fix 
 
 Check `$ARGUMENTS` for the target:
 
-- If `$ARGUMENTS` contains `--production` → Push to **production** actor `shortc/contextractor`
-- Otherwise → Push to **test** actor `shortc/contextractor-test` (default)
+- If `$ARGUMENTS` contains `--production` → Push to **production** actor `glueo/contextractor`
+- Otherwise → Push to **test** actor `glueo/contextractor-test` (default)
 
 Set the target actor ID based on the argument and use it consistently throughout the workflow.
 
@@ -81,10 +81,10 @@ Deploy directly to Apify platform from the actor directory:
 
 ```bash
 # If --production argument was provided:
-cd apps/contextractor-apify && apify push shortc/contextractor
+cd apps/contextractor-apify && apify push glueo/contextractor
 
 # Otherwise (default - test):
-cd apps/contextractor-apify && apify push shortc/contextractor-test
+cd apps/contextractor-apify && apify push glueo/contextractor-test
 ```
 
 This uploads source code and triggers a build on Apify infrastructure.
@@ -156,7 +156,7 @@ If **RUN FAILED**:
 ## Arguments
 
 $ARGUMENTS - Optional arguments:
-- `--production` - Push to production actor `shortc/contextractor` instead of test
+- `--production` - Push to production actor `glueo/contextractor` instead of test
 - `skip-validation` - Skip local validation step
 
 ## Error Type Reference
@@ -183,8 +183,8 @@ apify info
 apify login
 
 # Push to Apify from actor directory (triggers build)
-cd apps/contextractor-apify && apify push shortc/contextractor-test  # test
-cd apps/contextractor-apify && apify push shortc/contextractor       # production (with --production flag)
+cd apps/contextractor-apify && apify push glueo/contextractor-test  # test
+cd apps/contextractor-apify && apify push glueo/contextractor       # production (with --production flag)
 
 # List recent builds
 apify builds ls
