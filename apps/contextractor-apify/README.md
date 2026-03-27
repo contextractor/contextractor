@@ -150,7 +150,7 @@ Try the [Playground](https://contextractor.com) to configure extraction settings
 |-----------|------|---------|-------------|
 | `trafilaturaConfig` | object | `{}` | Extraction options (see below) |
 
-Trafilatura config keys: `favorPrecision`, `favorRecall`, `includeComments`, `includeTables`, `includeImages`, `includeFormatting`, `includeLinks`, `deduplicate`, `withMetadata`, `targetLanguage`, `fast`.
+Trafilatura config keys: `favorPrecision`, `favorRecall`, `includeComments`, `includeTables`, `includeImages`, `includeFormatting`, `includeLinks`, `deduplicate`, `withMetadata`, `targetLanguage`, `fast`, `pruneXpath`.
 
 ## Output
 
@@ -218,4 +218,4 @@ Barbaresi, Adrien (2021). [ACL Anthology](https://aclanthology.org/2021.acl-demo
 
 
 ## Docs version
-2026-03-26T20:50:54Z
+2026-03-27T20:04:49Z
