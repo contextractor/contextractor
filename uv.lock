@@ -268,7 +268,7 @@ wheels = [
 
 [[package]]
 name = "contextractor-apify"
-version = "0.1.1"
+version = "0.3.3"
 source = { editable = "apps/contextractor-apify" }
 dependencies = [
     { name = "apify" },
@@ -287,7 +287,7 @@ requires-dist = [
 
 [[package]]
 name = "contextractor-engine"
-version = "0.1.1"
+version = "0.3.3"
 source = { editable = "packages/contextractor_engine" }
 dependencies = [
     { name = "trafilatura" },
@@ -298,7 +298,7 @@ requires-dist = [{ name = "trafilatura", specifier = ">=2.0.0" }]
 
 [[package]]
 name = "contextractor-standalone"
-version = "0.2.1"
+version = "0.3.3"
 source = { editable = "apps/contextractor-standalone" }
 dependencies = [
     { name = "browserforge" },
@@ -319,7 +319,7 @@ requires-dist = [
 
 [[package]]
 name = "contextractor-workspace"
-version = "0.1.1"
+version = "0.3.3"
 source = { virtual = "." }
 
 [package.dev-dependencies]

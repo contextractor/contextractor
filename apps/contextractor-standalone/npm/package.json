@@ -46,5 +46,6 @@
   "cpu": [
     "x64",
     "arm64"
-  ]
+  ],
+  "playwrightVersion": "1.58.0"
 }

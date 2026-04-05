@@ -6,6 +6,7 @@ tools/platform-test-runner/test-suites-output/
 
 # Build artifacts
 apps/contextractor-standalone/npm/bin/
+apps/contextractor-standalone/npm/browsers/
 
 # Node.js
 node_modules/

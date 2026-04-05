@@ -39,6 +39,10 @@ function getBinaryPath() {
   return path.join(__dirname, "bin", getBinaryName());
 }
 
+function getBrowsersPath() {
+  return path.join(__dirname, "browsers");
+}
+
 /**
  * Extract content from web pages.
  *
@@ -195,6 +199,7 @@ function extract(urls, options = {}) {
 
     const child = spawn(getBinaryPath(), args, {
       stdio: options.stdio || "inherit",
+      env: { ...process.env, PLAYWRIGHT_BROWSERS_PATH: getBrowsersPath() },
     });
 
     child.on("error", reject);
@@ -205,4 +210,4 @@ function extract(urls, options = {}) {
   });
 }
 
-module.exports = { getBinaryPath, getBinaryName, extract };
+module.exports = { getBinaryPath, getBinaryName, getBrowsersPath, extract };

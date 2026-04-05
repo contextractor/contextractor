@@ -3,11 +3,12 @@
 "use strict";
 
 const { spawn } = require("child_process");
-const { getBinaryPath } = require("./index");
+const { getBinaryPath, getBrowsersPath } = require("./index");
 
 const binaryPath = getBinaryPath();
 const child = spawn(binaryPath, process.argv.slice(2), {
   stdio: "inherit",
+  env: { ...process.env, PLAYWRIGHT_BROWSERS_PATH: getBrowsersPath() },
 });
 
 child.on("error", (err) => {

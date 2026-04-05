@@ -132,6 +132,17 @@ jobs:
         run: npm version "${{ steps.version.outputs.version }}" --no-git-tag-version --allow-same-version
         working-directory: apps/contextractor-standalone/npm
 
+      - name: Sync Playwright version from uv.lock
+        run: |
+          PW_VERSION=$(grep -A1 '^name = "playwright"' uv.lock | grep 'version' | sed 's/.*"\(.*\)".*/\1/')
+          echo "Playwright version: $PW_VERSION"
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('apps/contextractor-standalone/npm/package.json', 'utf8'));
+            pkg.playwrightVersion = '$PW_VERSION';
+            fs.writeFileSync('apps/contextractor-standalone/npm/package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
       - name: Publish to npm
         run: npm publish --access public --provenance
         working-directory: apps/contextractor-standalone/npm
