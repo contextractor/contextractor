@@ -7,8 +7,6 @@ allowed-tools: Bash(*), Read(*), Edit(*), Write(*), Glob(*), Grep(*), Skill(*)
 
 Automated workflow to push code directly to Apify platform, wait for build, fix any build errors until the build succeeds, and then run a test crawl to verify the actor works.
 
-**IMPORTANT:** This is a fully automated workflow. Do NOT ask for confirmation at any step. Execute all steps automatically without pausing for user input.
-
 ## Target Actor Selection
 
 Check `$ARGUMENTS` for the target:
@@ -55,7 +53,7 @@ cat apps/contextractor-apify/.actor/actor.json | grep '"name"'
 apify info
 ```
 
-Proceed automatically with the push. Do NOT ask for confirmation - only stop if not logged in.
+Only stop if not logged in.
 
 ### 3. Check Git Integration
 

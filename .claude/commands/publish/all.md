@@ -7,8 +7,6 @@ allowed-tools: Bash(*), Read(*), Edit(*), Write(*), Glob(*), Grep(*), Skill(*)
 
 Publish contextractor to all distribution channels in sequence. Runs tests first, then publishes to each target.
 
-**IMPORTANT:** This is a fully automated workflow. Do NOT ask for confirmation at any step. Execute all steps automatically without pausing for user input.
-
 ## Arguments
 
 `$ARGUMENTS` — optional flags:
