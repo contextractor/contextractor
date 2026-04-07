@@ -72,7 +72,7 @@ function getBrowsersPath() {
  * @param {string} [options.waitUntil] - Page load event (networkidle, load, domcontentloaded)
  * @param {number} [options.pageLoadTimeout] - Page load timeout in seconds
  * @param {boolean} [options.ignoreCors] - Disable CORS/CSP
- * @param {boolean} [options.closeCookieModals] - Auto-dismiss cookie banners
+ * @param {boolean} [options.closeCookieModals=true] - Auto-dismiss cookie banners
  * @param {number} [options.maxScrollHeight] - Max scroll height in pixels
  * @param {boolean} [options.ignoreSslErrors] - Skip SSL verification
  * @param {string} [options.userAgent] - Custom User-Agent string

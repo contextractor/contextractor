@@ -41,6 +41,7 @@ def build_crawl_config(actor_input: dict[str, Any]) -> dict[str, Any]:
         'pseudo_urls': actor_input.get('pseudoUrls', []),
         'keep_url_fragments': actor_input.get('keepUrlFragments', False),
         'max_crawling_depth': actor_input.get('maxCrawlingDepth', 0),
+        'close_cookie_modals': actor_input.get('closeCookieModals', True),
     }
 
 
@@ -82,5 +83,9 @@ def build_browser_context_options(actor_input: dict[str, Any]) -> dict[str, Any]
     custom_headers = actor_input.get('customHttpHeaders', {})
     if custom_headers:
         options['extra_http_headers'] = custom_headers
+
+    user_agent = actor_input.get('userAgent', '')
+    if user_agent:
+        options['user_agent'] = user_agent
 
     return options if options else None

@@ -164,11 +164,25 @@ async def run_crawl(config: CrawlConfig) -> None:
             logger.info(f"Reached max results limit ({max_results}), skipping {url}")
             return
 
-        # Auto-dismiss cookie modals
+        # Auto-dismiss cookie modals (CMP-aware)
         if config.close_cookie_modals:
             try:
                 await context.page.evaluate("""
                     () => {
+                        // 1. Didomi CMP
+                        if (window.Didomi) {
+                            try { window.Didomi.setUserAgreeToAll(); return; } catch {}
+                        }
+                        // 2. OneTrust
+                        const onetrust = document.querySelector('#onetrust-accept-btn-handler');
+                        if (onetrust) { onetrust.click(); return; }
+                        // 3. CookieBot
+                        const cookiebot = document.querySelector('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll');
+                        if (cookiebot) { cookiebot.click(); return; }
+                        // 4. Quantcast / TCF
+                        const quantcast = document.querySelector('.qc-cmp2-summary-buttons button[mode="primary"]');
+                        if (quantcast) { quantcast.click(); return; }
+                        // 5. Generic fallback selectors
                         const selectors = [
                             '[class*="cookie"] button', '[id*="cookie"] button',
                             '[class*="consent"] button', '[id*="consent"] button',
@@ -176,10 +190,11 @@ async def run_crawl(config: CrawlConfig) -> None:
                         ];
                         for (const sel of selectors) {
                             const btn = document.querySelector(sel);
-                            if (btn) { btn.click(); break; }
+                            if (btn) { btn.click(); return; }
                         }
                     }
                 """)
+                await context.page.wait_for_timeout(1000)
             except Exception:
                 pass  # Best effort
 

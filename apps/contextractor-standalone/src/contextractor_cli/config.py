@@ -39,7 +39,7 @@ class CrawlConfig:
     wait_until: str = "load"
     page_load_timeout: int = 60
     ignore_cors: bool = False
-    close_cookie_modals: bool = False
+    close_cookie_modals: bool = True
     max_scroll_height: int = 5000
     ignore_ssl_errors: bool = False
     user_agent: str = ""
@@ -114,7 +114,7 @@ class CrawlConfig:
             wait_until=data.get("waitUntil", "load").lower(),
             page_load_timeout=data.get("pageLoadTimeoutSecs", data.get("pageLoadTimeout", 60)),
             ignore_cors=data.get("ignoreCorsAndCsp", data.get("ignoreCors", False)),
-            close_cookie_modals=data.get("closeCookieModals", False),
+            close_cookie_modals=data.get("closeCookieModals", True),
             max_scroll_height=data.get("maxScrollHeightPixels", data.get("maxScrollHeight", 5000)),
             ignore_ssl_errors=data.get("ignoreSslErrors", False),
             user_agent=data.get("userAgent", ""),

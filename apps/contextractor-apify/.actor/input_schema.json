@@ -223,7 +223,7 @@
             "title": "Close cookie modals",
             "type": "boolean",
             "description": "Automatically dismiss cookie consent modals",
-            "default": false
+            "default": true
         },
         "maxScrollHeightPixels": {
             "title": "Max scroll height",
@@ -232,6 +232,13 @@
             "default": 5000,
             "minimum": 0,
             "unit": "pixels"
+        },
+        "userAgent": {
+            "title": "User-Agent",
+            "type": "string",
+            "description": "Custom User-Agent string for the browser. Leave empty to use the default browser User-Agent.",
+            "editor": "textfield",
+            "default": ""
         },
         "ignoreSslErrors": {
             "title": "Ignore SSL errors",

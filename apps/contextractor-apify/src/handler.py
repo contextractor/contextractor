@@ -71,10 +71,43 @@ def create_request_handler(
                 lambda msg: Actor.log.info(f'[Browser] {msg.type}: {msg.text}'),
             )
 
+        # Auto-dismiss cookie modals (CMP-aware)
+        handler_config = context.request.user_data.get('config', {})
+        if handler_config.get('close_cookie_modals', True):
+            try:
+                await context.page.evaluate("""
+                    () => {
+                        // 1. Didomi CMP
+                        if (window.Didomi) {
+                            try { window.Didomi.setUserAgreeToAll(); return; } catch {}
+                        }
+                        // 2. OneTrust
+                        const onetrust = document.querySelector('#onetrust-accept-btn-handler');
+                        if (onetrust) { onetrust.click(); return; }
+                        // 3. CookieBot
+                        const cookiebot = document.querySelector('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll');
+                        if (cookiebot) { cookiebot.click(); return; }
+                        // 4. Quantcast / TCF
+                        const quantcast = document.querySelector('.qc-cmp2-summary-buttons button[mode="primary"]');
+                        if (quantcast) { quantcast.click(); return; }
+                        // 5. Generic fallback selectors
+                        const selectors = [
+                            '[class*="cookie"] button', '[id*="cookie"] button',
+                            '[class*="consent"] button', '[id*="consent"] button',
+                            'button[class*="accept"]', 'button[id*="accept"]',
+                        ];
+                        for (const sel of selectors) {
+                            const btn = document.querySelector(sel);
+                            if (btn) { btn.click(); return; }
+                        }
+                    }
+                """)
+                await context.page.wait_for_timeout(1000)
+            except Exception:
+                pass  # Best effort
+
         html = await context.page.content()
         key_base = hashlib.md5(url.encode()).hexdigest()[:16]
-
-        handler_config = context.request.user_data.get('config', {})
 
         # Build TrafilaturaConfig from raw dict
         trafilatura_config_raw = handler_config.get('trafilatura_config_raw', {})
