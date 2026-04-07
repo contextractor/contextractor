@@ -1,4 +1,4 @@
-"""Configuration loading from YAML/JSON files."""
+"""Configuration loading from JSON files (YAML also supported)."""
 
 from __future__ import annotations
 
@@ -69,7 +69,7 @@ class CrawlConfig:
 
     @classmethod
     def from_file(cls, path: Path) -> CrawlConfig:
-        """Load config from a YAML or JSON file."""
+        """Load config from a JSON (or YAML) file."""
         text = path.read_text(encoding="utf-8")
         if path.suffix in (".yaml", ".yml"):
             data = yaml.safe_load(text) or {}

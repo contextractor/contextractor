@@ -1,0 +1,13 @@
+{
+  "urls": ["https://example.com"],
+  "outputFormat": "markdown",
+  "outputDir": "./output",
+  "crawlDepth": 0,
+  "extraction": {
+    "favorPrecision": true,
+    "includeComments": false,
+    "includeLinks": true,
+    "includeTables": true,
+    "deduplicate": true
+  }
+}

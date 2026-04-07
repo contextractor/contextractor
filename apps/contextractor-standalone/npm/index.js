@@ -48,7 +48,7 @@ function getBrowsersPath() {
  *
  * @param {string|string[]} urls - URL(s) to extract, or a config file path for backward compat
  * @param {object} [options={}] - Extraction options
- * @param {string} [options.config] - Path to YAML/JSON config file
+ * @param {string} [options.config] - Path to JSON config file
  * @param {boolean} [options.precision] - High precision mode
  * @param {boolean} [options.recall] - High recall mode
  * @param {boolean} [options.fast] - Fast extraction mode

@@ -25,7 +25,7 @@ Input URLs → PlaywrightCrawler → ContentExtractor → KVS (blobs) + Dataset 
 
 ### Standalone CLI
 ```
-Config file (YAML/JSON) → PlaywrightCrawler → ContentExtractor → Output files (one per page)
+Config file (JSON) → PlaywrightCrawler → ContentExtractor → Output files (one per page)
 ```
 
 ### npm Distribution
@@ -73,7 +73,7 @@ contextractor https://example.com
 contextractor https://example.com --precision --format json -o ./results
 
 # With config file
-contextractor --config config.yaml --max-pages 10
+contextractor --config config.json --max-pages 10
 ```
 
 Config merge order: `defaults → config file (if provided) → CLI args`

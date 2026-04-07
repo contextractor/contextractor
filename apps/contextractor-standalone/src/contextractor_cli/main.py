@@ -27,7 +27,7 @@ def extract(
     # -- Config file --
     config: Annotated[
         Optional[Path],
-        typer.Option("--config", "-c", help="Path to YAML or JSON config file",
+        typer.Option("--config", "-c", help="Path to JSON config file",
                      exists=True, readable=True),
     ] = None,
     # -- CrawlConfig fields --

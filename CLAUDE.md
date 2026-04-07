@@ -63,6 +63,7 @@ CLAUDE.md                # AI agent instructions (this file)
 
 See `.claude/rules/` for behavior rules. Key rules:
 - **No confirmation prompts** — execute all steps without pausing; never ask "shall I proceed?"
+- **JSON config only** — all docs/help/examples use JSON for config files; never document YAML
 
 ## Active Skills
 

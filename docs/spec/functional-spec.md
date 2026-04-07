@@ -33,12 +33,12 @@ Works with zero config — just pass URLs directly:
 ```bash
 contextractor https://example.com
 contextractor https://example.com --precision --format json -o ./results
-contextractor --config config.yaml --max-pages 10
+contextractor --config config.json --max-pages 10
 ```
 
 | Option | Description |
 |--------|-------------|
-| `--config`, `-c` | Path to YAML or JSON config file (optional) |
+| `--config`, `-c` | Path to JSON config file (optional) |
 | `--output-dir`, `-o` | Output directory |
 | `--format`, `-f` | Output format (txt, markdown, json, xml, xmltei) |
 | `--max-pages` | Max pages to crawl (0 = unlimited) |
@@ -58,7 +58,7 @@ contextractor --config config.yaml --max-pages 10
 | `--prune-xpath` | XPath patterns to remove from content |
 | `--verbose`, `-v` | Enable verbose logging |
 
-### Config File (optional, YAML or JSON)
+### Config File (optional, JSON)
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
