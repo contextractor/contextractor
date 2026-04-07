@@ -59,6 +59,11 @@ Dockerfile               # Container image for Apify Actor
 CLAUDE.md                # AI agent instructions (this file)
 ```
 
+## Rules
+
+See `.claude/rules/` for behavior rules. Key rules:
+- **No confirmation prompts** — execute all steps without pausing; never ask "shall I proceed?"
+
 ## Active Skills
 
 When working in this project, these skills should be active:
