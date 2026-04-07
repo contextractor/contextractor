@@ -1,102 +1,140 @@
-# Fix cookie consent popups polluting extracted content
+# Fix popup blocking + make settings consistent across all deployments
 
 ## Problem
 
-Scraping idnes.cz via npm/Docker/standalone produces cookie consent popup text instead of page content.
-See `/Users/miroslavsekera/r/testing-contextractor/npm-test/output-multi/www-idnes-cz-ekonomika.md` — entire file is Didomi CMP consent text (47 lines of GDPR boilerplate, zero news content).
+1. Scraping idnes.cz produces cookie consent popup text instead of page content (Didomi CMP)
+2. Settings are inconsistent across the 3 deployment targets (Standalone CLI, Apify Actor, npm/Docker)
 
-## Root Cause
+## Part 1: Fix Cookie Consent Popup Blocking
 
-- idnes.cz uses Didomi CMP — shows a consent overlay on first visit, blocks real content
-- Trafilatura extracts popup DOM text instead of article content
-- `--close-cookie-modals` flag exists but is off by default and only has basic generic selectors that don't handle Didomi
+### Root Cause
 
-## What To Do
+- idnes.cz uses Didomi CMP — overlay blocks real content
+- `--close-cookie-modals` exists but is off by default, only has basic generic selectors
+- See broken output: `/Users/miroslavsekera/r/testing-contextractor/npm-test/output-multi/www-idnes-cz-ekonomika.md`
 
-### 1. Improve cookie dismiss JS and enable by default
+### Fix
 
 **Standalone** (`apps/contextractor-standalone/src/contextractor_cli/`):
 
-- `config.py:42` — change `close_cookie_modals: bool = False` to `True`
-- `config.py:117` — change `closeCookieModals` default from `False` to `True`
+- `config.py` — change `close_cookie_modals` default to `True` (both dataclass and `from_dict`)
 - `crawler.py:167-184` — replace JS dismiss with CMP-aware logic:
   1. Didomi: `window.Didomi?.setUserAgreeToAll()`
   2. OneTrust: click `#onetrust-accept-btn-handler`
   3. CookieBot: click `#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll`
   4. Quantcast/TCF: click `.qc-cmp2-summary-buttons button[mode="primary"]`
-  5. Generic fallback: `[class*="cookie"] button[class*="accept"]`, `[class*="consent"] button`, etc.
-- Add `await context.page.wait_for_timeout(1000)` after dismiss for page re-render
+  5. Generic fallback selectors
+- Add `await context.page.wait_for_timeout(1000)` after dismiss
 
 **Apify actor** (`apps/contextractor-apify/`):
 
-- `.actor/input_schema.json:222-227` — change `closeCookieModals` default from `false` to `true`
-- `src/config.py` — add `close_cookie_modals` to `build_crawl_config()` return dict
-- `src/handler.py` — add the same CMP-aware dismiss logic before `html = await context.page.content()` (line 74), reading `close_cookie_modals` from handler config. Currently the Apify actor has the schema field but never reads or uses it.
+- `.actor/input_schema.json` — change `closeCookieModals` default to `true`
+- `src/config.py` — add `close_cookie_modals` to `build_crawl_config()` (currently schema field exists but is never read)
+- `src/handler.py` — add same CMP-aware dismiss logic before `html = await context.page.content()` (line 74)
 
 **npm wrapper** (`apps/contextractor-standalone/npm/index.js`):
 
-- Update JSDoc: `closeCookieModals` default description to say default is true
+- Update JSDoc default for `closeCookieModals`
 
-### 2. Update tests
+**Didomi API ref:** `window.Didomi.setUserAgreeToAll()` — https://developers.didomi.io/cmp/web-sdk/reference/api
 
-- `tests/test_config.py:121` — if it asserts `close_cookie_modals is True`, keep it; if `False`, update
-- `tests/test_cli.py` — verify `--no-close-cookie-modals` flag still works (typer supports it via `--close-cookie-modals` option)
+## Part 2: Make ALL Settings Consistent Across Deployments
 
-### 3. Test on real pages
+Audit found these inconsistencies — fix them all:
 
-Test the fix locally with `uv run contextractor` before publishing:
+### Missing settings
+
+| Setting | Missing in | Action |
+|---|---|---|
+| `user_agent` | Apify actor | Add to input schema + `build_browser_context_options()` |
+| `close_cookie_modals` usage | Apify actor | Schema exists but code never reads it — wire it up |
+
+### Default value inconsistencies
+
+| Setting | CLI default | Apify default | Fix |
+|---|---|---|---|
+| `close_cookie_modals` | `False` → `True` | `false` → `true` | Change both |
+
+### Naming differences (acceptable, don't change — just document awareness)
+
+These are acceptable platform-specific conventions, do NOT rename:
+- Apify uses uppercase enums (`CHROMIUM`, `LOAD`) — converted to lowercase in code
+- Apify uses verbose keys (`maxRequestRetries`, `initialCookies`, `customHttpHeaders`)
+- Apify storage settings (`datasetName`, `keyValueStoreName`) are platform-specific
+
+### Unused schema fields
+
+| Field | Location | Action |
+|---|---|---|
+| `closeCookieModals` | Apify input schema | Wire it up in code (Part 1 covers this) |
+
+## Part 3: Test All Deployments
+
+### Local standalone test (before publishing)
 
 ```bash
-# Section page (was broken — showed popup text)
+# Section page (was broken)
 uv run contextractor https://www.idnes.cz/ekonomika --max-pages 1 -f markdown -o /tmp/test-popup
 
-# Actual article page
+# Article page
 uv run contextractor "https://www.idnes.cz/technet/vesmir/astronauti-v-orionu-vstoupili-do-sfery-lunarniho-vlivu-brzy-posunou-hranice-lidstva.A260406_082334_tec_vesmir_jan" --max-pages 1 -f markdown -o /tmp/test-article
 
 # Multi-page crawl
 uv run contextractor https://www.idnes.cz/ --max-pages 5 --crawl-depth 1 -f markdown -o /tmp/test-multi
+
+# Non-Czech site
+uv run contextractor https://www.bbc.com/news --max-pages 2 --crawl-depth 1 -f markdown -o /tmp/test-bbc
 ```
 
-Verify:
-- NO Didomi/consent popup text ("iDNES a reklama", "souhlas s reklamou", "Podrobné nastavení")
-- YES actual news content (headlines, article text)
-- `--no-close-cookie-modals` flag makes popup text reappear
+Verify for each:
+- NO popup/consent text in output
+- YES actual page content (headlines, article body)
+- `--no-close-cookie-modals` makes popup text reappear
 
 Run unit tests: `uv run pytest --ignore=tools/`
 
-### 4. Publish all three distribution channels
+### Publish all channels
 
-**npm** — needs a new release since the binary bundles the Python code:
-- Use `/git:release` to bump version, tag, push — triggers GitHub Actions
-- Actions builds binaries, publishes npm, builds+pushes Docker
-- After publish: `npm install contextractor@latest` in test folder, test on idnes.cz
+**npm + Docker** — via release workflow:
+- Use `/git:release` to bump version, tag, push
+- GitHub Actions builds binaries, publishes npm, pushes Docker to GHCR
 
-**Docker** — built and pushed by the same release workflow
-- After publish: `docker pull ghcr.io/contextractor/contextractor:latest && docker run --rm ghcr.io/contextractor/contextractor:latest https://www.idnes.cz/ekonomika --max-pages 1`
-
-**Apify actor** — push to test actor first:
+**Apify actor:**
 - `apify push glueo/contextractor-test`
-- Test on platform, verify output
-- Only push to `glueo/contextractor` production if explicitly asked
+- Test on platform
+- Only push to production `glueo/contextractor` when explicitly asked with `--production`
 
-### 5. Final verification
+### Post-publish verification on each channel
 
-After all publishes, verify each channel produces clean content (no popup text) from idnes.cz.
+**npm:**
+```bash
+cd /Users/miroslavsekera/r/testing-contextractor/npm-test
+npm install contextractor@latest
+npx contextractor https://www.idnes.cz/ekonomika --max-pages 1 -f markdown -o ./test-npm
+npx contextractor "https://www.idnes.cz/technet/vesmir/astronauti-v-orionu-vstoupili-do-sfery-lunarniho-vlivu-brzy-posunou-hranice-lidstva.A260406_082334_tec_vesmir_jan" --max-pages 1 -f markdown -o ./test-npm-article
+```
+
+**Docker:**
+```bash
+docker pull ghcr.io/contextractor/contextractor:latest
+docker run --rm ghcr.io/contextractor/contextractor:latest https://www.idnes.cz/ekonomika --max-pages 1
+docker run --rm ghcr.io/contextractor/contextractor:latest "https://www.idnes.cz/technet/vesmir/astronauti-v-orionu-vstoupili-do-sfery-lunarniho-vlivu-brzy-posunou-hranice-lidstva.A260406_082334_tec_vesmir_jan" --max-pages 1
+```
+
+**Apify actor:**
+- Run test actor on platform with idnes.cz URLs
+- Verify dataset output has real content
+
+For ALL channels verify: no popup text, real content extracted, multiple pages work.
 
 ## Key Files
 
 | File | What to change |
 |---|---|
 | `apps/contextractor-standalone/src/contextractor_cli/config.py` | Default `close_cookie_modals = True` |
-| `apps/contextractor-standalone/src/contextractor_cli/crawler.py` | CMP-aware JS dismiss + wait |
-| `apps/contextractor-apify/.actor/input_schema.json` | Default `closeCookieModals: true` |
-| `apps/contextractor-apify/src/config.py` | Read and pass `closeCookieModals` |
+| `apps/contextractor-standalone/src/contextractor_cli/crawler.py` | CMP-aware JS dismiss + 1s wait |
+| `apps/contextractor-apify/.actor/input_schema.json` | Default `closeCookieModals: true`, add `userAgent` |
+| `apps/contextractor-apify/src/config.py` | Read `closeCookieModals`, `userAgent` |
 | `apps/contextractor-apify/src/handler.py` | Add dismiss logic before extraction |
-| `apps/contextractor-standalone/npm/index.js` | Update JSDoc default |
-
-## Research Notes
-
-- Didomi API: `window.Didomi.setUserAgreeToAll()` — https://developers.didomi.io/cmp/web-sdk/reference/api
-- IDCAC extension is unmaintained since Nov 2023, not recommended
-- Crawlee JS has a `closeCookieModals` context helper (PR #1927) but Python Crawlee does not
-- Apify blog on approach: https://blog.apify.com/how-to-block-cookie-modals/
+| `apps/contextractor-standalone/npm/index.js` | Update JSDoc defaults |
+| `apps/contextractor-standalone/tests/test_config.py` | Update default assertions |
