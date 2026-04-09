@@ -1,5 +1,9 @@
 FROM mcr.microsoft.com/playwright/python:v1.50.0-noble
 
+LABEL org.opencontainers.image.source="https://github.com/contextractor/contextractor"
+LABEL org.opencontainers.image.description="Extract clean, readable content from any website"
+LABEL org.opencontainers.image.licenses="MIT"
+
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
