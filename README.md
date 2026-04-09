@@ -148,7 +148,7 @@ Use a JSON config file to set options:
 | `waitUntil` | string | `"load"` | Page load event: `load`, `networkidle`, `domcontentloaded` |
 | `pageLoadTimeout` | int | 60 | Page load timeout in seconds |
 | `ignoreCors` | bool | false | Disable CORS/CSP restrictions |
-| `closeCookieModals` | bool | false | Auto-dismiss cookie consent banners |
+| `closeCookieModals` | bool | true | Auto-dismiss cookie consent banners |
 | `maxScrollHeight` | int | 5000 | Max scroll height in pixels (0 = disable) |
 | `ignoreSslErrors` | bool | false | Skip SSL certificate verification |
 | `userAgent` | string | `""` | Custom User-Agent string |
@@ -235,4 +235,4 @@ One file per crawled page, named from the URL slug (e.g. `example-com-page.md`).
 MIT
 
 ## Docs version
-2026-03-27T20:04:49Z
+2026-04-09T09:18:45Z

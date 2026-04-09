@@ -4,10 +4,10 @@
 
 Contextractor crawls websites and extracts clean, readable content using Trafilatura. Available as:
 
-1. **Apify Actor** — cloud platform, content stored in Key-Value Store + Dataset
-2. **Standalone CLI** — local tool, content saved as files to disk
-3. **npm package** (`contextractor`) — installs the CLI via npm/npx
-4. **Docker** — `docker run ghcr.io/contextractor/contextractor https://example.com`
+1. **Standalone CLI** — local tool via npm/pipx, content saved as files to disk
+2. **Docker** — `docker run ghcr.io/contextractor/contextractor https://example.com`
+3. **Apify Actor** — cloud platform, content stored in Key-Value Store + Dataset
+4. **Web Playground** ([contextractor.com](https://contextractor.com)) — configure extraction settings, preview results, and generate CLI/Docker/Apify commands
 
 ---
 

@@ -148,7 +148,7 @@ Use a JSON config file to set options:
 | `waitUntil` | string | `"load"` | Page load event: `load`, `networkidle`, `domcontentloaded` |
 | `pageLoadTimeout` | int | 60 | Page load timeout in seconds |
 | `ignoreCors` | bool | false | Disable CORS/CSP restrictions |
-| `closeCookieModals` | bool | false | Auto-dismiss cookie consent banners |
+| `closeCookieModals` | bool | true | Auto-dismiss cookie consent banners |
 | `maxScrollHeight` | int | 5000 | Max scroll height in pixels (0 = disable) |
 | `ignoreSslErrors` | bool | false | Skip SSL certificate verification |
 | `userAgent` | string | `""` | Custom User-Agent string |

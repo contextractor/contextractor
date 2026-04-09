@@ -108,8 +108,9 @@ Try the [Playground](https://contextractor.com) to configure extraction settings
 | `waitUntil` | string | `"LOAD"` | Page load event: `LOAD`, `NETWORKIDLE`, `DOMCONTENTLOADED` |
 | `pageLoadTimeoutSecs` | int | 60 | Page load timeout in seconds |
 | `ignoreCorsAndCsp` | bool | false | Disable CORS/CSP restrictions |
-| `closeCookieModals` | bool | false | Auto-dismiss cookie consent banners |
+| `closeCookieModals` | bool | true | Auto-dismiss cookie consent banners |
 | `maxScrollHeightPixels` | int | 5000 | Max scroll height in pixels (0 = disable) |
+| `userAgent` | string | `""` | Custom User-Agent string |
 | `ignoreSslErrors` | bool | false | Skip SSL certificate verification |
 
 ### Crawl Filtering
@@ -218,4 +219,4 @@ Barbaresi, Adrien (2021). [ACL Anthology](https://aclanthology.org/2021.acl-demo
 
 
 ## Docs version
-2026-03-27T20:04:49Z
+2026-04-09T09:18:45Z
