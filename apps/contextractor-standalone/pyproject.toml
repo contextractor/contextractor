@@ -2,6 +2,7 @@
 name = "contextractor-standalone"
 version = "0.3.5"
 description = "Standalone CLI for web content extraction"
+license = "Apache-2.0"
 requires-python = ">=3.12"
 dependencies = [
     "crawlee[playwright]>=0.4.0",

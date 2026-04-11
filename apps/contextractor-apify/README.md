@@ -218,5 +218,9 @@ AWS Machine Learning Blog. [Amazon Web Services](https://aws.amazon.com/blogs/ma
 Barbaresi, Adrien (2021). [ACL Anthology](https://aclanthology.org/2021.acl-demo.15/)
 
 
+## License
+
+Apache-2.0
+
 ## Docs version
 2026-04-09T09:18:45Z

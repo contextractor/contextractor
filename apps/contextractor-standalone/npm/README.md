@@ -232,4 +232,4 @@ One file per crawled page, named from the URL slug (e.g. `example-com-page.md`).
 
 ## License
 
-MIT
+Apache-2.0

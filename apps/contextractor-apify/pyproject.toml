@@ -1,6 +1,7 @@
 [project]
 name = "contextractor-apify"
 version = "0.3.5"
+license = "Apache-2.0"
 requires-python = ">=3.12"
 dependencies = [
     "apify>=2.0.0,<4.0.0",
