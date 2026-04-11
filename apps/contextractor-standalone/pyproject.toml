@@ -6,24 +6,21 @@ license = "Apache-2.0"
 requires-python = ">=3.12"
 readme = "README.md"
 authors = [{ name = "Miroslav Sekera", email = "miroslav@glueo.com" }]
-
-[project.urls]
-Homepage = "https://contextractor.com"
-Repository = "https://github.com/contextractor/contextractor"
-Issues = "https://github.com/contextractor/contextractor/issues"
 dependencies = [
     "crawlee[playwright]>=0.4.0",
-    "contextractor-engine",
+    "trafilatura>=2.0.0",
     "typer>=0.15.0",
     "pyyaml>=6.0",
     "browserforge<1.2.4",
 ]
 
+[project.urls]
+Homepage = "https://contextractor.com"
+Repository = "https://github.com/contextractor/contextractor"
+Issues = "https://github.com/contextractor/contextractor/issues"
+
 [project.scripts]
 contextractor = "contextractor_cli.main:app"
-
-[tool.uv.sources]
-contextractor-engine = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]
@@ -31,3 +28,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/contextractor_cli"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"../../packages/contextractor_engine/src/contextractor_engine" = "contextractor_engine"

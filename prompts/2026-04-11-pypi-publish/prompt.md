@@ -1,32 +1,37 @@
-# Publish contextractor packages to PyPI
+# Publish contextractor to PyPI
 
 ## Goal
 
-Add PyPI publishing to the release workflow — version sync from release tag, OIDC trusted publishing (no stored tokens), two packages per release:
+Add PyPI publishing to the release workflow — single `contextractor` package with engine bundled inside the wheel. Uses OIDC trusted publishing (no stored tokens).
 
-| PyPI package | Source | Audience |
+| PyPI package | Source | Contents |
 |---|---|---|
-| `contextractor-engine` | `packages/contextractor_engine/` | library |
-| `contextractor` | `apps/contextractor-standalone/` | CLI |
+| `contextractor` | `apps/contextractor-standalone/` | CLI + engine (bundled via force-include) |
 
-## Part 1: Rename standalone package for PyPI
+## Part 1: Package name and metadata
 
-`apps/contextractor-standalone/pyproject.toml` currently has `name = "contextractor-standalone"`, which publishes as `contextractor-standalone` on PyPI. Change to `name = "contextractor"` so the CLI installs as `pip install contextractor`.
+`apps/contextractor-standalone/pyproject.toml` must have `name = "contextractor"` (not `contextractor-standalone`).
 
-After renaming, run `uv lock` to update the lockfile.
-
-## Part 2: Verify `pyproject.toml` metadata
-
-PyPI rejects packages with missing required fields. Check both package `pyproject.toml` files and add if missing:
-
-**Both packages need:**
+Required metadata:
 - `authors = [{ name = "...", email = "..." }]`
 - `readme = "README.md"`
 - `[project.urls]` with `Homepage`, `Repository`, `Issues`
 
-Create `packages/contextractor_engine/README.md` if it doesn't exist — PyPI requires it when `readme` is declared.
+Engine code is bundled via hatch force-include — no separate `contextractor-engine` package on PyPI:
 
-## Part 3: Add `publish-pypi` job to `.github/workflows/release.yml`
+```toml
+[tool.hatch.build.targets.wheel]
+packages = ["src/contextractor_cli"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"../../packages/contextractor_engine/src/contextractor_engine" = "contextractor_engine"
+```
+
+The `contextractor-engine` dependency should be removed from `[project] dependencies` (replaced by `trafilatura>=2.0.0` directly). The workspace `[tool.uv.sources]` section is also removed since the engine is no longer a declared dependency.
+
+After changes, run `uv lock` to update the lockfile.
+
+## Part 2: Add `publish-pypi` job to `.github/workflows/release.yml`
 
 Add one job depending on `release` (same as `publish-npm` and `publish-docker`).
 
@@ -49,44 +54,38 @@ publish-pypi:
         VERSION="${VERSION#v}"
         echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-    - name: Set package versions
-      run: |
-        uv version --package contextractor-engine --frozen ${{ steps.version.outputs.version }}
-        uv version --package contextractor --frozen ${{ steps.version.outputs.version }}
+    - name: Set package version
+      run: uv version --package contextractor --frozen ${{ steps.version.outputs.version }}
 
-    - name: Build packages
-      run: |
-        uv build --package contextractor-engine --out-dir dist/
-        uv build --package contextractor --out-dir dist/
+    - name: Build wheel
+      run: uv build --package contextractor --wheel --out-dir dist/
 
     - name: Publish to PyPI
       run: uv publish dist/*
 ```
 
-`--frozen` on `uv version` prevents re-locking in CI. `uv publish` auto-detects OIDC from `id-token: write`.
+`--frozen` on `uv version` prevents re-locking in CI. `--wheel` is required because force-include paths are relative to the checkout and don't survive sdist extraction. `uv publish` auto-detects OIDC from `id-token: write`.
 
-## Part 4: Configure trusted publishing on PyPI
+## Part 3: Configure trusted publishing on PyPI
 
 Manual steps — must be done in the PyPI web UI before the first release. Add instructions to `docs/pypi-trusted-publishing.md`.
 
-Register both packages as pending trusted publishers at https://pypi.org/manage/account/publishing/:
+Register one pending publisher at https://pypi.org/manage/account/publishing/:
 
-| Field | `contextractor-engine` | `contextractor` |
-|---|---|---|
-| PyPI project name | `contextractor-engine` | `contextractor` |
-| GitHub owner | `contextractor` | `contextractor` |
-| Repository | `contextractor` | `contextractor` |
-| Workflow filename | `release.yml` | `release.yml` |
-| Environment | `pypi` | `pypi` |
+| Field | Value |
+|---|---|
+| PyPI project name | `contextractor` |
+| GitHub owner | `contextractor` |
+| Repository | `contextractor` |
+| Workflow filename | `release.yml` |
+| Environment | `pypi` |
 
-Also create a `pypi` environment in GitHub repo settings (`Settings → Environments → New environment`). No secrets needed.
+Also create a `pypi` environment in GitHub repo settings (`Settings > Environments > New environment`). No secrets needed.
 
 ## Key files
 
 | File | Change |
 |---|---|
-| `apps/contextractor-standalone/pyproject.toml` | Rename to `contextractor`, add metadata |
-| `packages/contextractor_engine/pyproject.toml` | Add metadata fields |
-| `packages/contextractor_engine/README.md` | Create if missing |
-| `.github/workflows/release.yml` | Add `publish-pypi` job |
+| `apps/contextractor-standalone/pyproject.toml` | Rename to `contextractor`, add metadata, force-include engine, remove engine dep |
+| `.github/workflows/release.yml` | Add `publish-pypi` job (single package, wheel only) |
 | `docs/pypi-trusted-publishing.md` | New — manual setup instructions |

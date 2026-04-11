@@ -53,7 +53,7 @@ Push the Apify actor. This does NOT use the GitHub release workflow — it pushe
 
 ## Step 2: Release npm + Docker + PyPI via GitHub Actions
 
-This uses the existing `/git:release` workflow which triggers GitHub Actions to build cross-platform binaries, publish to npm, push Docker image to GHCR, and publish PyPI packages (`contextractor-engine` and `contextractor`).
+This uses the existing `/git:release` workflow which triggers GitHub Actions to build cross-platform binaries, publish to npm, push Docker image to GHCR, and publish `contextractor` to PyPI (engine bundled in wheel).
 
 1. Determine version:
    - If a version string is in `$ARGUMENTS`, use it
@@ -79,17 +79,17 @@ This uses the existing `/git:release` workflow which triggers GitHub Actions to 
    - Creates GitHub Release with binaries
    - Publishes npm package to registry
    - Builds and pushes Docker image to `ghcr.io/contextractor/contextractor`
-   - Publishes PyPI packages (`contextractor-engine` and `contextractor`) via OIDC trusted publishing
+   - Publishes `contextractor` to PyPI via OIDC trusted publishing (engine bundled in wheel)
 
 5. Report URLs:
    - GitHub Actions: `https://github.com/contextractor/contextractor/actions`
    - npm: `https://www.npmjs.com/package/contextractor`
    - Docker: `ghcr.io/contextractor/contextractor:X.Y.Z`
-   - PyPI: `https://pypi.org/project/contextractor-engine/` and `https://pypi.org/project/contextractor/`
+   - PyPI: `https://pypi.org/project/contextractor/`
 
 ## Success Criteria
 
 - Apify actor build succeeded and test crawl produced output
 - GitHub Release workflow triggered (tag pushed)
 - All version files in sync
-- PyPI packages published (`contextractor-engine` and `contextractor`)
+- PyPI package published (`contextractor`)

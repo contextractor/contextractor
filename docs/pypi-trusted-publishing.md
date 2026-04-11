@@ -2,23 +2,11 @@
 
 One-time manual setup required before the first release that publishes to PyPI.
 
-Users install with `pip install contextractor` — this pulls in `contextractor-engine` as a dependency automatically. Both packages must be registered on PyPI, but only `contextractor` is user-facing.
+Only the `contextractor` package is published — the engine code is bundled inside the wheel.
 
-## 1. Register pending publishers on PyPI
+## 1. Register pending publisher on PyPI
 
-Go to https://pypi.org/manage/account/publishing/ and add two pending publishers:
-
-### contextractor-engine (internal dependency)
-
-| Field | Value |
-|---|---|
-| PyPI project name | `contextractor-engine` |
-| GitHub owner | `contextractor` |
-| Repository | `contextractor` |
-| Workflow filename | `release.yml` |
-| Environment | `pypi` |
-
-### contextractor (user-facing CLI)
+Go to https://pypi.org/manage/account/publishing/ and add one pending publisher:
 
 | Field | Value |
 |---|---|
