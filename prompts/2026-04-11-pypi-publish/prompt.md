@@ -88,7 +88,7 @@ The published CLI package name on PyPI is `contextractor` (from `[project] name`
 PyPI rejects packages with missing required fields. Check both package `pyproject.toml` files and add if missing:
 
 **Both packages need:**
-- `license = "MIT"`
+- `license = "Apache-2.0"`
 - `authors = [{ name = "...", email = "..." }]`
 - `readme = "README.md"`
 - `[project.urls]` with `Homepage`, `Repository`, `Issues`
