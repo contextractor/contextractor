@@ -1,5 +1,5 @@
 ---
-description: Publish everything: Apify actor (test), npm standalone (prod), Docker standalone (prod)
+description: Publish everything: Apify actor (test), npm standalone (prod), Docker standalone (prod), PyPI packages (prod)
 allowed-tools: Bash(*), Read(*), Edit(*), Write(*), Glob(*), Grep(*), Skill(*)
 ---
 
@@ -51,9 +51,9 @@ Push the Apify actor. This does NOT use the GitHub release workflow — it pushe
    apify call <TARGET_ACTOR> --input '{"startUrls": [{"url": "https://en.wikipedia.org/wiki/List_of_sovereign_states"}], "maxPagesPerCrawl": 1}'
    ```
 
-## Step 2: Release npm + Docker via GitHub Actions
+## Step 2: Release npm + Docker + PyPI via GitHub Actions
 
-This uses the existing `/git:release` workflow which triggers GitHub Actions to build cross-platform binaries, publish to npm, and push Docker image to GHCR.
+This uses the existing `/git:release` workflow which triggers GitHub Actions to build cross-platform binaries, publish to npm, push Docker image to GHCR, and publish PyPI packages (`contextractor-engine` and `contextractor`).
 
 1. Determine version:
    - If a version string is in `$ARGUMENTS`, use it
@@ -79,14 +79,17 @@ This uses the existing `/git:release` workflow which triggers GitHub Actions to 
    - Creates GitHub Release with binaries
    - Publishes npm package to registry
    - Builds and pushes Docker image to `ghcr.io/contextractor/contextractor`
+   - Publishes PyPI packages (`contextractor-engine` and `contextractor`) via OIDC trusted publishing
 
 5. Report URLs:
    - GitHub Actions: `https://github.com/contextractor/contextractor/actions`
    - npm: `https://www.npmjs.com/package/contextractor`
    - Docker: `ghcr.io/contextractor/contextractor:X.Y.Z`
+   - PyPI: `https://pypi.org/project/contextractor-engine/` and `https://pypi.org/project/contextractor/`
 
 ## Success Criteria
 
 - Apify actor build succeeded and test crawl produced output
 - GitHub Release workflow triggered (tag pushed)
 - All version files in sync
+- PyPI packages published (`contextractor-engine` and `contextractor`)
