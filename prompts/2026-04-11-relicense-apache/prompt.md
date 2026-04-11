@@ -2,52 +2,46 @@
 
 ## Goal
 
-Replace the MIT license with Apache 2.0 across all packages, metadata, and documentation. Then run the sync commands to propagate the change through READMEs and verify internal consistency.
+Replace MIT with Apache 2.0 across all packages, metadata, documentation, and container labels.
 
 ## Part 1: Replace LICENSE file
 
-Replace `/Users/miroslavsekera/r/contextractor/LICENSE` with the canonical Apache 2.0 text from https://www.apache.org/licenses/LICENSE-2.0.txt — keep `Copyright (c) 2026 contextractor` as the copyright line.
+Replace `/Users/miroslavsekera/r/contextractor/LICENSE` with the canonical Apache 2.0 text from https://www.apache.org/licenses/LICENSE-2.0.txt — no copyright line in this file (Apache 2.0 puts copyright in NOTICE, not LICENSE).
 
-## Part 2: Add NOTICE file
+## Part 2: Create NOTICE file
 
 Create `/Users/miroslavsekera/r/contextractor/NOTICE`:
 
 ```
-contextractor
-Copyright 2026 contextractor
+Contextractor
+Copyright 2026 Glueo, s.r.o.
 ```
 
 ## Part 3: Update pyproject.toml license fields
 
-Add `license = "Apache-2.0"` to the `[project]` section of each package that is missing it:
+Add `license = "Apache-2.0"` to the `[project]` section of all four packages:
 
+- `pyproject.toml` (workspace root)
 - `packages/contextractor_engine/pyproject.toml`
 - `apps/contextractor-standalone/pyproject.toml`
 - `apps/contextractor-apify/pyproject.toml`
 
 ## Part 4: Update npm package
 
-In `apps/contextractor-standalone/npm/package.json`, change:
+In `apps/contextractor-standalone/npm/package.json`, change `"license": "MIT"` to `"license": "Apache-2.0"`.
 
-```json
-"license": "MIT"
-```
+## Part 5: Update Dockerfile label
 
-to:
+In `apps/contextractor-standalone/Dockerfile`, change the OCI license label from `"MIT"` to `"Apache-2.0"`.
 
-```json
-"license": "Apache-2.0"
-```
+## Part 6: Update all license mentions in documentation
 
-## Part 5: Update all license mentions in documentation
-
-Find every occurrence of `MIT` used as a license reference (not package names) across:
+Replace `MIT` with `Apache-2.0` in the `## License` section of:
 
 - `README.md` (root)
 - `apps/contextractor-standalone/npm/README.md`
-- `apps/contextractor-apify/README.md`
 
-Replace with `Apache-2.0`. The `## License` section in each README should read:
+Add a `## License` section to `apps/contextractor-apify/README.md` (currently missing):
 
 ```
 ## License
@@ -55,37 +49,31 @@ Replace with `Apache-2.0`. The `## License` section in each README should read:
 Apache-2.0
 ```
 
-## Part 6: Sync docs
-
-Run the sync/docs command: read all CLI source-of-truth files and update all READMEs for consistency per the steps in `.claude/commands/sync/docs.md`.
-
-## Part 7: Verify internal consistency
-
-Run the sync/gui command: cross-check `CrawlConfig`, `TrafilaturaConfig`, `FORMAT_EXTENSIONS`, CLI flags, and Apify input schema per the steps in `.claude/commands/sync/gui.md`.
-
-## Part 8: Commit
+## Part 7: Commit
 
 ```bash
 cd /Users/miroslavsekera/r/contextractor
 git add LICENSE NOTICE \
+  pyproject.toml \
   packages/contextractor_engine/pyproject.toml \
   apps/contextractor-standalone/pyproject.toml \
   apps/contextractor-apify/pyproject.toml \
   apps/contextractor-standalone/npm/package.json \
+  apps/contextractor-standalone/Dockerfile \
   README.md \
   apps/contextractor-standalone/npm/README.md \
   apps/contextractor-apify/README.md
-git commit -m "chore: relicense MIT → Apache-2.0"
+git commit -m "Relicense MIT → Apache-2.0"
 git push
 ```
 
 ## Publish targets
 
-After the commit is pushed, verify the license field is correct before triggering a release. The license change propagates to all three distribution targets automatically on the next release tag:
+The license change propagates to all distribution targets on the next release:
 
 | Target | Where license appears |
 |---|---|
 | **npm** (`contextractor`) | `package.json` `license` field + README |
-| **Docker** (`ghcr.io/contextractor/contextractor`) | `LICENSE` and `NOTICE` files baked into image |
-| **Apify actor** (`glueo/contextractor`) | `apps/contextractor-apify/README.md` |
-| **PyPI** `contextractor` + `contextractor-engine` | `pyproject.toml` `license` field |
+| **Docker** (`ghcr.io/contextractor/contextractor`) | `LICENSE`, `NOTICE` files + OCI label |
+| **Apify actor** (`glueo/contextractor`) | README |
+| **PyPI** (`contextractor-engine`) | `pyproject.toml` `license` field |
