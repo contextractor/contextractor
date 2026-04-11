@@ -147,6 +147,37 @@ jobs:
         run: npm publish --access public --provenance
         working-directory: apps/contextractor-standalone/npm
 
+  publish-pypi:
+    needs: release
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+
+      - name: Determine version
+        id: version
+        run: |
+          VERSION="${{ needs.release.outputs.tag }}"
+          VERSION="${VERSION#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Set package versions
+        run: |
+          uv version --package contextractor-engine --frozen ${{ steps.version.outputs.version }}
+          uv version --package contextractor --frozen ${{ steps.version.outputs.version }}
+
+      - name: Build packages
+        run: |
+          uv build --package contextractor-engine --out-dir dist/
+          uv build --package contextractor --out-dir dist/
+
+      - name: Publish to PyPI
+        run: uv publish dist/*
+
   publish-docker:
     needs: release
     runs-on: ubuntu-latest

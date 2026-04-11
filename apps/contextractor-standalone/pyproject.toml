@@ -1,9 +1,16 @@
 [project]
-name = "contextractor-standalone"
+name = "contextractor"
 version = "0.3.5"
-description = "Standalone CLI for web content extraction"
+description = "Extract clean, readable content from any website"
 license = "Apache-2.0"
 requires-python = ">=3.12"
+readme = "README.md"
+authors = [{ name = "Miroslav Sekera", email = "miroslav@glueo.com" }]
+
+[project.urls]
+Homepage = "https://contextractor.com"
+Repository = "https://github.com/contextractor/contextractor"
+Issues = "https://github.com/contextractor/contextractor/issues"
 dependencies = [
     "crawlee[playwright]>=0.4.0",
     "contextractor-engine",
