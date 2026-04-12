@@ -2,6 +2,8 @@
 
 Extract clean, readable content from any website. Uses [Trafilatura](https://trafilatura.readthedocs.io/) to strip away navigation, ads, and boilerplate—leaving just the text you need.
 
+Available as: [PyPI](https://pypi.org/project/contextractor/) | [npm](https://www.npmjs.com/package/contextractor) | [Docker](https://ghcr.io/contextractor/contextractor) | [Apify actor](https://apify.com/glueo/contextractor)
+
 ## Why Trafilatura?
 
 Trafilatura is a Python library designed for web content extraction, created by Adrien Barbaresi at the Berlin-Brandenburg Academy of Sciences. The library achieves the **highest F1 score (0.958)** among open-source content extraction tools in independent benchmarks, outperforming newspaper4k (0.949), Mozilla Readability (0.947), and goose3 (0.896). [[1]](#1-article-extraction-benchmark)[[2]](#2-evaluation)
@@ -230,4 +232,4 @@ Barbaresi, Adrien (2021). [ACL Anthology](https://aclanthology.org/2021.acl-demo
 Apache-2.0
 
 ## Docs version
-2026-04-12T20:08:32Z
+2026-04-12T21:58:44Z

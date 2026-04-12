@@ -2,7 +2,7 @@
 
 Extract clean, readable content from any website using [Trafilatura](https://trafilatura.readthedocs.io/).
 
-Available as: [pip](#install) | [npm](#install) | [Docker](#docker) | [Apify actor](https://apify.com/glueo/contextractor)
+Available as: [PyPI](https://pypi.org/project/contextractor/) | [npm](#install) | [Docker](#docker) | [Apify actor](https://apify.com/glueo/contextractor)
 
 Try the [Playground](https://contextractor.com) to configure extraction settings and preview commands before running.
 
@@ -243,4 +243,4 @@ One file per crawled page, named from the URL slug (e.g. `example-com-page.md`).
 Apache-2.0
 
 ## Docs version
-2026-04-12T20:08:32Z
+2026-04-12T21:58:44Z
