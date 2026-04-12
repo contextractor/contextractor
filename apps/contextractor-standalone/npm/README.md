@@ -50,7 +50,7 @@ Crawl Settings:
 
 Proxy:
   --proxy-urls          Comma-separated proxy URLs (http://user:pass@host:port)
-  --proxy-rotation      Rotation: recommended, per_request, until_failure
+  --proxy-rotation      Rotation: recommended, perRequest, untilFailure
 
 Browser:
   --launcher            Browser engine: chromium, firefox (default: chromium)
@@ -143,7 +143,7 @@ Use a JSON config file to set options:
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `proxy.urls` | array | `[]` | Proxy URLs (`http://user:pass@host:port` or `socks5://host:port`) |
-| `proxy.rotation` | string | `"recommended"` | `recommended`, `per_request`, `until_failure` |
+| `proxy.rotation` | string | `"recommended"` | `recommended`, `perRequest`, `untilFailure` |
 | `proxy.tiered` | array | `[]` | Tiered proxy escalation (config-file only) |
 
 ### Browser Settings

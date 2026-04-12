@@ -16,8 +16,10 @@
     "content-extraction",
     "crawling",
     "trafilatura",
-    "cli"
+    "cli",
+    "pypi"
   ],
+  "pypi": "https://pypi.org/project/contextractor/",
   "bin": {
     "contextractor": "./cli.js"
   },

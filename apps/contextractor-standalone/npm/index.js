@@ -15,6 +15,16 @@ const ARCH_MAP = {
   arm64: "arm64",
 };
 
+/**
+ * Convert camelCase string to snake_case.
+ * @param {string} str
+ * @returns {string}
+ */
+function toSnakeCase(str) {
+  if (str.includes("_")) return str;
+  return str.replace(/(?<!^)([A-Z])/g, "_$1").toLowerCase();
+}
+
 function getBinaryName() {
   const platform = PLATFORM_MAP[os.platform()];
   let arch = ARCH_MAP[os.arch()];
@@ -130,7 +140,7 @@ function extract(urls, options = {}) {
       const proxyList = Array.isArray(options.proxyUrls) ? options.proxyUrls : [options.proxyUrls];
       args.push("--proxy-urls", proxyList.join(","));
     }
-    if (options.proxyRotation) args.push("--proxy-rotation", options.proxyRotation);
+    if (options.proxyRotation) args.push("--proxy-rotation", toSnakeCase(options.proxyRotation));
 
     // Browser settings
     if (options.launcher) args.push("--launcher", options.launcher);

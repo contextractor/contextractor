@@ -2,7 +2,7 @@
     "actorSpecification": 1,
     "name": "contextractor",
     "title": "Contextractor - Web Content Extractor",
-    "description": "Crawls websites and extracts text content using trafilatura. Supports multiple output formats: HTML, TXT, JSON, Markdown, XML, and XML-TEI.",
+    "description": "Crawls websites and extracts text content using trafilatura. Supports multiple output formats: HTML, TXT, JSON, Markdown, XML, and XML-TEI. Also available as PyPI (https://pypi.org/project/contextractor/) and npm packages.",
     "version": "0.1",
     "buildTag": "latest",
     "meta": {

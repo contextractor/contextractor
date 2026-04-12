@@ -14,7 +14,12 @@ from .crawler import run_crawl
 
 app = typer.Typer(
     name="contextractor",
-    help="Extract web content from URLs using configurable extraction options.",
+    help=(
+        "Extract web content from URLs using configurable extraction options.\n\n"
+        "PyPI: https://pypi.org/project/contextractor/\n"
+        "npm: https://www.npmjs.com/package/contextractor\n"
+        "Docs: https://www.contextractor.com/"
+    ),
 )
 
 

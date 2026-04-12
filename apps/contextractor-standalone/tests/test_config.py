@@ -254,3 +254,109 @@ def test_from_dict_page_load_timeout_alias():
     # pageLoadTimeoutSecs (Apify-style) takes precedence
     cfg2 = CrawlConfig.from_dict({"pageLoadTimeoutSecs": 120, "pageLoadTimeout": 90})
     assert cfg2.page_load_timeout == 120
+
+
+# --- Dual-case config acceptance tests ---
+
+
+def test_from_dict_snake_case_keys():
+    cfg = CrawlConfig.from_dict({
+        "max_pages": 10,
+        "output_dir": "/tmp/out",
+        "crawl_depth": 2,
+        "save_markdown": False,
+        "save_json": True,
+    })
+    assert cfg.max_pages == 10
+    assert cfg.output_dir == "/tmp/out"
+    assert cfg.crawl_depth == 2
+    assert cfg.save_markdown is False
+    assert cfg.save_json is True
+
+
+def test_from_dict_camel_case_keys():
+    cfg = CrawlConfig.from_dict({
+        "maxPages": 10,
+        "outputDir": "/tmp/out",
+        "crawlDepth": 2,
+        "saveMarkdown": False,
+        "saveJson": True,
+    })
+    assert cfg.max_pages == 10
+    assert cfg.output_dir == "/tmp/out"
+    assert cfg.crawl_depth == 2
+    assert cfg.save_markdown is False
+    assert cfg.save_json is True
+
+
+def test_from_dict_mixed_case_keys():
+    cfg = CrawlConfig.from_dict({
+        "maxPages": 5,
+        "output_dir": "/tmp/mixed",
+        "crawl_depth": 3,
+        "saveJson": True,
+    })
+    assert cfg.max_pages == 5
+    assert cfg.output_dir == "/tmp/mixed"
+    assert cfg.crawl_depth == 3
+    assert cfg.save_json is True
+
+
+def test_from_dict_camel_case_proxy_rotation():
+    cfg = CrawlConfig.from_dict({
+        "proxy": {"rotation": "perRequest"},
+    })
+    assert cfg.proxy_rotation == "per_request"
+
+
+def test_from_dict_snake_case_proxy_rotation():
+    cfg = CrawlConfig.from_dict({
+        "proxy": {"rotation": "per_request"},
+    })
+    assert cfg.proxy_rotation == "per_request"
+
+
+def test_from_dict_camel_case_until_failure():
+    cfg = CrawlConfig.from_dict({
+        "proxy": {"rotation": "untilFailure"},
+    })
+    assert cfg.proxy_rotation == "until_failure"
+
+
+def test_from_dict_snake_case_trafilatura_config_key():
+    cfg = CrawlConfig.from_dict({
+        "trafilatura_config": {
+            "favor_precision": True,
+            "include_links": False,
+        },
+    })
+    assert cfg.trafilatura_config.favor_precision is True
+    assert cfg.trafilatura_config.include_links is False
+
+
+def test_from_dict_snake_case_browser_settings():
+    cfg = CrawlConfig.from_dict({
+        "wait_until": "NETWORKIDLE",
+        "page_load_timeout": 90,
+        "ignore_cors": True,
+        "ignore_ssl_errors": True,
+        "user_agent": "Custom/1.0",
+        "max_scroll_height": 8000,
+    })
+    assert cfg.wait_until == "networkidle"
+    assert cfg.page_load_timeout == 90
+    assert cfg.ignore_cors is True
+    assert cfg.ignore_ssl_errors is True
+    assert cfg.user_agent == "Custom/1.0"
+    assert cfg.max_scroll_height == 8000
+
+
+def test_from_dict_snake_case_crawl_filtering():
+    cfg = CrawlConfig.from_dict({
+        "link_selector": "a.nav",
+        "keep_url_fragments": True,
+        "respect_robots_txt": True,
+    })
+    assert cfg.link_selector == "a.nav"
+    assert cfg.keep_url_fragments is True
+    assert cfg.respect_robots_txt is True
