@@ -21,7 +21,7 @@ This is the foundation. Extend and reuse it.
 
 File: `packages/contextractor_engine/src/contextractor_engine/utils.py`
 
-Add a function to normalize enum/string values (not just keys). For example, proxy rotation values like `perRequest` → `per_request`, `untilFailure` → `until_failure`. This should be a general-purpose `normalize_value` or similar that converts camelCase string values to snake_case.
+Add a function to normalize string values (not just keys) using the existing `to_snake_case` — no hardcoded mapping tables. The same automatic `camelCase → snake_case` conversion that works for keys must work for values too. For example `to_snake_case("perRequest")` → `"per_request"`, `to_snake_case("untilFailure")` → `"until_failure"` — this already works with the existing regex.
 
 ### 2. Update CLI config parser to accept both cases
 
@@ -58,12 +58,7 @@ The `merge()` method receives CLI overrides (already snake_case from typer). No 
 
 File: `apps/contextractor-standalone/npm/index.js`
 
-The npm wrapper passes config values to the Python CLI. Add conversion so both camelCase and snake_case enum values are accepted. Convert camelCase values to snake_case before passing to CLI args. A simple map is fine:
-
-```
-perRequest → per_request
-untilFailure → until_failure
-```
+The npm wrapper passes config values to the Python CLI. Add an automatic `camelCase → snake_case` conversion function in JS (same regex logic as the Python `to_snake_case`) — no hardcoded mapping tables. Apply it to enum string values before passing to CLI args.
 
 ### 5. Update npm-facing docs to show camelCase
 
