@@ -1,0 +1,1 @@
+ for npm package, python, docker, apify agent: make sure all the settings is consistent. for example: https://www.npmjs.com/package/contextractor there is ""
