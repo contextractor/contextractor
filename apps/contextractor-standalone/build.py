@@ -78,6 +78,8 @@ def build() -> None:
             "--collect-all",
             "trafilatura",
             "--collect-all",
+            "justext",
+            "--collect-all",
             "crawlee",
             "--collect-all",
             "typer",
