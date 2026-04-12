@@ -21,7 +21,7 @@ we need to keep this:
 ```
 
 
-review also other settings for inconsistency and make sure it uses the best practices and industry standards.
+review also other settings for inconsistency and make sure it uses the best practices and industry standards. make sure there is not any redundant settings, remove other redundat settings. All config files must be in JSOn in the docks (but also in YAML for compatibility, but YAML is undocumented for compatibility only)
 
 Fix NPM package, Paython Package, Docker. Do not fix apify actor - this is the primary package already used by users and msut be kept compactible.
 
