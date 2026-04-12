@@ -27,7 +27,6 @@ FORMAT_EXTENSIONS = {
     "txt": ".txt",
     "markdown": ".md",
     "json": ".json",
-    "jsonl": ".jsonl",
     "xml": ".xml",
     "xmltei": ".tei.xml",
 }
@@ -95,7 +94,6 @@ async def run_crawl(config: CrawlConfig) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     extractor = ContentExtractor(config=config.extraction)
-    ext = FORMAT_EXTENSIONS.get(config.output_format, ".txt")
     pages_extracted = 0
     max_results = config.max_results
 
@@ -139,19 +137,6 @@ async def run_crawl(config: CrawlConfig) -> None:
         crawler_kwargs["browser_new_context_options"] = browser_context_options
 
     crawler = PlaywrightCrawler(**crawler_kwargs)
-
-    # Additional output formats to save alongside primary
-    extra_formats: list[str] = []
-    if config.save_raw_html:
-        extra_formats.append("raw_html")
-    if config.save_text:
-        extra_formats.append("txt")
-    if config.save_json:
-        extra_formats.append("json")
-    if config.save_xml:
-        extra_formats.append("xml")
-    if config.save_xml_tei:
-        extra_formats.append("xmltei")
 
     @crawler.router.default_handler
     async def handler(context: PlaywrightCrawlingContext) -> None:
@@ -217,69 +202,99 @@ async def run_crawl(config: CrawlConfig) -> None:
                 pass  # Best effort
 
         html = await context.page.content()
+        slug = _url_to_filename(url)
 
-        # Extract primary format (jsonl extracts as markdown internally)
-        extract_format = "markdown" if config.output_format == "jsonl" else config.output_format
-        result = extractor.extract(html, url=url, output_format=extract_format)
-        if result is None:
-            logger.warning(f"No content extracted from {url}")
-            return
-
-        # Extract metadata for header
+        # Extract metadata for text-based format headers
         metadata = extractor.extract_metadata(html, url=url)
 
-        if config.output_format == "jsonl":
-            # JSONL: append one JSON line per page to a single output file
-            jsonl_path = output_dir / "output.jsonl"
-            entry = {
-                "url": url,
-                "title": metadata.title or "",
-                "author": metadata.author or "",
-                "date": metadata.date or "",
-                "content": result.content,
-            }
-            with open(jsonl_path, "a", encoding="utf-8") as f:
-                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-            logger.info(f"Appended to {jsonl_path}")
-        else:
-            # Build output content with metadata header
-            output_parts = []
-            if metadata.title or metadata.author or metadata.date:
-                if config.output_format in ("markdown", "txt"):
-                    if metadata.title:
-                        output_parts.append(f"Title: {metadata.title}")
-                    if metadata.author:
-                        output_parts.append(f"Author: {metadata.author}")
-                    if metadata.date:
-                        output_parts.append(f"Date: {metadata.date}")
-                    output_parts.append(f"URL: {url}")
-                    output_parts.append("")
-                    output_parts.append("---")
-                    output_parts.append("")
+        def _build_text_content(raw_content: str, fmt: str) -> str:
+            """Prepend metadata header for markdown/txt formats."""
+            parts: list[str] = []
+            if (metadata.title or metadata.author or metadata.date) and fmt in ("markdown", "txt"):
+                if metadata.title:
+                    parts.append(f"Title: {metadata.title}")
+                if metadata.author:
+                    parts.append(f"Author: {metadata.author}")
+                if metadata.date:
+                    parts.append(f"Date: {metadata.date}")
+                parts.append(f"URL: {url}")
+                parts.append("")
+                parts.append("---")
+                parts.append("")
+            parts.append(raw_content)
+            return "\n".join(parts)
 
-            output_parts.append(result.content)
-            content = "\n".join(output_parts)
+        # Track whether any content was extracted
+        any_saved = False
 
-            # Write primary format
-            filename = _url_to_filename(url) + ext
-            filepath = output_dir / filename
-            filepath.write_text(content, encoding="utf-8")
+        # Save each enabled format
+        if config.save_markdown:
+            result = extractor.extract(html, url=url, output_format="markdown")
+            if result:
+                content = _build_text_content(result.content, "markdown")
+                filepath = output_dir / f"{slug}.md"
+                filepath.write_text(content, encoding="utf-8")
+                logger.info(f"Saved {filepath}")
+                any_saved = True
+
+        if config.save_text:
+            result = extractor.extract(html, url=url, output_format="txt")
+            if result:
+                content = _build_text_content(result.content, "txt")
+                filepath = output_dir / f"{slug}.txt"
+                filepath.write_text(content, encoding="utf-8")
+                logger.info(f"Saved {filepath}")
+                any_saved = True
+
+        if config.save_json:
+            result = extractor.extract(html, url=url, output_format="json")
+            if result:
+                filepath = output_dir / f"{slug}.json"
+                filepath.write_text(result.content, encoding="utf-8")
+                logger.info(f"Saved {filepath}")
+                any_saved = True
+
+        if config.save_jsonl:
+            result = extractor.extract(html, url=url, output_format="markdown")
+            if result:
+                jsonl_path = output_dir / "output.jsonl"
+                entry = {
+                    "url": url,
+                    "title": metadata.title or "",
+                    "author": metadata.author or "",
+                    "date": metadata.date or "",
+                    "content": result.content,
+                }
+                with open(jsonl_path, "a", encoding="utf-8") as f:
+                    f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+                logger.info(f"Appended to {jsonl_path}")
+                any_saved = True
+
+        if config.save_xml:
+            result = extractor.extract(html, url=url, output_format="xml")
+            if result:
+                filepath = output_dir / f"{slug}.xml"
+                filepath.write_text(result.content, encoding="utf-8")
+                logger.info(f"Saved {filepath}")
+                any_saved = True
+
+        if config.save_xml_tei:
+            result = extractor.extract(html, url=url, output_format="xmltei")
+            if result:
+                filepath = output_dir / f"{slug}.tei.xml"
+                filepath.write_text(result.content, encoding="utf-8")
+                logger.info(f"Saved {filepath}")
+                any_saved = True
+
+        if config.save_raw_html:
+            filepath = output_dir / f"{slug}.html"
+            filepath.write_text(html, encoding="utf-8")
             logger.info(f"Saved {filepath}")
+            any_saved = True
 
-        # Write extra output formats
-        slug = _url_to_filename(url)
-        for fmt in extra_formats:
-            if fmt == "raw_html":
-                extra_path = output_dir / f"{slug}.html"
-                extra_path.write_text(html, encoding="utf-8")
-            elif fmt == config.output_format:
-                continue  # Already saved as primary
-            else:
-                extra_result = extractor.extract(html, url=url, output_format=fmt)
-                if extra_result:
-                    extra_ext = FORMAT_EXTENSIONS.get(fmt, f".{fmt}")
-                    extra_path = output_dir / f"{slug}{extra_ext}"
-                    extra_path.write_text(extra_result.content, encoding="utf-8")
+        if not any_saved:
+            logger.warning(f"No content extracted from {url}")
+            return
 
         pages_extracted += 1
 

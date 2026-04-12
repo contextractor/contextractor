@@ -7,19 +7,20 @@ def test_default_config_has_sensible_defaults():
     cfg = CrawlConfig()
     assert cfg.urls == []
     assert cfg.max_pages == 0
-    assert cfg.output_format == "markdown"
     assert cfg.output_dir == "./output"
     assert cfg.crawl_depth == 0
     assert cfg.headless is True
+    assert cfg.save_markdown is True
+    assert cfg.save_jsonl is False
     assert cfg.extraction.favor_precision is False
     assert cfg.extraction.include_links is True
 
 
 def test_merge_overlays_crawl_fields():
     cfg = CrawlConfig()
-    cfg.merge({"max_pages": 10, "output_format": "json", "output_dir": "/tmp/out"})
+    cfg.merge({"max_pages": 10, "save_json": True, "output_dir": "/tmp/out"})
     assert cfg.max_pages == 10
-    assert cfg.output_format == "json"
+    assert cfg.save_json is True
     assert cfg.output_dir == "/tmp/out"
 
 
@@ -33,9 +34,9 @@ def test_merge_routes_extraction_fields():
 
 def test_merge_skips_none_values():
     cfg = CrawlConfig()
-    cfg.merge({"max_pages": None, "output_format": None, "favor_precision": None})
+    cfg.merge({"max_pages": None, "save_markdown": None, "favor_precision": None})
     assert cfg.max_pages == 0
-    assert cfg.output_format == "markdown"
+    assert cfg.save_markdown is True
     assert cfg.extraction.favor_precision is False
 
 
@@ -48,27 +49,29 @@ def test_merge_ignores_unknown_keys():
 def test_from_file_still_works(tmp_path):
     config_file = tmp_path / "config.yaml"
     config_file.write_text(
-        "urls:\n  - https://example.com\nmaxPages: 5\noutputFormat: json\n"
+        "urls:\n  - https://example.com\nmaxPages: 5\nsaveMarkdown: false\nsaveJson: true\n"
         "extraction:\n  favorPrecision: true\n"
     )
     cfg = CrawlConfig.from_file(config_file)
     assert cfg.urls == ["https://example.com"]
     assert cfg.max_pages == 5
-    assert cfg.output_format == "json"
+    assert cfg.save_markdown is False
+    assert cfg.save_json is True
     assert cfg.extraction.favor_precision is True
 
 
 def test_file_values_then_merge_precedence(tmp_path):
     config_file = tmp_path / "config.yaml"
     config_file.write_text(
-        "urls:\n  - https://example.com\nmaxPages: 5\noutputFormat: json\n"
+        "urls:\n  - https://example.com\nmaxPages: 5\nsaveJson: true\n"
     )
     cfg = CrawlConfig.from_file(config_file)
-    cfg.merge({"max_pages": 20, "output_format": "txt"})
+    cfg.merge({"max_pages": 20, "save_text": True})
     assert cfg.max_pages == 20
-    assert cfg.output_format == "txt"
+    assert cfg.save_text is True
     # Unmerged fields keep file values
     assert cfg.urls == ["https://example.com"]
+    assert cfg.save_json is True
 
 
 # --- Tests for v0.3.0+ config options ---
@@ -176,18 +179,50 @@ def test_from_dict_concurrency():
 
 def test_from_dict_output_toggles():
     data = {
+        "saveMarkdown": False,
         "saveRawHtml": True,
         "saveText": True,
         "saveJson": True,
+        "saveJsonl": True,
         "saveXml": True,
         "saveXmlTei": True,
     }
     cfg = CrawlConfig.from_dict(data)
+    assert cfg.save_markdown is False
+    assert cfg.save_raw_html is True
+    assert cfg.save_text is True
+    assert cfg.save_json is True
+    assert cfg.save_jsonl is True
+    assert cfg.save_xml is True
+    assert cfg.save_xml_tei is True
+
+
+def test_from_dict_apify_long_names():
+    data = {
+        "saveExtractedMarkdownToKeyValueStore": False,
+        "saveRawHtmlToKeyValueStore": True,
+        "saveExtractedTextToKeyValueStore": True,
+        "saveExtractedJsonToKeyValueStore": True,
+        "saveExtractedXmlToKeyValueStore": True,
+        "saveExtractedXmlTeiToKeyValueStore": True,
+    }
+    cfg = CrawlConfig.from_dict(data)
+    assert cfg.save_markdown is False
     assert cfg.save_raw_html is True
     assert cfg.save_text is True
     assert cfg.save_json is True
     assert cfg.save_xml is True
     assert cfg.save_xml_tei is True
+
+
+def test_from_dict_short_names_override_long():
+    data = {
+        "saveMarkdown": False,
+        "saveExtractedMarkdownToKeyValueStore": True,
+    }
+    cfg = CrawlConfig.from_dict(data)
+    # Short name takes precedence
+    assert cfg.save_markdown is False
 
 
 def test_merge_new_crawl_fields():

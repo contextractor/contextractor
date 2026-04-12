@@ -56,18 +56,21 @@ def test_config_file_with_extra_urls(tmp_path):
 
 def test_cli_overrides_config(tmp_path):
     config_file = tmp_path / "config.yaml"
-    config_file.write_text("urls:\n  - https://example.com\nmaxPages: 5\noutputFormat: txt\n")
+    config_file.write_text("urls:\n  - https://example.com\nmaxPages: 5\nsaveJson: true\n")
     with _mock_run_crawl() as mock_crawl:
         result = runner.invoke(app, [
             "--config", str(config_file),
             "--max-pages", "10",
             "--precision",
-            "--format", "json",
+            "--no-save-markdown",
+            "--save-text",
         ])
         assert result.exit_code == 0
         cfg = mock_crawl.call_args[0][0]
         assert cfg.max_pages == 10
-        assert cfg.output_format == "json"
+        assert cfg.save_markdown is False
+        assert cfg.save_text is True
+        assert cfg.save_json is True
         assert cfg.extraction.favor_precision is True
 
 
@@ -85,16 +88,16 @@ def test_no_urls_error():
         assert "No URLs" in result.output
 
 
-def test_format_and_output_dir():
+def test_save_toggles_and_output_dir():
     with _mock_run_crawl() as mock_crawl:
         result = runner.invoke(app, [
             "https://example.com",
-            "--format", "json",
+            "--save-json",
             "--output-dir", "./out",
         ])
         assert result.exit_code == 0
         cfg = mock_crawl.call_args[0][0]
-        assert cfg.output_format == "json"
+        assert cfg.save_json is True
         assert cfg.output_dir == "./out"
 
 
@@ -209,6 +212,7 @@ def test_output_toggle_flags():
             "--save-raw-html",
             "--save-text",
             "--save-json",
+            "--save-jsonl",
             "--save-xml",
             "--save-xml-tei",
         ])
@@ -217,16 +221,27 @@ def test_output_toggle_flags():
         assert cfg.save_raw_html is True
         assert cfg.save_text is True
         assert cfg.save_json is True
+        assert cfg.save_jsonl is True
         assert cfg.save_xml is True
         assert cfg.save_xml_tei is True
 
 
-def test_jsonl_format():
+def test_save_markdown_default():
+    with _mock_run_crawl() as mock_crawl:
+        result = runner.invoke(app, ["https://example.com"])
+        assert result.exit_code == 0
+        cfg = mock_crawl.call_args[0][0]
+        assert cfg.save_markdown is True
+
+
+def test_disable_markdown():
     with _mock_run_crawl() as mock_crawl:
         result = runner.invoke(app, [
             "https://example.com",
-            "--format", "jsonl",
+            "--no-save-markdown",
+            "--save-json",
         ])
         assert result.exit_code == 0
         cfg = mock_crawl.call_args[0][0]
-        assert cfg.output_format == "jsonl"
+        assert cfg.save_markdown is False
+        assert cfg.save_json is True

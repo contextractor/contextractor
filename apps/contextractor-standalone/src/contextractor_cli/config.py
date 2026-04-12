@@ -23,7 +23,6 @@ class CrawlConfig:
     # Core
     urls: list[str] = field(default_factory=list)
     max_pages: int = 0
-    output_format: str = "markdown"
     output_dir: str = "./output"
     crawl_depth: int = 0
     headless: bool = True
@@ -61,9 +60,11 @@ class CrawlConfig:
     max_results: int = 0
 
     # Output toggles
+    save_markdown: bool = True
     save_raw_html: bool = False
     save_text: bool = False
     save_json: bool = False
+    save_jsonl: bool = False
     save_xml: bool = False
     save_xml_tei: bool = False
 
@@ -100,7 +101,6 @@ class CrawlConfig:
         return cls(
             urls=data.get("urls", []),
             max_pages=data.get("maxPages", 0),
-            output_format=data.get("outputFormat", "markdown"),
             output_dir=data.get("outputDir", "./output"),
             crawl_depth=data.get("crawlDepth", 0),
             headless=data.get("headless", True),
@@ -132,11 +132,13 @@ class CrawlConfig:
             max_retries=data.get("maxRequestRetries", data.get("maxRetries", 3)),
             max_results=data.get("maxResultsPerCrawl", data.get("maxResults", 0)),
             # Output toggles
-            save_raw_html=data.get("saveRawHtml", False),
-            save_text=data.get("saveText", False),
-            save_json=data.get("saveJson", False),
-            save_xml=data.get("saveXml", False),
-            save_xml_tei=data.get("saveXmlTei", False),
+            save_markdown=data.get("saveMarkdown", data.get("saveExtractedMarkdownToKeyValueStore", True)),
+            save_raw_html=data.get("saveRawHtml", data.get("saveRawHtmlToKeyValueStore", False)),
+            save_text=data.get("saveText", data.get("saveExtractedTextToKeyValueStore", False)),
+            save_json=data.get("saveJson", data.get("saveExtractedJsonToKeyValueStore", False)),
+            save_jsonl=data.get("saveJsonl", False),
+            save_xml=data.get("saveXml", data.get("saveExtractedXmlToKeyValueStore", False)),
+            save_xml_tei=data.get("saveXmlTei", data.get("saveExtractedXmlTeiToKeyValueStore", False)),
         )
 
     def merge(self, overrides: dict[str, Any]) -> None:

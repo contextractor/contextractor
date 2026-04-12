@@ -29,7 +29,7 @@ contextractor https://example.com
 Works with zero config. Pass URLs directly, or use a config file for complex setups:
 
 ```bash
-contextractor https://example.com --precision --format json -o ./results
+contextractor https://example.com --precision --save-json -o ./results
 contextractor --config config.json --max-pages 10
 ```
 
@@ -41,7 +41,6 @@ contextractor [OPTIONS] [URLS...]
 Crawl Settings:
   --config, -c          Path to JSON config file
   --output-dir, -o      Output directory
-  --format, -f          Output format (txt, markdown, json, jsonl, xml, xmltei)
   --max-pages           Max pages to crawl (0 = unlimited)
   --crawl-depth         Max link depth from start URLs (0 = start only)
   --headless/--no-headless  Browser headless mode (default: headless)
@@ -75,9 +74,11 @@ Cookies & Headers:
   --headers             JSON object of custom HTTP headers
 
 Output Toggles:
+  --save-markdown/--no-save-markdown  Save extracted markdown (default: true)
   --save-raw-html       Save raw HTML to output
   --save-text           Save extracted text
   --save-json           Save extracted JSON
+  --save-jsonl          Save all pages as JSONL (single file)
   --save-xml            Save extracted XML
   --save-xml-tei        Save extracted XML-TEI
 
@@ -108,7 +109,7 @@ Use a JSON config file to set options:
 ```json
 {
   "urls": ["https://example.com", "https://docs.example.com"],
-  "outputFormat": "markdown",
+  "saveMarkdown": true,
   "outputDir": "./output",
   "crawlDepth": 1,
   "proxy": {
@@ -130,7 +131,6 @@ Use a JSON config file to set options:
 |-------|------|---------|-------------|
 | `urls` | array | `[]` | URLs to extract content from |
 | `maxPages` | int | 0 | Max pages to crawl (0 = unlimited) |
-| `outputFormat` | string | `"markdown"` | `txt`, `markdown`, `json`, `jsonl`, `xml`, `xmltei` |
 | `outputDir` | string | `"./output"` | Directory for extracted content |
 | `crawlDepth` | int | 0 | How deep to follow links (0 = start URLs only) |
 | `headless` | bool | true | Browser headless mode |
@@ -178,13 +178,15 @@ Use a JSON config file to set options:
 
 ### Output Toggles
 
-Save additional formats alongside the primary output:
+Each toggle saves its format independently. Multiple can be enabled at once:
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
+| `saveMarkdown` | bool | true | Save extracted markdown |
 | `saveRawHtml` | bool | false | Save raw HTML |
 | `saveText` | bool | false | Save extracted plain text |
 | `saveJson` | bool | false | Save extracted JSON |
+| `saveJsonl` | bool | false | Save all pages as JSONL (single file) |
 | `saveXml` | bool | false | Save extracted XML |
 | `saveXmlTei` | bool | false | Save extracted XML-TEI |
 
