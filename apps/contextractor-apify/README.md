@@ -153,6 +153,13 @@ Try the [Playground](https://contextractor.com) to configure extraction settings
 
 Trafilatura config keys: `favorPrecision`, `favorRecall`, `includeComments`, `includeTables`, `includeImages`, `includeFormatting`, `includeLinks`, `deduplicate`, `withMetadata`, `targetLanguage`, `fast`, `pruneXpath`.
 
+### Diagnostics
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `debugLog` | bool | false | Include debug messages in the log output |
+| `browserLog` | bool | false | Include browser console messages in the log |
+
 ## Output
 
 Each crawled page produces a dataset item:
@@ -223,4 +230,4 @@ Barbaresi, Adrien (2021). [ACL Anthology](https://aclanthology.org/2021.acl-demo
 Apache-2.0
 
 ## Docs version
-2026-04-12T16:06:28Z
+2026-04-12T19:30:57Z

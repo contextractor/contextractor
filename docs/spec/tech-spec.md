@@ -70,7 +70,7 @@ CLI args / Config file (optional) → `CrawlConfig` → crawlee PlaywrightCrawle
 contextractor https://example.com
 
 # With flags
-contextractor https://example.com --precision --format json -o ./results
+contextractor https://example.com --precision --save-json -o ./results
 
 # With config file
 contextractor --config config.json --max-pages 10

@@ -32,7 +32,7 @@ Works with zero config — just pass URLs directly:
 
 ```bash
 contextractor https://example.com
-contextractor https://example.com --precision --format json -o ./results
+contextractor https://example.com --precision --save-json -o ./results
 contextractor --config config.json --max-pages 10
 ```
 
@@ -40,10 +40,16 @@ contextractor --config config.json --max-pages 10
 |--------|-------------|
 | `--config`, `-c` | Path to JSON config file (optional) |
 | `--output-dir`, `-o` | Output directory |
-| `--format`, `-f` | Output format (txt, markdown, json, xml, xmltei) |
 | `--max-pages` | Max pages to crawl (0 = unlimited) |
 | `--crawl-depth` | Max link depth from start URLs (0 = start only) |
 | `--headless` / `--no-headless` | Browser headless mode (default: headless) |
+| `--save-markdown` / `--no-save-markdown` | Save extracted markdown (default: true) |
+| `--save-raw-html` | Save raw HTML |
+| `--save-text` | Save extracted text |
+| `--save-json` | Save extracted JSON |
+| `--save-jsonl` | Save all pages as JSONL (single file) |
+| `--save-xml` | Save extracted XML |
+| `--save-xml-tei` | Save extracted XML-TEI |
 | `--precision` | High precision mode (less noise) |
 | `--recall` | High recall mode (more content) |
 | `--fast` | Fast extraction mode (less thorough) |
@@ -64,10 +70,16 @@ contextractor --config config.json --max-pages 10
 |-------|------|---------|-------------|
 | urls | array | [] | URLs to extract content from |
 | maxPages | integer | 0 | Max pages to crawl (0 = unlimited) |
-| outputFormat | string | "markdown" | Output format: txt, markdown, json, xml, xmltei |
 | outputDir | string | "./output" | Directory for extracted content |
 | crawlDepth | integer | 0 | How deep to follow links (0 = start URLs only) |
 | headless | boolean | true | Browser headless mode |
+| saveMarkdown | boolean | true | Save extracted markdown |
+| saveRawHtml | boolean | false | Save raw HTML |
+| saveText | boolean | false | Save extracted text |
+| saveJson | boolean | false | Save extracted JSON |
+| saveJsonl | boolean | false | Save all pages as JSONL (single file) |
+| saveXml | boolean | false | Save extracted XML |
+| saveXmlTei | boolean | false | Save extracted XML-TEI |
 | extraction | object | {} | TrafilaturaConfig options (see below) |
 
 Config merge order: `defaults → config file (if provided) → CLI args`
