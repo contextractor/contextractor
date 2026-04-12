@@ -116,7 +116,7 @@ Use a JSON config file to set options:
     "urls": ["http://user:pass@host:port"],
     "rotation": "recommended"
   },
-  "extraction": {
+  "trafilaturaConfig": {
     "favorPrecision": true,
     "includeLinks": true,
     "includeTables": true,
@@ -192,7 +192,7 @@ Each toggle saves its format independently. Multiple can be enabled at once:
 
 ### Content Extraction
 
-All options go under the `extraction` key in config files, or use the equivalent CLI flags:
+All options go under the `trafilaturaConfig` key in config files, or use the equivalent CLI flags:
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
@@ -243,4 +243,4 @@ One file per crawled page, named from the URL slug (e.g. `example-com-page.md`).
 Apache-2.0
 
 ## Docs version
-2026-04-12T19:30:57Z
+2026-04-12T20:08:32Z

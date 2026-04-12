@@ -26,7 +26,7 @@ class CrawlConfig:
     output_dir: str = "./output"
     crawl_depth: int = 0
     headless: bool = True
-    extraction: TrafilaturaConfig = field(default_factory=TrafilaturaConfig.balanced)
+    trafilatura_config: TrafilaturaConfig = field(default_factory=TrafilaturaConfig.balanced)
 
     # Proxy
     proxy_urls: list[str] = field(default_factory=list)
@@ -87,7 +87,7 @@ class CrawlConfig:
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> CrawlConfig:
         """Create config from a dictionary."""
-        extraction = TrafilaturaConfig.from_json_dict(data.get("extraction"))
+        trafilatura_config = TrafilaturaConfig.from_json_dict(data.get("trafilaturaConfig"))
 
         # Parse proxy section (nested object or flat keys)
         proxy_section = data.get("proxy", {})
@@ -104,7 +104,7 @@ class CrawlConfig:
             output_dir=data.get("outputDir", "./output"),
             crawl_depth=data.get("crawlDepth", 0),
             headless=data.get("headless", True),
-            extraction=extraction,
+            trafilatura_config=trafilatura_config,
             # Proxy
             proxy_urls=proxy_urls,
             proxy_rotation=proxy_rotation,
@@ -144,11 +144,11 @@ class CrawlConfig:
     def merge(self, overrides: dict[str, Any]) -> None:
         """Merge non-None overrides into this config.
 
-        Keys matching TrafilaturaConfig fields are routed to self.extraction.
+        Keys matching TrafilaturaConfig fields are routed to self.trafilatura_config.
         Keys matching CrawlConfig fields are set directly.
         Unknown keys are ignored.
         """
-        crawl_fields = {f.name for f in dataclass_fields(self)} - {"extraction"}
+        crawl_fields = {f.name for f in dataclass_fields(self)} - {"trafilatura_config"}
 
         for key, value in overrides.items():
             if value is None:
@@ -156,4 +156,4 @@ class CrawlConfig:
             if key in crawl_fields:
                 setattr(self, key, value)
             elif key in _EXTRACTION_FIELDS:
-                setattr(self.extraction, key, value)
+                setattr(self.trafilatura_config, key, value)

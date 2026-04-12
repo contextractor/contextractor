@@ -93,7 +93,7 @@ async def run_crawl(config: CrawlConfig) -> None:
     output_dir = Path(config.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    extractor = ContentExtractor(config=config.extraction)
+    extractor = ContentExtractor(config=config.trafilatura_config)
     pages_extracted = 0
     max_results = config.max_results
 

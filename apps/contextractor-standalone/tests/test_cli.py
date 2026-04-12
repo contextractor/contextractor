@@ -71,7 +71,7 @@ def test_cli_overrides_config(tmp_path):
         assert cfg.save_markdown is False
         assert cfg.save_text is True
         assert cfg.save_json is True
-        assert cfg.extraction.favor_precision is True
+        assert cfg.trafilatura_config.favor_precision is True
 
 
 def test_no_args_shows_error():
@@ -113,11 +113,11 @@ def test_extraction_flags():
         ])
         assert result.exit_code == 0
         cfg = mock_crawl.call_args[0][0]
-        assert cfg.extraction.fast is True
-        assert cfg.extraction.include_links is False
-        assert cfg.extraction.include_comments is False
-        assert cfg.extraction.deduplicate is True
-        assert cfg.extraction.target_language == "en"
+        assert cfg.trafilatura_config.fast is True
+        assert cfg.trafilatura_config.include_links is False
+        assert cfg.trafilatura_config.include_comments is False
+        assert cfg.trafilatura_config.deduplicate is True
+        assert cfg.trafilatura_config.target_language == "en"
 
 
 def test_bool_flag_pairs():
@@ -131,9 +131,9 @@ def test_bool_flag_pairs():
         ])
         assert result.exit_code == 0
         cfg = mock_crawl.call_args[0][0]
-        assert cfg.extraction.include_tables is False
-        assert cfg.extraction.include_formatting is False
-        assert cfg.extraction.with_metadata is False
+        assert cfg.trafilatura_config.include_tables is False
+        assert cfg.trafilatura_config.include_formatting is False
+        assert cfg.trafilatura_config.with_metadata is False
         assert cfg.headless is False
 
 

@@ -80,7 +80,7 @@ contextractor --config config.json --max-pages 10
 | saveJsonl | boolean | false | Save all pages as JSONL (single file) |
 | saveXml | boolean | false | Save extracted XML |
 | saveXmlTei | boolean | false | Save extracted XML-TEI |
-| extraction | object | {} | TrafilaturaConfig options (see below) |
+| trafilaturaConfig | object | {} | TrafilaturaConfig options (see below) |
 
 Config merge order: `defaults → config file (if provided) → CLI args`
 
@@ -134,9 +134,9 @@ All CLI flags work the same inside Docker. Available for linux/amd64 and linux/a
 | initialCookies | array | [] | Pre-set cookies for authentication (encrypted) |
 | customHttpHeaders | object | {} | Custom HTTP headers for all requests |
 
-### trafilaturaConfig / extraction
+### trafilaturaConfig
 
-Shared extraction options used by both the Apify Actor (`trafilaturaConfig` key) and standalone CLI (`extraction` key in config file). When empty `{}` or omitted, uses balanced defaults.
+Extraction options used by both the Apify Actor and standalone CLI (`trafilaturaConfig` key in config file). When empty `{}` or omitted, uses balanced defaults.
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|

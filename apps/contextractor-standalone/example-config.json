@@ -3,7 +3,7 @@
   "outputFormat": "markdown",
   "outputDir": "./output",
   "crawlDepth": 0,
-  "extraction": {
+  "trafilaturaConfig": {
     "favorPrecision": true,
     "includeComments": false,
     "includeLinks": true,

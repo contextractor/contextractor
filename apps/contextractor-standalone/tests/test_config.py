@@ -12,8 +12,8 @@ def test_default_config_has_sensible_defaults():
     assert cfg.headless is True
     assert cfg.save_markdown is True
     assert cfg.save_jsonl is False
-    assert cfg.extraction.favor_precision is False
-    assert cfg.extraction.include_links is True
+    assert cfg.trafilatura_config.favor_precision is False
+    assert cfg.trafilatura_config.include_links is True
 
 
 def test_merge_overlays_crawl_fields():
@@ -27,9 +27,9 @@ def test_merge_overlays_crawl_fields():
 def test_merge_routes_extraction_fields():
     cfg = CrawlConfig()
     cfg.merge({"favor_precision": True, "include_links": False, "deduplicate": True})
-    assert cfg.extraction.favor_precision is True
-    assert cfg.extraction.include_links is False
-    assert cfg.extraction.deduplicate is True
+    assert cfg.trafilatura_config.favor_precision is True
+    assert cfg.trafilatura_config.include_links is False
+    assert cfg.trafilatura_config.deduplicate is True
 
 
 def test_merge_skips_none_values():
@@ -37,7 +37,7 @@ def test_merge_skips_none_values():
     cfg.merge({"max_pages": None, "save_markdown": None, "favor_precision": None})
     assert cfg.max_pages == 0
     assert cfg.save_markdown is True
-    assert cfg.extraction.favor_precision is False
+    assert cfg.trafilatura_config.favor_precision is False
 
 
 def test_merge_ignores_unknown_keys():
@@ -50,14 +50,14 @@ def test_from_file_still_works(tmp_path):
     config_file = tmp_path / "config.yaml"
     config_file.write_text(
         "urls:\n  - https://example.com\nmaxPages: 5\nsaveMarkdown: false\nsaveJson: true\n"
-        "extraction:\n  favorPrecision: true\n"
+        "trafilaturaConfig:\n  favorPrecision: true\n"
     )
     cfg = CrawlConfig.from_file(config_file)
     assert cfg.urls == ["https://example.com"]
     assert cfg.max_pages == 5
     assert cfg.save_markdown is False
     assert cfg.save_json is True
-    assert cfg.extraction.favor_precision is True
+    assert cfg.trafilatura_config.favor_precision is True
 
 
 def test_file_values_then_merge_precedence(tmp_path):
