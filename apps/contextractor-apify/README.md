@@ -68,7 +68,7 @@ Try the [Playground](https://contextractor.com) to configure extraction settings
 
 ## Features
 
-- **Multiple output formats** - Markdown, plain text, JSON, XML, or XML-TEI (scholarly)
+- **Multiple output formats** - Markdown, HTML, plain text, JSON, XML, or XML-TEI (scholarly)
 - **JavaScript rendering** - Handles dynamic sites with Playwright (Chromium/Firefox)
 - **Link crawling** - Follow links across a site with glob/pseudo-URL filtering
 - **Metadata extraction** - Title, author, date, description, site name, and language
@@ -232,4 +232,4 @@ Barbaresi, Adrien (2021). [ACL Anthology](https://aclanthology.org/2021.acl-demo
 Apache-2.0
 
 ## Docs version
-2026-04-12T21:58:44Z
+2026-04-13T21:49:26Z

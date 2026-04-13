@@ -50,7 +50,7 @@ Crawl Settings:
 
 Proxy:
   --proxy-urls          Comma-separated proxy URLs (http://user:pass@host:port)
-  --proxy-rotation      Rotation: recommended, perRequest, untilFailure
+  --proxy-rotation      Rotation: recommended, per_request, until_failure
 
 Browser:
   --launcher            Browser engine: chromium, firefox (default: chromium)
