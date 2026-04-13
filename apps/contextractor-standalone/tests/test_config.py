@@ -1,6 +1,8 @@
 """Tests for CrawlConfig."""
 
-from contextractor_cli.config import CrawlConfig
+import pytest
+
+from contextractor_cli.config import CrawlConfig, validate_save_formats
 
 
 def test_default_config_has_sensible_defaults():
@@ -10,17 +12,16 @@ def test_default_config_has_sensible_defaults():
     assert cfg.output_dir == "./output"
     assert cfg.crawl_depth == 0
     assert cfg.headless is True
-    assert cfg.save_markdown is True
-    assert cfg.save_jsonl is False
+    assert cfg.save == ["markdown"]
     assert cfg.trafilatura_config.favor_precision is False
     assert cfg.trafilatura_config.include_links is True
 
 
 def test_merge_overlays_crawl_fields():
     cfg = CrawlConfig()
-    cfg.merge({"max_pages": 10, "save_json": True, "output_dir": "/tmp/out"})
+    cfg.merge({"max_pages": 10, "save": ["json", "xml"], "output_dir": "/tmp/out"})
     assert cfg.max_pages == 10
-    assert cfg.save_json is True
+    assert cfg.save == ["json", "xml"]
     assert cfg.output_dir == "/tmp/out"
 
 
@@ -34,9 +35,9 @@ def test_merge_routes_extraction_fields():
 
 def test_merge_skips_none_values():
     cfg = CrawlConfig()
-    cfg.merge({"max_pages": None, "save_markdown": None, "favor_precision": None})
+    cfg.merge({"max_pages": None, "save": None, "favor_precision": None})
     assert cfg.max_pages == 0
-    assert cfg.save_markdown is True
+    assert cfg.save == ["markdown"]
     assert cfg.trafilatura_config.favor_precision is False
 
 
@@ -47,31 +48,24 @@ def test_merge_ignores_unknown_keys():
 
 
 def test_from_file_still_works(tmp_path):
-    config_file = tmp_path / "config.yaml"
-    config_file.write_text(
-        "urls:\n  - https://example.com\nmaxPages: 5\nsaveMarkdown: false\nsaveJson: true\n"
-        "trafilaturaConfig:\n  favorPrecision: true\n"
-    )
+    config_file = tmp_path / "config.json"
+    config_file.write_text('{"urls": ["https://example.com"], "maxPages": 5, "save": ["json", "xml"], "trafilaturaConfig": {"favorPrecision": true}}')
     cfg = CrawlConfig.from_file(config_file)
     assert cfg.urls == ["https://example.com"]
     assert cfg.max_pages == 5
-    assert cfg.save_markdown is False
-    assert cfg.save_json is True
+    assert cfg.save == ["json", "xml"]
     assert cfg.trafilatura_config.favor_precision is True
 
 
 def test_file_values_then_merge_precedence(tmp_path):
-    config_file = tmp_path / "config.yaml"
-    config_file.write_text(
-        "urls:\n  - https://example.com\nmaxPages: 5\nsaveJson: true\n"
-    )
+    config_file = tmp_path / "config.json"
+    config_file.write_text('{"urls": ["https://example.com"], "maxPages": 5, "save": ["json"]}')
     cfg = CrawlConfig.from_file(config_file)
-    cfg.merge({"max_pages": 20, "save_text": True})
+    cfg.merge({"max_pages": 20, "save": ["text", "xml"]})
     assert cfg.max_pages == 20
-    assert cfg.save_text is True
+    assert cfg.save == ["text", "xml"]
     # Unmerged fields keep file values
     assert cfg.urls == ["https://example.com"]
-    assert cfg.save_json is True
 
 
 # --- Tests for v0.3.0+ config options ---
@@ -177,52 +171,36 @@ def test_from_dict_concurrency():
     assert cfg2.max_results == 50
 
 
-def test_from_dict_output_toggles():
-    data = {
-        "saveMarkdown": False,
-        "saveRawHtml": True,
-        "saveText": True,
-        "saveJson": True,
-        "saveJsonl": True,
-        "saveXml": True,
-        "saveXmlTei": True,
-    }
-    cfg = CrawlConfig.from_dict(data)
-    assert cfg.save_markdown is False
-    assert cfg.save_raw_html is True
-    assert cfg.save_text is True
-    assert cfg.save_json is True
-    assert cfg.save_jsonl is True
-    assert cfg.save_xml is True
-    assert cfg.save_xml_tei is True
+def test_from_dict_save_list():
+    cfg = CrawlConfig.from_dict({"save": ["xml", "json"]})
+    assert cfg.save == ["xml", "json"]
 
 
-def test_from_dict_apify_long_names():
-    data = {
-        "saveExtractedMarkdownToKeyValueStore": False,
-        "saveRawHtmlToKeyValueStore": True,
-        "saveExtractedTextToKeyValueStore": True,
-        "saveExtractedJsonToKeyValueStore": True,
-        "saveExtractedXmlToKeyValueStore": True,
-        "saveExtractedXmlTeiToKeyValueStore": True,
-    }
-    cfg = CrawlConfig.from_dict(data)
-    assert cfg.save_markdown is False
-    assert cfg.save_raw_html is True
-    assert cfg.save_text is True
-    assert cfg.save_json is True
-    assert cfg.save_xml is True
-    assert cfg.save_xml_tei is True
+def test_from_dict_save_default():
+    cfg = CrawlConfig.from_dict({})
+    assert cfg.save == ["markdown"]
 
 
-def test_from_dict_short_names_override_long():
-    data = {
-        "saveMarkdown": False,
-        "saveExtractedMarkdownToKeyValueStore": True,
-    }
-    cfg = CrawlConfig.from_dict(data)
-    # Short name takes precedence
-    assert cfg.save_markdown is False
+def test_validate_save_formats_all():
+    result = validate_save_formats(["all"])
+    assert result == sorted({"markdown", "html", "text", "json", "jsonl", "xml", "xml-tei"})
+
+
+def test_validate_save_formats_invalid():
+    with pytest.raises(ValueError, match="Unknown save format"):
+        validate_save_formats(["invalid"])
+
+
+def test_validate_save_formats_dedup():
+    result = validate_save_formats(["json", "xml", "json"])
+    assert result == ["json", "xml"]
+
+
+def test_save_list_merge():
+    cfg = CrawlConfig()
+    assert cfg.save == ["markdown"]
+    cfg.merge({"save": ["json", "xml"]})
+    assert cfg.save == ["json", "xml"]
 
 
 def test_merge_new_crawl_fields():
@@ -264,14 +242,12 @@ def test_from_dict_snake_case_keys():
         "max_pages": 10,
         "output_dir": "/tmp/out",
         "crawl_depth": 2,
-        "save_markdown": False,
-        "save_json": True,
+        "save": ["json", "xml"],
     })
     assert cfg.max_pages == 10
     assert cfg.output_dir == "/tmp/out"
     assert cfg.crawl_depth == 2
-    assert cfg.save_markdown is False
-    assert cfg.save_json is True
+    assert cfg.save == ["json", "xml"]
 
 
 def test_from_dict_camel_case_keys():
@@ -279,14 +255,12 @@ def test_from_dict_camel_case_keys():
         "maxPages": 10,
         "outputDir": "/tmp/out",
         "crawlDepth": 2,
-        "saveMarkdown": False,
-        "saveJson": True,
+        "save": ["json", "xml"],
     })
     assert cfg.max_pages == 10
     assert cfg.output_dir == "/tmp/out"
     assert cfg.crawl_depth == 2
-    assert cfg.save_markdown is False
-    assert cfg.save_json is True
+    assert cfg.save == ["json", "xml"]
 
 
 def test_from_dict_mixed_case_keys():
@@ -294,12 +268,12 @@ def test_from_dict_mixed_case_keys():
         "maxPages": 5,
         "output_dir": "/tmp/mixed",
         "crawl_depth": 3,
-        "saveJson": True,
+        "save": ["json"],
     })
     assert cfg.max_pages == 5
     assert cfg.output_dir == "/tmp/mixed"
     assert cfg.crawl_depth == 3
-    assert cfg.save_json is True
+    assert cfg.save == ["json"]
 
 
 def test_from_dict_camel_case_proxy_rotation():

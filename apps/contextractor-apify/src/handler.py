@@ -119,7 +119,8 @@ def create_request_handler(
         html_bytes = html.encode('utf-8')
         raw_html_info = compute_content_info(html_bytes)
 
-        if handler_config.get('save_raw_html'):
+        save_formats = handler_config.get('save', ['markdown'])
+        if 'html' in save_formats:
             html_key = f'{key_base}-raw.html'
             await kvs.set_value(html_key, html, content_type='text/html; charset=utf-8')
             raw_html_info['key'] = html_key
@@ -182,16 +183,17 @@ async def _save_extracted_formats(
         config: Handler configuration.
         data: Data dict to update with results.
     """
+    save_formats = config.get('save', ['markdown'])
     format_configs = [
-        ('save_text', 'txt', 'extractedText', 'text/plain; charset=utf-8'),
-        ('save_json', 'json', 'extractedJson', 'application/json; charset=utf-8'),
-        ('save_markdown', 'markdown', 'extractedMarkdown', 'text/markdown; charset=utf-8'),
-        ('save_xml', 'xml', 'extractedXml', 'application/xml; charset=utf-8'),
-        ('save_xmltei', 'xmltei', 'extractedXmlTei', 'application/xml; charset=utf-8'),
+        ('text', 'txt', 'extractedText', 'text/plain; charset=utf-8'),
+        ('json', 'json', 'extractedJson', 'application/json; charset=utf-8'),
+        ('markdown', 'markdown', 'extractedMarkdown', 'text/markdown; charset=utf-8'),
+        ('xml', 'xml', 'extractedXml', 'application/xml; charset=utf-8'),
+        ('xml-tei', 'xmltei', 'extractedXmlTei', 'application/xml; charset=utf-8'),
     ]
 
-    for config_key, output_format, data_key, content_type in format_configs:
-        if config.get(config_key):
+    for format_name, output_format, data_key, content_type in format_configs:
+        if format_name in save_formats:
             content = extract_format(html, output_format, extractor, url=url)
             if content:
                 ext = 'tei.xml' if output_format == 'xmltei' else output_format

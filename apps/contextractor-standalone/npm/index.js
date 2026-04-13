@@ -65,8 +65,7 @@ function getBrowsersPath() {
  * @param {boolean} [options.noLinks] - Exclude links
  * @param {boolean} [options.noComments] - Exclude comments
  * @param {string} [options.outputDir] - Output directory
- * @param {boolean} [options.saveMarkdown] - Save extracted markdown (default: true)
- * @param {boolean} [options.saveJsonl] - Save all pages as JSONL (single file)
+ * @param {string|string[]} [options.save] - Output formats: markdown,html,text,json,jsonl,xml,xml-tei,all
  * @param {number} [options.maxPages] - Max pages to crawl
  * @param {number} [options.crawlDepth] - Max crawl depth
  * @param {boolean} [options.headless] - Run headless (default true)
@@ -97,11 +96,6 @@ function getBrowsersPath() {
  * @param {number} [options.maxConcurrency] - Max parallel requests
  * @param {number} [options.maxRetries] - Max request retries
  * @param {number} [options.maxResults] - Max results (0 = unlimited)
- * @param {boolean} [options.saveRawHtml] - Save raw HTML
- * @param {boolean} [options.saveText] - Save extracted text
- * @param {boolean} [options.saveJson] - Save extracted JSON
- * @param {boolean} [options.saveXml] - Save extracted XML
- * @param {boolean} [options.saveXmlTei] - Save extracted XML-TEI
  * @param {boolean} [options.verbose] - Verbose logging
  * @param {string} [options.stdio] - stdio option for child process
  * @returns {Promise<void>}
@@ -132,8 +126,11 @@ function extract(urls, options = {}) {
     if (options.headless === true) args.push("--headless");
     if (options.headless === false) args.push("--no-headless");
     if (options.outputDir) args.push("--output-dir", options.outputDir);
-    if (options.saveMarkdown === true) args.push("--save-markdown");
-    if (options.saveMarkdown === false) args.push("--no-save-markdown");
+    // Output formats
+    if (options.save) {
+      const saveList = Array.isArray(options.save) ? options.save : [options.save];
+      args.push("--save", saveList.join(","));
+    }
 
     // Proxy
     if (options.proxyUrls) {
@@ -173,14 +170,6 @@ function extract(urls, options = {}) {
     if (options.maxConcurrency != null) args.push("--max-concurrency", String(options.maxConcurrency));
     if (options.maxRetries != null) args.push("--max-retries", String(options.maxRetries));
     if (options.maxResults != null) args.push("--max-results", String(options.maxResults));
-
-    // Output toggles
-    if (options.saveRawHtml) args.push("--save-raw-html");
-    if (options.saveText) args.push("--save-text");
-    if (options.saveJson) args.push("--save-json");
-    if (options.saveJsonl) args.push("--save-jsonl");
-    if (options.saveXml) args.push("--save-xml");
-    if (options.saveXmlTei) args.push("--save-xml-tei");
 
     // Extraction options
     if (options.precision) args.push("--precision");

@@ -27,13 +27,21 @@ def build_crawl_config(actor_input: dict[str, Any]) -> dict[str, Any]:
     Returns:
         Normalized configuration dictionary for the request handler.
     """
+    format_mapping = {
+        'saveExtractedMarkdownToKeyValueStore': 'markdown',
+        'saveRawHtmlToKeyValueStore': 'html',
+        'saveExtractedTextToKeyValueStore': 'text',
+        'saveExtractedJsonToKeyValueStore': 'json',
+        'saveExtractedXmlToKeyValueStore': 'xml',
+        'saveExtractedXmlTeiToKeyValueStore': 'xml-tei',
+    }
+    save_formats = []
+    for apify_key, format_name in format_mapping.items():
+        if actor_input.get(apify_key, format_name == 'markdown'):
+            save_formats.append(format_name)
+
     return {
-        'save_raw_html': actor_input.get('saveRawHtmlToKeyValueStore', False),
-        'save_text': actor_input.get('saveExtractedTextToKeyValueStore', False),
-        'save_json': actor_input.get('saveExtractedJsonToKeyValueStore', False),
-        'save_markdown': actor_input.get('saveExtractedMarkdownToKeyValueStore', True),
-        'save_xml': actor_input.get('saveExtractedXmlToKeyValueStore', False),
-        'save_xmltei': actor_input.get('saveExtractedXmlTeiToKeyValueStore', False),
+        'save': save_formats or ['markdown'],
         'trafilatura_config_raw': actor_input.get('trafilaturaConfig', {}),  # Raw dict for JSON serialization
         'globs': actor_input.get('globs', []),
         'excludes': actor_input.get('excludes', []),

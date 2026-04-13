@@ -29,7 +29,7 @@ contextractor https://example.com
 Works with zero config. Pass URLs directly, or use a config file for complex setups:
 
 ```bash
-contextractor https://example.com --precision --save-json -o ./results
+contextractor https://example.com --precision --save json -o ./results
 contextractor --config config.json --max-pages 10
 ```
 
@@ -73,14 +73,9 @@ Cookies & Headers:
   --cookies             JSON array of cookie objects
   --headers             JSON object of custom HTTP headers
 
-Output Toggles:
-  --save-markdown/--no-save-markdown  Save extracted markdown (default: true)
-  --save-raw-html       Save raw HTML to output
-  --save-text           Save extracted text
-  --save-json           Save extracted JSON
-  --save-jsonl          Save all pages as JSONL (single file)
-  --save-xml            Save extracted XML
-  --save-xml-tei        Save extracted XML-TEI
+Output Format:
+  --save                Output formats, comma-separated (default: markdown)
+                        Valid: markdown, html, text, json, jsonl, xml, xml-tei, all
 
 Content Extraction:
   --precision           High precision mode (less noise)
@@ -109,7 +104,7 @@ Use a JSON config file to set options:
 ```json
 {
   "urls": ["https://example.com", "https://docs.example.com"],
-  "saveMarkdown": true,
+  "save": ["markdown"],
   "outputDir": "./output",
   "crawlDepth": 1,
   "proxy": {
@@ -176,19 +171,11 @@ Use a JSON config file to set options:
 | `cookies` | array | `[]` | Initial cookies (`[{"name": "...", "value": "...", "domain": "..."}]`) |
 | `headers` | object | `{}` | Custom HTTP headers (`{"Authorization": "Bearer token"}`) |
 
-### Output Toggles
-
-Each toggle saves its format independently. Multiple can be enabled at once:
+### Output Format
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `saveMarkdown` | bool | true | Save extracted markdown |
-| `saveRawHtml` | bool | false | Save raw HTML |
-| `saveText` | bool | false | Save extracted plain text |
-| `saveJson` | bool | false | Save extracted JSON |
-| `saveJsonl` | bool | false | Save all pages as JSONL (single file) |
-| `saveXml` | bool | false | Save extracted XML |
-| `saveXmlTei` | bool | false | Save extracted XML-TEI |
+| `save` | array | `["markdown"]` | Output formats: `markdown`, `html`, `text`, `json`, `jsonl`, `xml`, `xml-tei`, `all` |
 
 ### Content Extraction
 

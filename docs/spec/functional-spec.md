@@ -32,7 +32,7 @@ Works with zero config — just pass URLs directly:
 
 ```bash
 contextractor https://example.com
-contextractor https://example.com --precision --save-json -o ./results
+contextractor https://example.com --precision --save json -o ./results
 contextractor --config config.json --max-pages 10
 ```
 
@@ -43,13 +43,7 @@ contextractor --config config.json --max-pages 10
 | `--max-pages` | Max pages to crawl (0 = unlimited) |
 | `--crawl-depth` | Max link depth from start URLs (0 = start only) |
 | `--headless` / `--no-headless` | Browser headless mode (default: headless) |
-| `--save-markdown` / `--no-save-markdown` | Save extracted markdown (default: true) |
-| `--save-raw-html` | Save raw HTML |
-| `--save-text` | Save extracted text |
-| `--save-json` | Save extracted JSON |
-| `--save-jsonl` | Save all pages as JSONL (single file) |
-| `--save-xml` | Save extracted XML |
-| `--save-xml-tei` | Save extracted XML-TEI |
+| `--save` | Output formats, comma-separated: markdown,html,text,json,jsonl,xml,xml-tei,all (default: markdown) |
 | `--precision` | High precision mode (less noise) |
 | `--recall` | High recall mode (more content) |
 | `--fast` | Fast extraction mode (less thorough) |
@@ -73,13 +67,7 @@ contextractor --config config.json --max-pages 10
 | outputDir | string | "./output" | Directory for extracted content |
 | crawlDepth | integer | 0 | How deep to follow links (0 = start URLs only) |
 | headless | boolean | true | Browser headless mode |
-| saveMarkdown | boolean | true | Save extracted markdown |
-| saveRawHtml | boolean | false | Save raw HTML |
-| saveText | boolean | false | Save extracted text |
-| saveJson | boolean | false | Save extracted JSON |
-| saveJsonl | boolean | false | Save all pages as JSONL (single file) |
-| saveXml | boolean | false | Save extracted XML |
-| saveXmlTei | boolean | false | Save extracted XML-TEI |
+| save | array | ["markdown"] | Output formats: markdown, html, text, json, jsonl, xml, xml-tei, all |
 | trafilaturaConfig | object | {} | TrafilaturaConfig options (see below) |
 
 Config merge order: `defaults → config file (if provided) → CLI args`

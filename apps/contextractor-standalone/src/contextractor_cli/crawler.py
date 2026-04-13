@@ -228,7 +228,7 @@ async def run_crawl(config: CrawlConfig) -> None:
         any_saved = False
 
         # Save each enabled format
-        if config.save_markdown:
+        if "markdown" in config.save:
             result = extractor.extract(html, url=url, output_format="markdown")
             if result:
                 content = _build_text_content(result.content, "markdown")
@@ -237,7 +237,7 @@ async def run_crawl(config: CrawlConfig) -> None:
                 logger.info(f"Saved {filepath}")
                 any_saved = True
 
-        if config.save_text:
+        if "text" in config.save:
             result = extractor.extract(html, url=url, output_format="txt")
             if result:
                 content = _build_text_content(result.content, "txt")
@@ -246,7 +246,7 @@ async def run_crawl(config: CrawlConfig) -> None:
                 logger.info(f"Saved {filepath}")
                 any_saved = True
 
-        if config.save_json:
+        if "json" in config.save:
             result = extractor.extract(html, url=url, output_format="json")
             if result:
                 filepath = output_dir / f"{slug}.json"
@@ -254,7 +254,7 @@ async def run_crawl(config: CrawlConfig) -> None:
                 logger.info(f"Saved {filepath}")
                 any_saved = True
 
-        if config.save_jsonl:
+        if "jsonl" in config.save:
             result = extractor.extract(html, url=url, output_format="markdown")
             if result:
                 jsonl_path = output_dir / "output.jsonl"
@@ -270,7 +270,7 @@ async def run_crawl(config: CrawlConfig) -> None:
                 logger.info(f"Appended to {jsonl_path}")
                 any_saved = True
 
-        if config.save_xml:
+        if "xml" in config.save:
             result = extractor.extract(html, url=url, output_format="xml")
             if result:
                 filepath = output_dir / f"{slug}.xml"
@@ -278,7 +278,7 @@ async def run_crawl(config: CrawlConfig) -> None:
                 logger.info(f"Saved {filepath}")
                 any_saved = True
 
-        if config.save_xml_tei:
+        if "xml-tei" in config.save:
             result = extractor.extract(html, url=url, output_format="xmltei")
             if result:
                 filepath = output_dir / f"{slug}.tei.xml"
@@ -286,7 +286,7 @@ async def run_crawl(config: CrawlConfig) -> None:
                 logger.info(f"Saved {filepath}")
                 any_saved = True
 
-        if config.save_raw_html:
+        if "html" in config.save:
             filepath = output_dir / f"{slug}.html"
             filepath.write_text(html, encoding="utf-8")
             logger.info(f"Saved {filepath}")

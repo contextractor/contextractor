@@ -9,7 +9,7 @@ from typing import Annotated, Optional
 
 import typer
 
-from .config import CrawlConfig
+from .config import CrawlConfig, validate_save_formats
 from .crawler import run_crawl
 
 app = typer.Typer(
@@ -140,35 +140,10 @@ def extract(
         Optional[int],
         typer.Option("--max-results", help="Max results per crawl (0 = unlimited)"),
     ] = None,
-    # -- Output toggles --
-    save_markdown: Annotated[
-        Optional[bool],
-        typer.Option("--save-markdown/--no-save-markdown",
-                     help="Save extracted markdown (default: true)"),
-    ] = None,
-    save_raw_html: Annotated[
-        Optional[bool],
-        typer.Option("--save-raw-html", help="Save raw HTML to output"),
-    ] = None,
-    save_text: Annotated[
-        Optional[bool],
-        typer.Option("--save-text", help="Save extracted text"),
-    ] = None,
-    save_json: Annotated[
-        Optional[bool],
-        typer.Option("--save-json", help="Save extracted JSON"),
-    ] = None,
-    save_jsonl: Annotated[
-        Optional[bool],
-        typer.Option("--save-jsonl", help="Save all pages as JSONL (single file)"),
-    ] = None,
-    save_xml: Annotated[
-        Optional[bool],
-        typer.Option("--save-xml", help="Save extracted XML"),
-    ] = None,
-    save_xml_tei: Annotated[
-        Optional[bool],
-        typer.Option("--save-xml-tei", help="Save extracted XML-TEI"),
+    # -- Output formats --
+    save: Annotated[
+        Optional[str],
+        typer.Option("--save", help="Output formats, comma-separated: markdown,html,text,json,jsonl,xml,xml-tei,all (default: markdown)"),
     ] = None,
     # -- TrafilaturaConfig fields --
     precision: Annotated[
@@ -278,14 +253,8 @@ def extract(
         "max_concurrency": max_concurrency,
         "max_retries": max_retries,
         "max_results": max_results,
-        # Output toggles
-        "save_markdown": save_markdown,
-        "save_raw_html": save_raw_html,
-        "save_text": save_text,
-        "save_json": save_json,
-        "save_jsonl": save_jsonl,
-        "save_xml": save_xml,
-        "save_xml_tei": save_xml_tei,
+        # Output formats
+        "save": validate_save_formats([s.strip() for s in save.split(",")]) if save else None,
         # Extraction settings
         "fast": fast,
         "favor_precision": precision,
@@ -316,23 +285,7 @@ def extract(
         typer.echo("Error: No URLs specified. Provide URLs as arguments or via --config.", err=True)
         raise typer.Exit(1)
 
-    # Build list of active output formats for display
-    active_formats = []
-    if cfg.save_markdown:
-        active_formats.append("markdown")
-    if cfg.save_raw_html:
-        active_formats.append("html")
-    if cfg.save_text:
-        active_formats.append("text")
-    if cfg.save_json:
-        active_formats.append("json")
-    if cfg.save_jsonl:
-        active_formats.append("jsonl")
-    if cfg.save_xml:
-        active_formats.append("xml")
-    if cfg.save_xml_tei:
-        active_formats.append("xml-tei")
-    formats_str = ", ".join(active_formats) if active_formats else "markdown"
+    formats_str = ", ".join(cfg.save) if cfg.save else "markdown"
 
     typer.echo(f"Extracting {len(cfg.urls)} URL(s) → {cfg.output_dir}/ ({formats_str})")
     asyncio.run(run_crawl(cfg))

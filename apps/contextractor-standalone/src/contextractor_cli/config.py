@@ -16,6 +16,22 @@ from contextractor_engine.utils import normalize_config_keys, to_snake_case
 # TrafilaturaConfig field names for routing in merge()
 _EXTRACTION_FIELDS = {f.name for f in dataclass_fields(TrafilaturaConfig)}
 
+VALID_SAVE_FORMATS = {"markdown", "html", "text", "json", "jsonl", "xml", "xml-tei"}
+
+
+def validate_save_formats(formats: list[str]) -> list[str]:
+    """Validate and normalize save format names. Expands 'all'."""
+    result = []
+    for fmt in formats:
+        fmt = fmt.strip().lower()
+        if fmt == "all":
+            return sorted(VALID_SAVE_FORMATS)
+        if fmt not in VALID_SAVE_FORMATS:
+            raise ValueError(f"Unknown save format: '{fmt}'. Valid: {', '.join(sorted(VALID_SAVE_FORMATS))}")
+        if fmt not in result:
+            result.append(fmt)
+    return result
+
 
 @dataclass
 class CrawlConfig:
@@ -60,14 +76,8 @@ class CrawlConfig:
     max_retries: int = 3
     max_results: int = 0
 
-    # Output toggles
-    save_markdown: bool = True
-    save_raw_html: bool = False
-    save_text: bool = False
-    save_json: bool = False
-    save_jsonl: bool = False
-    save_xml: bool = False
-    save_xml_tei: bool = False
+    # Output formats
+    save: list[str] = field(default_factory=lambda: ["markdown"])
 
     @classmethod
     def from_file(cls, path: Path) -> CrawlConfig:
@@ -141,14 +151,8 @@ class CrawlConfig:
             max_concurrency=data.get("max_concurrency", 50),
             max_retries=data.get("max_request_retries", data.get("max_retries", 3)),
             max_results=data.get("max_results_per_crawl", data.get("max_results", 0)),
-            # Output toggles
-            save_markdown=data.get("save_markdown", data.get("save_extracted_markdown_to_key_value_store", True)),
-            save_raw_html=data.get("save_raw_html", data.get("save_raw_html_to_key_value_store", False)),
-            save_text=data.get("save_text", data.get("save_extracted_text_to_key_value_store", False)),
-            save_json=data.get("save_json", data.get("save_extracted_json_to_key_value_store", False)),
-            save_jsonl=data.get("save_jsonl", False),
-            save_xml=data.get("save_xml", data.get("save_extracted_xml_to_key_value_store", False)),
-            save_xml_tei=data.get("save_xml_tei", data.get("save_extracted_xml_tei_to_key_value_store", False)),
+            # Output formats
+            save=validate_save_formats(data.get("save", ["markdown"])),
         )
 
     def merge(self, overrides: dict[str, Any]) -> None:
