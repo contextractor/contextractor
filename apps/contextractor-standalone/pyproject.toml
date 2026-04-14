@@ -1,6 +1,6 @@
 [project]
 name = "contextractor"
-version = "0.3.10"
+version = "0.3.11"
 description = "Extract clean, readable content from any website"
 license = "Apache-2.0"
 requires-python = ">=3.12"
