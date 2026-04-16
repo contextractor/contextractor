@@ -18,6 +18,8 @@ Touches: `/README.md`, `/apps/contextractor-standalone/README.md`, `/packages/co
 - `step-add-docker-api.md` — Add Docker programmatic usage section to README
 - `step-sync-standalone.md` — Keep `apps/contextractor-standalone/README.md` in sync with root README
 - `step-expand-engine-readme.md` — Expand `packages/contextractor_engine/README.md` with more examples
+- `step-sync.md` — Run `/sync:docs` and `/sync:gui` to verify consistency
+- `step-publish.md` — Run `/publish:all` to release
 
 ## Shared Context
 
