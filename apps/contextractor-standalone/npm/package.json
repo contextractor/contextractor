@@ -1,6 +1,6 @@
 {
   "name": "contextractor",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "Extract web content from URLs with configurable extraction options",
   "license": "Apache-2.0",
   "repository": {

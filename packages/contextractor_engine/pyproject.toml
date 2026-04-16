@@ -1,9 +1,9 @@
 [project]
 name = "contextractor-engine"
-version = "0.3.11"
+version = "0.3.12"
 description = "Trafilatura extraction wrapper with configurable options"
 license = "Apache-2.0"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "trafilatura>=2.0.0",
 ]
