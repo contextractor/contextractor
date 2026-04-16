@@ -196,6 +196,75 @@ All options go under the `trafilaturaConfig` key in config files, or use the equ
 | `fast` | bool | false | Fast mode (less thorough) |
 | `pruneXpath` | array | null | XPath patterns to remove from content |
 
+## Node.js API
+
+Use `contextractor` as a library in your Node.js code:
+
+```javascript
+const { extract } = require("contextractor");
+
+// Extract a single URL
+await extract("https://example.com", {
+  save: "markdown",
+  outputDir: "./output",
+});
+
+// Multiple URLs with extraction options
+await extract(["https://a.com", "https://b.com"], {
+  precision: true,
+  noLinks: true,
+  includeTables: true,
+  save: ["markdown", "json"],
+  outputDir: "./results",
+});
+
+// Using a config file
+await extract("https://example.com", { config: "./config.json" });
+```
+
+ESM import:
+
+```javascript
+import { extract } from "contextractor";
+```
+
+`extract(urls, options)` returns `Promise<void>` — output goes to `outputDir` or stdout. Options use the same camelCase names as listed in [CLI Options](#cli-options) and [Config File](#config-file-optional).
+
+## Python API
+
+Install the extraction engine:
+
+```bash
+pip install contextractor-engine
+```
+
+Use `ContentExtractor` to extract content from HTML:
+
+```python
+from contextractor_engine import ContentExtractor, TrafilaturaConfig
+
+# Basic extraction
+extractor = ContentExtractor()
+result = extractor.extract(html, url="https://example.com", output_format="markdown")
+print(result.content)
+
+# High precision with custom config
+config = TrafilaturaConfig(favor_precision=True, include_tables=True, deduplicate=True)
+extractor = ContentExtractor(config=config)
+result = extractor.extract(html, output_format="json")
+```
+
+Extract metadata:
+
+```python
+meta = extractor.extract_metadata(html, url="https://example.com")
+print(meta.title, meta.author, meta.date)
+```
+
+Available output formats: `txt`, `markdown`, `json`, `xml`, `xmltei`
+
+See the [contextractor-engine README](packages/contextractor_engine/README.md) for full API reference.
+
 ## Docker
 
 ```bash
@@ -216,6 +285,38 @@ docker run -v ./config.json:/config.json ghcr.io/contextractor/contextractor --c
 
 All CLI flags work the same inside Docker.
 
+### Docker from Code
+
+Call Docker extraction programmatically:
+
+**Node.js:**
+
+```javascript
+const { execSync } = require("child_process");
+const result = execSync(
+  "docker run ghcr.io/contextractor/contextractor https://example.com",
+  { encoding: "utf-8" }
+);
+console.log(result);
+```
+
+**Python:**
+
+```python
+import subprocess
+result = subprocess.run(
+    ["docker", "run", "ghcr.io/contextractor/contextractor", "https://example.com"],
+    capture_output=True, text=True
+)
+print(result.stdout)
+```
+
+**Volume mount for output:**
+
+```bash
+docker run -v $(pwd)/output:/output ghcr.io/contextractor/contextractor https://example.com -o /output
+```
+
 ## Output
 
 One file per crawled page, named from the URL slug (e.g. `example-com-page.md`). Metadata (title, author, date) is included in the output header when available.
@@ -228,3 +329,6 @@ One file per crawled page, named from the URL slug (e.g. `example-com-page.md`).
 ## License
 
 Apache-2.0
+
+## Docs version
+2026-04-16T12:41:28Z
