@@ -21,7 +21,7 @@ Run `git diff` to see all modifications.
 - Verify kept sections: Safety and Permissions, Project Structure, Active Skills, MCP Servers, Resources
 
 **Step 2 (python-pro agent):**
-- Frontmatter: `model: sonnet` (not opus)
+- Frontmatter: `model: claude-opus-4-7` (not opus)
 - Body: ~30 lines, no generic dumps
 - Covers: stack, async, testing, type hints, project context
 

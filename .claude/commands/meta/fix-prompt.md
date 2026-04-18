@@ -2,7 +2,7 @@
 description: Research, fix, and compact a prompt file. Optionally execute it to validate and refine.
 argument-hint: <prompt-file-path>
 allowed-tools: Read, Edit, Grep, Glob, WebSearch, WebFetch, AskUserQuestion
-model: claude-opus-4-6
+model: claude-opus-4-7
 ---
 
 # Fix Prompt

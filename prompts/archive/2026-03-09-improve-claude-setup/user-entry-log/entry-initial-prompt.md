@@ -37,7 +37,7 @@ Improve the Claude Code configuration at `/Users/miroslavsekera/r/contextractor/
 - Type hints: `str | None` over `Optional[str]`; `from __future__ import annotations`
 - This project: uv workspace at `/Users/miroslavsekera/r/contextractor/`; run tests with `uv run pytest`
 
-Also change `model: opus` → `model: sonnet` in frontmatter. Opus is unnecessary for routine Python tasks.
+Also change `model: opus` → `model: claude-opus-4-7` in frontmatter. Opus is unnecessary for routine Python tasks.
 
 ---
 

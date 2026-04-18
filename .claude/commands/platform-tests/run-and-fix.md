@@ -1,7 +1,7 @@
 ---
 description: Run Contextractor test suites, analyze failures, and fix code
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
-model: sonnet
+model: claude-opus-4-7
 ---
 
 # Run and Fix Command

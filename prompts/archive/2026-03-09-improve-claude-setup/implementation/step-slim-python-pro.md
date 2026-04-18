@@ -8,7 +8,7 @@
 ## Changes
 
 ### Frontmatter
-Change `model: opus` → `model: sonnet`
+Change `model: opus` → `model: claude-opus-4-7`
 
 ### Body
 Replace everything below the frontmatter `---` with a focused version covering only:

@@ -1,7 +1,7 @@
 ---
 description: Delete agent/skill/command/rule and remove all references across repo
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
-model: sonnet
+model: claude-opus-4-7
 argument-hint: <path to .md file in .claude/>
 ---
 

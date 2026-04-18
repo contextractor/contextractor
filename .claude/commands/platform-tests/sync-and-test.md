@@ -1,7 +1,7 @@
 ---
 description: Sync test cases with actor schema and run tests
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
-model: sonnet
+model: claude-opus-4-7
 ---
 
 # Sync and Test Command

@@ -2,7 +2,7 @@
 description: Research, structure, and produce implementation prompts from a raw prompt idea
 argument-hint: <raw-meta-prompt> [--- optional instructions after separator]
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, WebSearch, WebFetch, AskUserQuestion, Task
-model: claude-opus-4-6
+model: claude-opus-4-7
 ---
 
 # Write Prompt

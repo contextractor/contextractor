@@ -1,7 +1,7 @@
 ---
 description: Archive prompt text or file to @/prompts/ — words verbatim, clutter trimmed
 allowed-tools: Read, Write, Bash, Glob, Grep, AskUserQuestion
-model: sonnet
+model: claude-opus-4-7
 argument-hint: <prompt text or file path>
 ---
 

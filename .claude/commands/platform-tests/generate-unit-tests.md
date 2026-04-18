@@ -1,7 +1,7 @@
 ---
 description: Generate pytest unit tests from platform test runner results
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch
-model: sonnet
+model: claude-opus-4-7
 ---
 
 # Generate Unit Tests Command
