@@ -1,6 +1,6 @@
 # Contextractor — Trafilatura Powered Web Content Extractor
 
-Extract clean, readable content from any website. Uses [Trafilatura](https://trafilatura.readthedocs.io/) to strip away navigation, ads, and boilerplate—leaving just the text you need.
+Extract clean, readable content from any website. Uses [Trafilatura](https://www.contextractor.com/trafilatura/) to strip away navigation, ads, and boilerplate—leaving just the text you need.
 
 Available as: [PyPI](https://pypi.org/project/contextractor/) | [npm](https://www.npmjs.com/package/contextractor) | [Docker](https://ghcr.io/contextractor/contextractor) | [Apify actor](https://apify.com/glueo/contextractor)
 
@@ -215,7 +215,7 @@ Extract all blog posts from a site:
 ScrapingHub. [GitHub](https://github.com/scrapinghub/article-extraction-benchmark)
 
 ##### 2. Evaluation
-Barbaresi, Adrien. [Trafilatura Documentation v2.0.0](https://trafilatura.readthedocs.io/en/latest/evaluation.html)
+Barbaresi, Adrien. [Trafilatura Documentation v2.0.0](https://www.contextractor.com/trafilatura/en/latest/evaluation.html)
 
 ##### 3. Trafilatura: A Python package & command-line tool to gather text on the Web
 Barbaresi, Adrien. [GitHub](https://github.com/adbar/trafilatura)

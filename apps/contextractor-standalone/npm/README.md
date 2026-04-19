@@ -1,6 +1,6 @@
 # Contextractor
 
-Extract clean, readable content from any website using [Trafilatura](https://trafilatura.readthedocs.io/).
+Extract clean, readable content from any website using [Trafilatura](https://www.contextractor.com/trafilatura/).
 
 Available as: [PyPI](https://pypi.org/project/contextractor/) | [npm](#install) | [Docker](#docker) | [Apify actor](https://apify.com/glueo/contextractor)
 
