@@ -2,7 +2,7 @@
 
 ## TLDR
 
-Add `https://pypi.org/project/contextractor/` to three locations that currently lack it: CLI `--help` output, Apify Actor description, and npm `package.json`. READMEs already have the link (commit f5b1f37).
+Add `https://www.contextractor.com/help/pypi/` to three locations that currently lack it: CLI `--help` output, Apify Actor description, and npm `package.json`. READMEs already have the link (commit f5b1f37).
 
 See: `../docs-pypi-and-config-case-notes/pypi-link-status.md`, `../user-entry-log/entry-qa-pypi-locations.md`
 

@@ -18,12 +18,12 @@ See `user-entry-log/entry-qa-naming-positioning.md` — user wants it removed fr
 
 **Before:**
 ```
-Available as: [npm CLI](#install) | [Docker](#docker) | [Apify actor](https://apify.com/glueo/contextractor) | [Web app](https://contextractor.com)
+Available as: [npm CLI](#install) | [Docker](https://www.contextractor.com/help/docker/) | [Apify actor](https://www.contextractor.com/help/apify/) | [Web app](https://contextractor.com)
 ```
 
 **After:**
 ```
-Available as: [npm CLI](#install) | [Docker](#docker) | [Apify actor](https://apify.com/glueo/contextractor)
+Available as: [npm CLI](#install) | [Docker](https://www.contextractor.com/help/docker/) | [Apify actor](https://www.contextractor.com/help/apify/)
 
 Try the [Playground](https://contextractor.com) to configure extraction settings and preview commands before running.
 ```

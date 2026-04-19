@@ -2,11 +2,11 @@
 
 ## TLDR
 
-Add the PyPI package link (`https://pypi.org/project/contextractor/`) to CLI help, Apify Actor description, and npm package.json. Accept both `snake_case` and `camelCase` for all config keys and enum values in JSON/YAML configs and CLI. Fix proxy rotation enum values in npm-facing docs to use camelCase. Run sync commands, commit, push.
+Add the PyPI package link (`https://www.contextractor.com/help/pypi/`) to CLI help, Apify Actor description, and npm package.json. Accept both `snake_case` and `camelCase` for all config keys and enum values in JSON/YAML configs and CLI. Fix proxy rotation enum values in npm-facing docs to use camelCase. Run sync commands, commit, push.
 
 ## Shared Context
 
-- PyPI URL: `https://pypi.org/project/contextractor/`
+- PyPI URL: `https://www.contextractor.com/help/pypi/`
 - npm wrapper: `apps/contextractor-standalone/npm/index.js`
 - Python CLI: `apps/contextractor-standalone/src/contextractor_cli/main.py`
 - Config: `apps/contextractor-standalone/src/contextractor_cli/config.py`

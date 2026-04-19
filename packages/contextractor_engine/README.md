@@ -1,6 +1,6 @@
 # contextractor-engine
 
-Trafilatura extraction wrapper with configurable options. Used by [contextractor](https://pypi.org/project/contextractor/) CLI and [Apify actor](https://apify.com/glueo/contextractor).
+Trafilatura extraction wrapper with configurable options. Used by [contextractor](https://www.contextractor.com/help/pypi/) CLI and [Apify actor](https://www.contextractor.com/help/apify/).
 
 ## Install
 

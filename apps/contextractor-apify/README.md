@@ -2,7 +2,7 @@
 
 Extract clean, readable content from any website. Uses [Trafilatura](https://www.contextractor.com/trafilatura/) to strip away navigation, ads, and boilerplate—leaving just the text you need.
 
-Available as: [PyPI](https://pypi.org/project/contextractor/) | [npm](https://www.npmjs.com/package/contextractor) | [Docker](https://ghcr.io/contextractor/contextractor) | [Apify actor](https://apify.com/glueo/contextractor)
+Available as: [PyPI](https://www.contextractor.com/help/pypi/) | [npm](https://www.npmjs.com/package/contextractor) | [Docker](https://ghcr.io/contextractor/contextractor) | [Apify actor](https://www.contextractor.com/help/apify/)
 
 ## Why Trafilatura?
 

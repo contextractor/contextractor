@@ -64,7 +64,7 @@ Unlike many extraction tools, Trafilatura has peer-reviewed academic backing. It
 ScrapingHub. [GitHub](https://github.com/scrapinghub/article-extraction-benchmark)
 
 ##### 2. Evaluation
-Barbaresi, Adrien. [Trafilatura Documentation v2.0.0](https://trafilatura.readthedocs.io/en/latest/evaluation.html)
+Barbaresi, Adrien. [Trafilatura Documentation v2.0.0](https://www.contextractor.com/trafilatura/en/latest/evaluation.html)
 
 ##### 3. An introduction to preparing your own dataset for LLM training
 AWS Machine Learning Blog. [Amazon Web Services](https://aws.amazon.com/blogs/machine-learning/an-introduction-to-preparing-your-own-dataset-for-llm-training/)

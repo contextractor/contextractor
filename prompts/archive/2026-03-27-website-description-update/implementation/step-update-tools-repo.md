@@ -29,8 +29,8 @@ See `user-entry-log/entry-qa-naming-positioning.md` for user decisions.
 
 ### `apps/contextractor-site/content/automatic/help/help-blurb.md` (line 7)
 
-**Before:** `Use it via the [Web App](/help/web/), [CLI](/help/cli/), [Docker](/help/docker/), or [Apify actor](https://apify.com/glueo/contextractor).`
-**After:** `Use it via the [CLI](/help/cli/), [Docker](/help/docker/), or [Apify actor](https://apify.com/glueo/contextractor). Try the [Playground](/help/web/) to configure settings and preview commands.`
+**Before:** `Use it via the [Web App](/help/web/), [CLI](/help/cli/), [Docker](/help/docker/), or [Apify actor](https://www.contextractor.com/help/apify/).`
+**After:** `Use it via the [CLI](/help/cli/), [Docker](/help/docker/), or [Apify actor](https://www.contextractor.com/help/apify/). Try the [Playground](/help/web/) to configure settings and preview commands.`
 
 ### `apps/contextractor-site/content/automatic/help/help.md`
 
