@@ -64,7 +64,7 @@ Unlike many extraction tools, Trafilatura has peer-reviewed academic backing. It
 
 ## Playground
 
-Try the [Playground](https://contextractor.com) to configure extraction settings and preview commands before running at scale.
+Try the [playground](https://www.contextractor.com/) to configure extraction settings and preview commands before running at scale.
 
 ## Features
 

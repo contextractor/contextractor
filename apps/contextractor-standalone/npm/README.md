@@ -4,7 +4,7 @@ Extract clean, readable content from any website using [Trafilatura](https://www
 
 Available as: [PyPI](https://www.contextractor.com/help/pypi/) | [npm](https://www.contextractor.com/help/npm/) | [Docker](https://www.contextractor.com/help/docker/) | [Apify actor](https://www.contextractor.com/help/apify/)
 
-Try the [Playground](https://contextractor.com) to configure extraction settings and preview commands before running.
+Try the [playground](https://www.contextractor.com/) to configure extraction settings and preview commands before running.
 
 ## Install
 

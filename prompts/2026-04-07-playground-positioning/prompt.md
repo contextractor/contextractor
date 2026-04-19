@@ -21,14 +21,14 @@ Update all documentation in `/Users/miroslavsekera/r/contextractor` so it's clea
 
 ### `README.md` (repo root)
 
-Current line 7: `Try the [Playground](https://contextractor.com) to configure extraction settings and preview commands before running.`
+Current line 7: `Try the [playground](https://www.contextractor.com/) to configure extraction settings and preview commands before running.`
 
 This is already good. Verify the rest of the README emphasizes CLI/Docker/Apify as primary, and the website as playground only.
 
 ### `apps/contextractor-apify/README.md`
 
 Verify features section mentions the playground as a companion tool, not the primary experience. Add a line like:
-> Try the [Playground](https://contextractor.com) to configure extraction settings and preview results before running the Actor.
+> Try the [playground](https://www.contextractor.com/) to configure extraction settings and preview results before running the Actor.
 
 ### `apps/contextractor-standalone/npm/README.md`
 

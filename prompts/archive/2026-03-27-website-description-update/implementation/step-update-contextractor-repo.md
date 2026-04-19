@@ -25,7 +25,7 @@ Available as: [npm CLI](#install) | [Docker](https://www.contextractor.com/help/
 ```
 Available as: [npm CLI](#install) | [Docker](https://www.contextractor.com/help/docker/) | [Apify actor](https://www.contextractor.com/help/apify/)
 
-Try the [Playground](https://contextractor.com) to configure extraction settings and preview commands before running.
+Try the [playground](https://www.contextractor.com/) to configure extraction settings and preview commands before running.
 ```
 
 ### `apps/contextractor-standalone/npm/README.md` (line 5)
@@ -45,5 +45,5 @@ Try the interactive web app at **[contextractor.com](https://contextractor.com)*
 ```
 ## Playground
 
-Try the [Playground](https://contextractor.com) to configure extraction settings and preview commands before running at scale.
+Try the [playground](https://www.contextractor.com/) to configure extraction settings and preview commands before running at scale.
 ```
