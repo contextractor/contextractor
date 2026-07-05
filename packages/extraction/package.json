@@ -1,6 +1,6 @@
 {
   "name": "@contextractor/extraction",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "private": true,
   "description": "Pure TypeScript content-extraction package backed by rs-trafilatura via napi-rs.",
   "main": "./dist/index.js",

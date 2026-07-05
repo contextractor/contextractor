@@ -1,6 +1,6 @@
 {
   "name": "@contextractor/apify",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "private": true,
   "description": "Apify Actor that crawls websites and extracts main-content text. Built on rs-trafilatura and Crawlee.",
   "type": "module",

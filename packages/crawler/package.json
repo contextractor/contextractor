@@ -1,6 +1,6 @@
 {
   "name": "@contextractor/crawler",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "private": true,
   "description": "Shared Crawlee + Playwright crawler package for Contextractor.",
   "type": "module",

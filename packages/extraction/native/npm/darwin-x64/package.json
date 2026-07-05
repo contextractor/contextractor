@@ -1,6 +1,6 @@
 {
   "name": "@contextractor/extraction-native-darwin-x64",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "private": true,
   "main": "contextractor-extraction-native.darwin-x64.node",
   "files": [
