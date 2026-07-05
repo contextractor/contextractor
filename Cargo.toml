@@ -1,0 +1,26 @@
+[workspace]
+resolver = "2"
+members = ["packages/extraction/native"]
+
+[workspace.package]
+version = "0.4.13"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/contextractor/contextractor"
+
+[workspace.lints.rust]
+unsafe_code = "warn"
+
+[workspace.lints.clippy]
+expect_used = "deny"
+unwrap_used = "deny"
+missing_errors_doc = "deny"
+panic = "warn"
+todo = "warn"
+unimplemented = "warn"
+
+[profile.release]
+lto = true
+opt-level = 3
+codegen-units = 1
+strip = "symbols"

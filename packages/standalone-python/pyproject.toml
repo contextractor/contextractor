@@ -1,0 +1,91 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "contextractor"
+version = "0.4.13"
+description = "Drive the Contextractor Node crawler/extractor from Python; clean main content in txt/markdown/json/html, plus raw original HTML."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+authors = [{ name = "glueo", email = "company@glueo.com" }]
+keywords = [
+  "web-scraping",
+  "crawler",
+  "content-extraction",
+  "trafilatura",
+  "crawlee",
+  "playwright",
+  "markdown",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Microsoft :: Windows",
+  "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+  "Topic :: Text Processing :: Markup :: HTML",
+  "Typing :: Typed",
+]
+dependencies = ["nodejs-wheel-binaries>=24.16,<25"]
+
+[project.optional-dependencies]
+test = ["pytest>=9.1", "pytest-asyncio>=1.4", "pyyaml>=6.0.3"]
+
+[project.urls]
+Homepage = "https://www.contextractor.com"
+Documentation = "https://www.contextractor.com/help/pypi/"
+Repository = "https://github.com/contextractor/contextractor"
+Issues = "https://github.com/contextractor/contextractor/issues"
+Changelog = "https://github.com/contextractor/contextractor/releases"
+"Apify Actor" = "https://apify.com/glueo/contextractor"
+"NPM package" = "https://www.npmjs.com/package/contextractor"
+
+# Platform wheel: the custom hook forces a py3-none-{platform} tag so each wheel
+# carries only the build platform's bundled native module + flattened JS tree.
+[tool.hatch.build.targets.wheel]
+packages = ["src/contextractor"]
+artifacts = ["src/contextractor/_vendor/**"]
+# The third-party attribution NOTICE (Ghostery MPL-2.0) is force-included by the
+# custom hook (hatch_build.py), which resolves it location-independently across the
+# tools and mirror layouts — a static `force-include` path only works in one of
+# them. The vendored CLI tree under _vendor also carries its own dist/NOTICE.
+
+[tool.hatch.build.targets.wheel.hooks.custom]
+path = "hatch_build.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/src/contextractor",
+  "/hatch_build.py",
+  "/scripts",
+  "/README.md",
+  "/SPEC.md",
+  "/pyproject.toml",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "S"]
+# S101: assert in tests. S603/S607: we spawn via argv lists (never a shell) with a
+# resolved interpreter path — the subprocess warnings do not apply.
+ignore = ["S101", "S603", "S607"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+addopts = "-q"
+markers = ["e2e: real-network end-to-end test (set CONTEXTRACTOR_E2E=1)"]

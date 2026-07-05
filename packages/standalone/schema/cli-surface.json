@@ -1,0 +1,433 @@
+{
+  "title": "Contextractor CLI surface",
+  "description": "Generated field-to-flag mapping for the contextractor CLI. Derived from the Zod source of truth; do not edit by hand.",
+  "options": [
+    {
+      "id": "start-urls-file",
+      "flag": "--start-urls-file",
+      "field": null,
+      "kind": "scalar",
+      "description": "Read start URLs (one per line) from a file",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "headless",
+      "flag": "--headless",
+      "field": "headless",
+      "kind": "boolean-on",
+      "description": "Run browser in headless mode",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "no-headless",
+      "flag": "--no-headless",
+      "field": "headless",
+      "kind": "negation",
+      "description": "Run browser with UI",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "proxy",
+      "flag": "--proxy",
+      "field": null,
+      "kind": "repeatable",
+      "description": "Proxy URL (repeatable)",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "proxy-rotation",
+      "flag": "--proxy-rotation",
+      "field": "proxyRotation",
+      "kind": "scalar",
+      "description": "Proxy rotation: recommended, per-request, until-failure",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "max-session-rotations",
+      "flag": "--max-session-rotations",
+      "field": "maxSessionRotations",
+      "kind": "scalar",
+      "description": "Max session rotations per request on block detection",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "crawler-type",
+      "flag": "--crawler-type",
+      "field": "crawlerType",
+      "kind": "scalar",
+      "description": "Crawler engine: adaptive, firefox, chromium, cheerio",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "rendering-type-detection",
+      "flag": "--rendering-type-detection",
+      "field": "renderingTypeDetectionRatio",
+      "kind": "scalar",
+      "description": "Rendering type detection ratio 0–1 (adaptive only)",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "wait-until",
+      "flag": "--wait-until",
+      "field": "waitUntil",
+      "kind": "scalar",
+      "description": "Page load event: load, domcontentloaded, networkidle, commit",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "navigation-timeout",
+      "flag": "--navigation-timeout",
+      "field": "navigationTimeoutSecs",
+      "kind": "scalar",
+      "description": "Navigation timeout in seconds",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "block-media",
+      "flag": "--block-media",
+      "field": "blockMedia",
+      "kind": "boolean-on",
+      "description": "Block images, stylesheets, fonts, PDFs, and ZIPs (default)",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "no-block-media",
+      "flag": "--no-block-media",
+      "field": "blockMedia",
+      "kind": "negation",
+      "description": "Do not block media requests",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "ignore-cors-and-csp",
+      "flag": "--ignore-cors-and-csp",
+      "field": "ignoreCorsAndCsp",
+      "kind": "switch",
+      "description": "Disable CORS/CSP restrictions",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "close-cookie-modals",
+      "flag": "--close-cookie-modals",
+      "field": "closeCookieModals",
+      "kind": "boolean-on",
+      "description": "Auto-dismiss cookie banners",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "no-close-cookie-modals",
+      "flag": "--no-close-cookie-modals",
+      "field": "closeCookieModals",
+      "kind": "negation",
+      "description": "Do not auto-dismiss cookie banners",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "max-scroll-height",
+      "flag": "--max-scroll-height",
+      "field": "maxScrollHeight",
+      "kind": "scalar",
+      "description": "Max scroll height in pixels",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "ignore-https-errors",
+      "flag": "--ignore-https-errors",
+      "field": "ignoreHttpsErrors",
+      "kind": "switch",
+      "description": "Skip HTTPS certificate verification",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "user-agent",
+      "flag": "--user-agent",
+      "field": "userAgent",
+      "kind": "scalar",
+      "description": "Custom User-Agent string",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "respect-robots-txt",
+      "flag": "--respect-robots-txt",
+      "field": "respectRobotsTxtFile",
+      "kind": "switch",
+      "description": "Honor robots.txt",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "cookies",
+      "flag": "--cookies",
+      "field": "initialCookies",
+      "kind": "json",
+      "description": "JSON array of cookie objects",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "headers",
+      "flag": "--headers",
+      "field": "customHttpHeaders",
+      "kind": "json",
+      "description": "JSON object of custom HTTP headers",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "max-retries",
+      "flag": "--max-retries",
+      "field": "maxRequestRetries",
+      "kind": "scalar",
+      "description": "Max request retries",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "mode",
+      "flag": "--mode",
+      "field": "mode",
+      "kind": "scalar",
+      "description": "Extraction mode: precision (less noise), balanced (default), or recall (more content)",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "no-links",
+      "flag": "--no-links",
+      "field": "includeLinks",
+      "kind": "negation",
+      "description": "Exclude links from output",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "no-comments",
+      "flag": "--no-comments",
+      "field": "includeComments",
+      "kind": "negation",
+      "description": "Exclude comments from output",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "no-tables",
+      "flag": "--no-tables",
+      "field": "includeTables",
+      "kind": "negation",
+      "description": "Exclude tables from output",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "images",
+      "flag": "--images",
+      "field": "includeImages",
+      "kind": "boolean-on",
+      "description": "Include image alt text and captions",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "no-images",
+      "flag": "--no-images",
+      "field": "includeImages",
+      "kind": "negation",
+      "description": "Exclude image alt text and captions (default)",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "language",
+      "flag": "--language",
+      "field": "languageCode",
+      "kind": "scalar",
+      "description": "Filter by language (e.g. en)",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "verbose",
+      "flag": "--verbose",
+      "short": "-v",
+      "field": null,
+      "kind": "switch",
+      "description": "Enable verbose logging",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "wait-for-dynamic-content",
+      "flag": "--wait-for-dynamic-content",
+      "field": "waitForDynamicContentSecs",
+      "kind": "scalar",
+      "description": "Maximum seconds to wait for dynamic content after navigation; the crawler continues as soon as the network is idle or this timeout elapses, whichever comes first (0 = disabled)",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "wait-for-selector",
+      "flag": "--wait-for-selector",
+      "field": "waitForSelector",
+      "kind": "scalar",
+      "description": "CSS selector to wait for before extracting (fails on timeout)",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "soft-wait-for-selector",
+      "flag": "--soft-wait-for-selector",
+      "field": "softWaitForSelector",
+      "kind": "scalar",
+      "description": "CSS selector to wait for before extracting (continues on timeout)",
+      "subcommands": ["extract", "extract-one"]
+    },
+    {
+      "id": "config-file",
+      "flag": "--config-file",
+      "short": "-c",
+      "field": null,
+      "kind": "scalar",
+      "description": "Path to JSON config file",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "purge",
+      "flag": "--purge",
+      "field": null,
+      "kind": "switch",
+      "description": "Purge the storage at --storage before extracting (datasets, KVS, request queues)",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "max-requests-per-crawl",
+      "flag": "--max-requests-per-crawl",
+      "field": "maxRequestsPerCrawl",
+      "kind": "scalar",
+      "description": "Max requests to handle (0 = unlimited)",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "max-crawl-depth",
+      "flag": "--max-crawl-depth",
+      "field": "maxCrawlDepth",
+      "kind": "scalar",
+      "description": "Max link depth from start URLs (0 = unlimited)",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "globs",
+      "flag": "--globs",
+      "field": "globs",
+      "kind": "repeatable",
+      "description": "Glob pattern to include (repeatable)",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "exclude",
+      "flag": "--exclude",
+      "field": "exclude",
+      "kind": "repeatable",
+      "description": "Glob pattern to exclude (repeatable)",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "selector",
+      "flag": "--selector",
+      "field": "selector",
+      "kind": "scalar",
+      "description": "CSS selector for links to follow",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "keep-url-fragment",
+      "flag": "--keep-url-fragment",
+      "field": "keepUrlFragment",
+      "kind": "switch",
+      "description": "Preserve URL fragments",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "use-sitemaps",
+      "flag": "--use-sitemaps",
+      "field": "useSitemaps",
+      "kind": "switch",
+      "description": "Discover and enqueue URLs from sitemap.xml at each start URL domain root",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "initial-concurrency",
+      "flag": "--initial-concurrency",
+      "field": "initialConcurrency",
+      "kind": "scalar",
+      "description": "Initial parallel requests (0 = Crawlee default)",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "max-concurrency",
+      "flag": "--max-concurrency",
+      "field": "maxConcurrency",
+      "kind": "scalar",
+      "description": "Max parallel requests",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "max-results",
+      "flag": "--max-results",
+      "field": "maxResultsPerCrawl",
+      "kind": "scalar",
+      "description": "Max results per crawl (0 = unlimited)",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "save",
+      "flag": "--save",
+      "field": "save",
+      "kind": "repeatable",
+      "description": "Format-destination token, e.g. markdown-kvs, original-dataset (repeatable). Format: txt|markdown|json|html|original; destination: dataset|kvs. List a format twice to save to both. Saving original/html to the dataset risks OOM on large pages.",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "deduplication",
+      "flag": "--deduplication",
+      "field": "deduplication",
+      "kind": "scalar",
+      "description": "Deduplication level: minimal, standard (default), or aggressive",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "session-pool-name",
+      "flag": "--session-pool-name",
+      "field": "sessionPoolName",
+      "kind": "scalar",
+      "description": "Named session pool for cross-run session sharing",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "storage",
+      "flag": "--storage",
+      "field": null,
+      "kind": "scalar",
+      "description": "Storage directory holding the datasets/key_value_stores/request_queues (default: ./storage or the XDG data dir)",
+      "subcommands": ["extract", "export", "purge"]
+    },
+    {
+      "id": "store-skipped-urls",
+      "flag": "--store-skipped-urls",
+      "field": "storeSkippedUrls",
+      "kind": "switch",
+      "description": "Push skipped URL records to the dataset after crawl",
+      "subcommands": ["extract"]
+    },
+    {
+      "id": "save-one",
+      "flag": "--save",
+      "field": null,
+      "kind": "repeatable",
+      "description": "Format-destination token, e.g. markdown-stdout, html-file (repeatable). Format: txt|markdown|json|html|original; destination: file|stdout. At most one format may target stdout.",
+      "subcommands": ["extract-one"]
+    },
+    {
+      "id": "output",
+      "flag": "--output",
+      "short": "-o",
+      "field": null,
+      "kind": "scalar",
+      "description": "File path for -file tokens: a literal path for one format, a base prefix for several, or a directory (trailing slash or an existing dir) for URL-slug names",
+      "subcommands": ["extract-one"]
+    },
+    {
+      "id": "output-dir",
+      "flag": "--output-dir",
+      "field": null,
+      "kind": "scalar",
+      "description": "Output directory (default: ./contextractor-output)",
+      "subcommands": ["export"]
+    }
+  ]
+}

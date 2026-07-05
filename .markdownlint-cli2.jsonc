@@ -1,0 +1,41 @@
+{
+  // markdownlint-cli2 — lints + auto-fixes Markdown rule violations.
+  // Prettier owns pure formatting (wrapping, spacing); markdownlint owns
+  // content/structure rules. Rules that conflict with Prettier or with our
+  // intentional usage are disabled below.
+  // Skip files ignored by .gitignore (node_modules, dist, target, storage,
+  // venv, autonomous-task-output, etc.) — matches Prettier's default behavior.
+  "gitignore": true,
+  "config": {
+    "default": true,
+    // Prettier controls line wrapping (proseWrap: preserve) — don't enforce length.
+    "MD013": false,
+    // Prettier owns table formatting (pipe spacing, column alignment); MD060's
+    // table-column-style conflicts with Prettier's output, so leave it to Prettier.
+    "MD060": false,
+    // READMEs intentionally use inline HTML (centered logo, badge rows, <img>).
+    "MD033": false,
+    // Bare code fences are used intentionally for directory trees and plain
+    // command output where no language tag applies.
+    "MD040": false,
+    // Some docs/test-case files don't start with a top-level heading.
+    "MD041": false,
+    // Allow the same heading text (e.g. "Usage") under different sections.
+    "MD024": { "siblings_only": true }
+  },
+  "ignores": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/target/**",
+    "**/storage/**",
+    "**/venv/**",
+    ".claude/**",
+    "prompts/**",
+    "media/**",
+    "temp/**",
+    "**/fixtures/**",
+    "**/test-suites/**",
+    "**/test-suites-output/**",
+    "packages/extraction/native/npm/**"
+  ]
+}

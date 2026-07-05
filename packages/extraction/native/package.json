@@ -1,0 +1,37 @@
+{
+  "name": "@contextractor/extraction-native",
+  "version": "0.4.13",
+  "private": true,
+  "description": "napi-rs binding around rs-trafilatura for the @contextractor/extraction TypeScript package",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "napi": {
+    "name": "contextractor-extraction-native",
+    "triples": {
+      "defaults": false,
+      "additional": [
+        "x86_64-apple-darwin",
+        "aarch64-apple-darwin",
+        "x86_64-unknown-linux-gnu",
+        "aarch64-unknown-linux-gnu",
+        "x86_64-pc-windows-msvc"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "node -e \"if (!process.env.CARGO_HOME && !process.env.npm_config_rebuild_native) { console.log('@contextractor/extraction-native: skipping build (committed prebuilds present; set CARGO_HOME or npm_config_rebuild_native=1 to rebuild).'); process.exit(0); } require('child_process').execSync('napi build --platform --release', { stdio: 'inherit' });\"",
+    "build:rebuild": "napi build --platform --release",
+    "build:debug": "napi build --platform"
+  },
+  "optionalDependencies": {
+    "@contextractor/extraction-native-darwin-arm64": "file:npm/darwin-arm64",
+    "@contextractor/extraction-native-darwin-x64": "file:npm/darwin-x64",
+    "@contextractor/extraction-native-linux-arm64-gnu": "file:npm/linux-arm64-gnu",
+    "@contextractor/extraction-native-linux-x64-gnu": "file:npm/linux-x64-gnu",
+    "@contextractor/extraction-native-win32-x64-msvc": "file:npm/win32-x64-msvc"
+  }
+}

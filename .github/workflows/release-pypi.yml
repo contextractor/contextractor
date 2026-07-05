@@ -1,0 +1,184 @@
+name: release-pypi
+
+# Builds platform wheels for the `contextractor` PyPI library and publishes via
+# Trusted Publishing (OIDC). MUST run only AFTER the napi-refresh PR opened by
+# build-napi.yml for the tag is merged, so each wheel bundles current `.node`
+# prebuilds. Hence workflow_dispatch (not a `v*` tag trigger). The /publish:pypi
+# command encodes this gate.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to build from (e.g. v0.1.0, or the merged refresh commit)"
+        required: true
+        type: string
+
+jobs:
+  build-wheels:
+    name: wheel ${{ matrix.plat_tag }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            plat_tag: macosx_13_0_arm64
+            napi_platform: darwin-arm64
+            cibw_archs: arm64
+          # macos-13 (Intel) runners are deprecated/scarce and stall in the queue,
+          # so cross-build the x86_64 wheel on the arm64 runner. The wheel is
+          # py3-none (no compiled extension; the .node is a prebuilt asset), so the
+          # "cross-build" is pure packaging; cibuildwheel auto-skips its test.
+          - os: macos-14
+            plat_tag: macosx_13_0_x86_64
+            napi_platform: darwin-x64
+            cibw_archs: x86_64
+          - os: ubuntu-latest
+            plat_tag: manylinux_2_28_x86_64
+            napi_platform: linux-x64-gnu
+            cibw_archs: native
+          - os: ubuntu-24.04-arm
+            plat_tag: manylinux_2_28_aarch64
+            napi_platform: linux-arm64-gnu
+            cibw_archs: native
+          - os: windows-latest
+            plat_tag: win_amd64
+            napi_platform: win32-x64-msvc
+            cibw_archs: native
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: pnpm/action-setup@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          package-manager-cache: false # no committed pnpm-lock.yaml (gitignored)
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # Build the JS host-side and flatten the workspace into a real-file tree
+      # (no symlinks — wheels cannot carry them). pnpm installs only the
+      # os/cpu-matching native optional dependency, so _cli_deploy already carries
+      # just this platform's `.node`.
+      - name: Build and flatten the CLI
+        shell: bash
+        run: |
+          # pnpm-lock.yaml is not committed in this repo, so resolve fresh (no
+          # --frozen-lockfile, matching build-napi.yml's install strategy).
+          pnpm install
+          # Build contextractor + its workspace deps in dependency order (turbo).
+          # tsc needs @contextractor/crawler/schema/extraction dist/.d.ts built
+          # first (building contextractor alone fails TS2307). Filter to the CLI's
+          # dependency closure so @contextractor/apify is excluded — its build runs
+          # gen-input-schema + docs:update, which fails on Windows (pnpm ENOENT).
+          pnpm exec turbo run build --filter=contextractor
+          # Hoisted node-linker → a real-file, npm-style node_modules (no symlinks;
+          # wheels cannot carry them) that still resolves transitive deps.
+          pnpm --filter contextractor deploy --prod --config.node-linker=hoisted _cli_deploy
+
+      - name: Build wheel
+        uses: pypa/cibuildwheel@v2.21
+        with:
+          package-dir: packages/standalone-python
+          output-dir: wheelhouse
+        env:
+          # Use latest build-backend deps instead of cibuildwheel's pinned
+          # constraints. The pinned set ships an old hatchling (<1.27) that emits
+          # the PEP 639 `License-Expression` field under `Metadata-Version: 2.3`
+          # — an inconsistent combination twine rejects on upload
+          # ("license-expression introduced in metadata version 2.4, not 2.3").
+          # hatchling >=1.27 stamps Metadata-Version 2.4 correctly, which PyPI
+          # accepts. The wheel is pure-Python (py3-none), so unpinning build deps
+          # is low risk.
+          CIBW_DEPENDENCY_VERSIONS: latest
+          # One wheel per platform (the backend emits py3-none-<plat>); cp312
+          # just drives the single build.
+          CIBW_BUILD: "cp312-*"
+          # Per-job arch (matrix.cibw_archs): "native" elsewhere, "x86_64" for the
+          # cross-built Intel-mac wheel. "native" keeps 64-bit Linux from also
+          # building i686, which the forced single-platform tag mis-labels (the
+          # install-test then rejects it as "not a supported wheel").
+          CIBW_ARCHS: ${{ matrix.cibw_archs }}
+          # Skip musllinux. cibuildwheel would otherwise also build a musl wheel,
+          # which the forced manylinux_2_28 tag mis-labels — its in-musl install
+          # test then rejects it ("not a supported wheel"). We ship manylinux only.
+          CIBW_SKIP: "*musllinux*"
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
+          # Stage the host-built deploy tree into _vendor (pure-Python; runs in the
+          # manylinux container without needing Node there).
+          CIBW_BEFORE_ALL: >
+            python {project}/packages/standalone-python/scripts/stage_vendor.py
+            --deploy-dir {project}/_cli_deploy
+            --keep-platform ${{ matrix.napi_platform }}
+          CIBW_ENVIRONMENT: CONTEXTRACTOR_WHEEL_PLATFORM=${{ matrix.plat_tag }}
+          # No ELF Python extension to patch — skip auditwheel/delocate entirely.
+          CIBW_REPAIR_WHEEL_COMMAND: ""
+          CIBW_TEST_COMMAND: 'python -c "import contextractor; print(contextractor.__version__)"'
+
+      # Safety gate: stage_vendor prunes non-target .node and never errors, so a
+      # deploy tree missing this platform's prebuild would silently ship an empty
+      # wheel. Fail the job (blocking publish) unless the wheel bundles the
+      # matching native module. Critical for the cross-built Intel-mac wheel.
+      - name: Verify the wheel bundles its native module
+        shell: bash
+        run: |
+          set -euo pipefail
+          wheel=$(ls wheelhouse/*.whl)
+          echo "Inspecting $wheel"
+          # Bundled layout: dist/native/contextractor-extraction-native.<platform>.node
+          # (see packages/standalone-python/scripts/stage_vendor.py NATIVE_DIST_GLOB).
+          python -c "import zipfile,sys; z=zipfile.ZipFile('$wheel'); nodes=[n for n in z.namelist() if n.endswith('.node')]; print('bundled .node:', nodes); sys.exit(0 if any(n.endswith('contextractor-extraction-native.${{ matrix.napi_platform }}.node') for n in nodes) else 1)"
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: wheels-${{ matrix.plat_tag }}
+          path: wheelhouse/*.whl
+          if-no-files-found: error
+
+  build-sdist:
+    name: sdist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Build sdist
+        run: |
+          python -m pip install --upgrade build
+          python -m build --sdist --outdir dist packages/standalone-python
+      - uses: actions/upload-artifact@v6
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  publish:
+    name: publish to PyPI
+    needs: [build-wheels, build-sdist]
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # OIDC — no API token
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          path: dist
+          pattern: "{wheels-*,sdist}"
+          merge-multiple: true
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # Generate and upload PEP 740 provenance attestations. Default for
+          # Trusted Publishing (OIDC) is already true; pin it explicitly so the
+          # attestation guarantee survives action default changes.
+          attestations: true

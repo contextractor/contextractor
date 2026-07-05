@@ -1,0 +1,15 @@
+{
+  "name": "@contextractor/extraction-native-darwin-arm64",
+  "version": "0.4.13",
+  "private": true,
+  "main": "contextractor-extraction-native.darwin-arm64.node",
+  "files": [
+    "contextractor-extraction-native.darwin-arm64.node"
+  ],
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "arm64"
+  ]
+}

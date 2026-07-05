@@ -1,0 +1,33 @@
+{
+  "name": "@contextractor/extraction",
+  "version": "0.4.13",
+  "private": true,
+  "description": "Pure TypeScript content-extraction package backed by rs-trafilatura via napi-rs.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "pnpm run fix && tsc -p tsconfig.json",
+    "fix": "biome check . --fix --unsafe && biome format --write . && biome check .",
+    "test": "vitest run",
+    "lint": "biome check ."
+  },
+  "dependencies": {
+    "@contextractor/extraction-native": "workspace:*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.2",
+    "@types/node": "^26.1.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  }
+}

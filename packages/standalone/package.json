@@ -1,0 +1,87 @@
+{
+  "name": "contextractor",
+  "version": "0.4.13",
+  "description": "Standalone CLI and npm library for Contextractor. Built on rs-trafilatura and Crawlee.",
+  "keywords": [
+    "web-scraping",
+    "web-crawler",
+    "crawler",
+    "content-extraction",
+    "main-content",
+    "boilerplate-removal",
+    "readability",
+    "trafilatura",
+    "crawlee",
+    "playwright",
+    "cheerio",
+    "html-to-markdown",
+    "markdown",
+    "scraper",
+    "llm",
+    "rag"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/contextractor/contextractor.git",
+    "directory": "packages/standalone"
+  },
+  "homepage": "https://www.contextractor.com",
+  "funding": "https://www.contextractor.com",
+  "bugs": {
+    "url": "https://github.com/contextractor/contextractor/issues"
+  },
+  "type": "module",
+  "bin": {
+    "contextractor": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./cli": "./dist/cli.js",
+    "./schema/library-input.json": "./schema/library-input.schema.json",
+    "./schema/output.json": "./schema/output.schema.json",
+    "./schema/cli-input.json": "./schema/cli-input.schema.json",
+    "./schema/cli-surface.json": "./schema/cli-surface.json",
+    "./schema/field-presentation.json": "./schema/field-presentation.json",
+    "./schema/format-presentation.json": "./schema/format-presentation.json"
+  },
+  "files": [
+    "dist",
+    "schema",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm run fix && tsup && pnpm run build:types",
+    "fix": "biome check . --fix --unsafe && biome format --write . && biome check .",
+    "start": "tsx src/cli.ts",
+    "test": "tsc -p tsconfig.json --noEmit && vitest run",
+    "lint": "biome check .",
+    "build:types": "tsc -p tsconfig.dts.json && api-extractor run --local"
+  },
+  "dependencies": {
+    "@ghostery/adblocker-playwright": "^2.18.1",
+    "commander": "^15.0.0",
+    "crawlee": "^3.17.0",
+    "playwright": "^1.61.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.2",
+    "@contextractor/crawler": "workspace:*",
+    "@contextractor/schema": "workspace:*",
+    "@microsoft/api-extractor": "^7.58.9",
+    "@types/node": "^26.1.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  }
+}

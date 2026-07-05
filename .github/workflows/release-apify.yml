@@ -1,0 +1,74 @@
+name: release-apify
+
+# Builds and deploys the Contextractor Apify Actor (packages/apify-actor)
+# to the Apify platform.
+#
+# The Actor's Dockerfile builds the whole pnpm workspace — its `.actor/actor.json`
+# sets `dockerContextDir` to the repo root and `dockerfile: ./Dockerfile`, so
+# `apify push` uploads the repo as the build context and Apify builds the image
+# on-platform (staging a self-contained bundle; `.node` prebuilds ship via the
+# committed native packages, so no Rust toolchain is needed in the image).
+#
+# This is the prod-deploy path for the public `contextractor` mirror. The package
+# source is the one-way sync target from the `tools` dev repo, so deploy only after
+# the mirror's working tree carries the intended source. The TEST actor is deployed
+# separately from the `tools` repo (distributed-packages/contextractor).
+#
+# Requires the `APIFY_TOKEN` repository secret (an Apify API token with deploy
+# rights to the target Actor). The Actor target is taken from `.actor/actor.json`;
+# override it with the optional `actor` input for a one-off target.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to deploy (branch, tag, or SHA)"
+        required: true
+        default: main
+        type: string
+      actor:
+        description: "Optional Apify Actor target (e.g. user/actor-name); blank = use .actor/actor.json"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  deploy:
+    name: build and push Actor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: pnpm/action-setup@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        # pnpm-lock.yaml is not committed in this repo, so resolve fresh (no
+        # --frozen-lockfile, matching the other workflows' install strategy).
+        run: pnpm install
+
+      - name: Build the Actor (pre-flight validation)
+        # The Dockerfile rebuilds inside the image; this fails fast on a broken
+        # build before consuming Apify build minutes.
+        run: pnpm exec turbo run build --filter=@contextractor/apify
+
+      - name: Install the Apify CLI
+        run: npm install -g apify-cli
+
+      - name: Push to Apify
+        working-directory: packages/apify-actor
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          ACTOR_TARGET: ${{ inputs.actor }}
+        run: |
+          set -euo pipefail
+          if [ -n "$ACTOR_TARGET" ]; then
+            apify push "$ACTOR_TARGET" --no-prompt
+          else
+            apify push --no-prompt
+          fi

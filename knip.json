@@ -1,0 +1,16 @@
+{
+  "ignore": ["packages/extraction/native/index.js", "examples/**", "packages/standalone/.tsup/**"],
+  "ignoreDependencies": [
+    "cspell",
+    "@cspell/dict-bash",
+    "@cspell/dict-en-gb",
+    "@cspell/dict-git",
+    "@cspell/dict-rust"
+  ],
+  "ignoreBinaries": ["apify"],
+  "workspaces": {
+    "packages/standalone": {
+      "ignoreDependencies": ["@ghostery/adblocker-playwright", "zod"]
+    }
+  }
+}

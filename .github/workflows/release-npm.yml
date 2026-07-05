@@ -1,0 +1,105 @@
+name: release-npm
+
+# Publishes the `contextractor` npm package via npm Trusted Publishing (OIDC).
+# MUST run only AFTER the napi-refresh PR opened by build-napi.yml for the tag
+# is merged, so the tsup bundle stages current `.node` prebuilds under
+# dist/native/. Hence workflow_dispatch (not a `v*` tag trigger). The
+# /publish:npmjs command encodes this gate.
+#
+# The workflow filename (release-npm.yml) and the `npm` environment are bound
+# to the trusted-publisher config on npmjs.com — renaming either silently
+# breaks authentication.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to build from (vX.Y.Z, or the FULL 40-char merged refresh commit SHA)"
+        required: true
+        type: string
+
+jobs:
+  publish:
+    name: publish to npm
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      id-token: write # OIDC trusted publishing — no token secret
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.ref }}
+          # Tags are needed for the version-consistency check below.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          package-manager-cache: false # no committed pnpm-lock.yaml (gitignored)
+          # Writes the runner .npmrc; npm >= 11.5.1 then detects the OIDC
+          # environment and exchanges a short-lived token at publish time.
+          registry-url: "https://registry.npmjs.org"
+
+      # Trusted publishing needs npm >= 11.5.1 — never trust the bundled npm.
+      - name: Upgrade npm
+        run: npm install -g npm@latest && npm --version
+
+      - name: Build the CLI bundle
+        run: |
+          # pnpm-lock.yaml is not committed in this repo, so resolve fresh (no
+          # --frozen-lockfile, matching the other workflows' install strategy).
+          pnpm install
+          # Build contextractor + its workspace deps in dependency order
+          # (turbo). Filtering to the CLI's dependency closure excludes
+          # @contextractor/apify — its build runs gen-input-schema +
+          # docs:update, which are irrelevant to the npm tarball.
+          pnpm exec turbo run build --filter=contextractor
+
+      - name: Version consistency check
+        working-directory: packages/standalone
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./package.json').version")
+          echo "package.json version: ${VERSION}"
+          # The dispatched ref must contain the Release commit for this version
+          # — guards against dispatching a stale ref after a newer release.
+          git merge-base --is-ancestor "refs/tags/v${VERSION}" HEAD
+          # npm versions are permanently reserved — fail early and loudly.
+          if npm view "contextractor@${VERSION}" version >/dev/null 2>&1; then
+            echo "contextractor@${VERSION} already exists on npm" >&2
+            exit 1
+          fi
+
+      # Safety gate (mirrors release-pypi.yml's wheel verify): the packed
+      # tarball must carry dist/cli.js plus one .node per committed prebuild
+      # platform, or consumers get a CLI without its native module.
+      - name: Pack and verify the tarball
+        working-directory: packages/standalone
+        run: |
+          set -euo pipefail
+          # devDependencies carry workspace:* specifiers; strip them from the
+          # published manifest (consumers never install devDeps anyway).
+          npm pkg delete devDependencies
+          npm pack
+          TARBALL=$(ls contextractor-*.tgz)
+          # List once into a variable — `tar | grep -q` under pipefail fails on
+          # success: grep -q exits at first match, tar dies on SIGPIPE.
+          LISTING=$(tar -tzf "$TARBALL")
+          grep -qx "package/dist/cli.js" <<< "$LISTING"
+          for platform in $(ls ../extraction/native/npm); do
+            grep -qx "package/dist/native/contextractor-extraction-native.${platform}.node" <<< "$LISTING"
+          done
+          echo "tarball OK: cli.js + $(ls ../extraction/native/npm | wc -l) native prebuilds"
+          # npm publish re-packs from this directory; keep one source of truth.
+          rm "$TARBALL"
+
+      - name: Publish via OIDC trusted publishing
+        working-directory: packages/standalone
+        # Provenance is automatic with trusted publishing, but the explicit
+        # flag makes a provenance failure abort the publish instead of
+        # silently shipping without attestation. Requires the `repository`
+        # field in package.json to match this repo exactly.
+        run: npm publish --provenance

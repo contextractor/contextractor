@@ -1,0 +1,44 @@
+.mise.toml
+.nvim.lua
+storage/
+!packages/standalone/src/storage/
+output/
+autonomous-task-output/
+.cache/
+.claude/settings.local.json
+tools/contextractor/platform-test-runner/test-suites-output/
+
+# Node
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+*.tsbuildinfo
+.turbo/
+dist/
+dist-types/
+
+# Python wrapper: flattened CLI tree staged for wheel builds (pnpm deploy output)
+/_cli_deploy/
+
+# Cargo
+target/
+
+# napi-rs local prebuild artifacts (cross-platform prebuilds under
+# packages/extraction/native/npm/<platform>/ are tracked).
+packages/extraction/native/*.node
+
+# OS
+.DS_Store
+
+# Editor
+.idea/
+.vscode
+.zed
+
+# Environments
+.env
+env/
+venv/
+ENV/
+
+__pypackages__/

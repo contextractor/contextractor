@@ -1,0 +1,34 @@
+.git
+.github
+.claude
+.mcp.json
+.mise.toml
+.nvim.lua
+.vscode
+.zed
+.idea
+.DS_Store
+
+# Build / cache outputs.
+**/node_modules
+**/dist
+**/target
+**/storage
+!packages/standalone/src/storage
+**/test-suites-output
+**/*.tsbuildinfo
+
+# Test fixtures — not needed in Docker; HTML files trigger a Biome 2.4.15 Linux panic.
+**/test/fixtures
+
+# Misc.
+prompts
+README.md
+docs
+media
+scripts
+
+# NOTICE and LICENSE are intentionally NOT ignored — the standalone tsup build
+# copies both into its dist, and they are copied into the builder and runtime
+# image for third-party license attribution (Ghostery MPL-2.0) and the Apache-2.0
+# license text the NOTICE references ("see LICENSE").

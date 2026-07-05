@@ -1,0 +1,16 @@
+{
+  "name": "contextractor-npm-library-example",
+  "version": "0.4.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-vm-modules dist/main.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "contextractor": "file:../../packages/standalone"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
