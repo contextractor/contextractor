@@ -37,7 +37,9 @@ Python code touches the extraction engine itself.
 
 ```bash
 pip install contextractor
-python -m contextractor install   # one-time: download Chromium (only for the browser engines: adaptive/firefox/chromium)
+# one-time: download Chromium (only for the browser engines:
+# adaptive/firefox/chromium)
+python -m contextractor install
 ```
 
 Platform wheels are published for macOS (arm64, x86_64), Linux (x86_64, aarch64;

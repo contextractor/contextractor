@@ -3,8 +3,9 @@
 Single source of truth for Contextractor input **and** output. The package
 exports Zod 4 schemas (`ContextractorInput`; `ContextractorOutput`, a
 discriminated union over the `success` / `failed` / `skipped` dataset records),
-their inferred TypeScript types, the typed `apifyMeta` helper for Apify-only UI
-hints, and the build-time generators that compile all ten schema artifacts —
+their inferred TypeScript types, the typed `apifyRegistry`
+(`z.registry<ApifyMeta>()`) for Apify-only UI hints, and the build-time
+generators that compile all ten schema artifacts —
 the four `packages/apify-actor/.actor/*.json` files plus the six
 `packages/standalone/schema/*.json` exports. The standalone CLI and the Apify
 Actor both feed user input through `ContextractorInput.parse(...)` to validate
@@ -34,7 +35,8 @@ pnpm --filter @contextractor/schema build
 - `SAVE_ROUTE_TOKENS` / `SaveRoute` — the canonical `format-destination` save-token tuple and its inferred union type (source of truth for the `save` enum)
 - `ContextractorOutput` — `z.discriminatedUnion('status', …)` over the `success` / `failed` / `skipped` dataset records
 - `ContextractorOutputType` — `z.infer<typeof ContextractorOutput>` (3-member union)
-- `apifyMeta(meta)` — type-checked passthrough for the Apify-only `.meta()` keys (`editor`, `prefill`, `enumTitles`, `sectionCaption`, …)
+- `apifyRegistry` — the typed `z.registry<ApifyMeta>()` carrying the Apify-only UI hints (`editor`, `prefill`, `enumTitles`, `sectionCaption`, …), attached per field via `.register(apifyRegistry, { … })`
+- `ApifyMeta` — the type of those per-field Apify UI hints
 - `OutputViews` / `KvsCollections` — typed Apify presentation config (Console views, output links, KVS collection key-prefixes)
 - `toApifyInputSchema` / `writeApifyInputSchema` — pure converter + writer for the Apify INPUT_SCHEMA dialect
 - `toDatasetSchema` / `writeDatasetSchema` — `ContextractorOutput` + `OutputViews` → `dataset_schema.json`
