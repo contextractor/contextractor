@@ -24,7 +24,7 @@ The library and CLI surfaces consume vanilla draft-07 JSON Schema derived from t
 - `toLibraryInputSchema()` / `writeLibraryInputSchema(outPath)` — the library-input JSON Schema → `packages/standalone/schema/library-input.schema.json`
 - `toSharedOutputSchema(schema?)` / `writeSharedOutputSchema(outPath)` — the SINGLE shared output schema (top-level `oneOf`) → `packages/standalone/schema/output.schema.json` (library + CLI)
 - `toCliInputSchema()` / `writeCliInputSchema(outPath)` — the CLI config-file JSON Schema (a partial of `ContextractorInput` minus the named buckets) → `packages/standalone/schema/cli-input.schema.json`
-- `cliSurface` / `CliSurfaceOption` / `cliOptionDescription(id)` / `toCliSurface()` / `writeCliSurface(outPath)` — the single CLI field↔flag↔kind↔subcommand definition; `cliProgram.ts` sources `--help` text via `cliOptionDescription`, and `cli-surface.json` serializes the map for external consumers
+- `cliSurface` / `CliSurfaceOption` / `cliOptionDescription(id)` / `toCliSurface()` / `writeCliSurface(outPath)` — the single CLI field↔flag↔kind↔subcommand definition; each option also carries an optional `defaultLabel` (the value exactly as `--help` renders it after `default:` — the custom label like `unlimited` where cliProgram uses one, else the JSON-rendered default), which the README `cli-flags` table appends as `(default: …)`; `cliProgram.ts` sources `--help` text via `cliOptionDescription`, and `cli-surface.json` serializes the map for external consumers
 - `LIBRARY_INPUT_SCHEMA_ID` / `SHARED_OUTPUT_SCHEMA_ID` / `CLI_INPUT_SCHEMA_ID` — the stable `$id` URLs (versioning is done by changing the URL, not the payload)
 
 ### Presentation artifacts

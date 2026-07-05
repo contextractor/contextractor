@@ -52,6 +52,17 @@ export interface CliSurfaceOption {
   kind: CliOptionKind;
   /** Help text — the single source for `--help` and the README flags table. */
   description: string;
+  /**
+   * The default value exactly as `--help` renders it after `default: ` — the
+   * custom label where `cliProgram.ts` passes one (`unlimited`), otherwise the
+   * JSON-rendered value (`true`, `3`, `[]`, `"balanced"`, `["markdown-kvs"]`).
+   * Present only when Commander shows a machine default for the flag; absent
+   * for flags whose `--help` line shows none, or whose default is baked into the
+   * description text (e.g. `--block-media`, `--storage`). The README `cli-flags`
+   * table appends ` (default: <defaultLabel>)` from this. When a flag's default
+   * (or its display label) changes in `cliProgram.ts`, update this in lockstep.
+   */
+  defaultLabel?: string;
   /** Subcommands this flag is registered on. */
   subcommands: CliSubcommand[];
 }
@@ -67,6 +78,7 @@ const SINGLE_PAGE: CliSurfaceOption[] = [
     field: 'headless',
     kind: 'boolean-on',
     description: 'Run browser in headless mode',
+    defaultLabel: 'true',
     subcommands: ['extract', 'extract-one'],
   },
   {
@@ -83,6 +95,7 @@ const SINGLE_PAGE: CliSurfaceOption[] = [
     field: null,
     kind: 'repeatable',
     description: 'Proxy URL (repeatable)',
+    defaultLabel: '[]',
     subcommands: ['extract', 'extract-one'],
   },
   {
@@ -99,6 +112,7 @@ const SINGLE_PAGE: CliSurfaceOption[] = [
     field: 'maxSessionRotations',
     kind: 'scalar',
     description: 'Max session rotations per request on block detection',
+    defaultLabel: '10',
     subcommands: ['extract', 'extract-one'],
   },
   {
@@ -131,6 +145,7 @@ const SINGLE_PAGE: CliSurfaceOption[] = [
     field: 'navigationTimeoutSecs',
     kind: 'scalar',
     description: 'Navigation timeout in seconds',
+    defaultLabel: '60',
     subcommands: ['extract', 'extract-one'],
   },
   {
@@ -163,6 +178,7 @@ const SINGLE_PAGE: CliSurfaceOption[] = [
     field: 'closeCookieModals',
     kind: 'boolean-on',
     description: 'Auto-dismiss cookie banners',
+    defaultLabel: 'true',
     subcommands: ['extract', 'extract-one'],
   },
   {
@@ -227,6 +243,7 @@ const SINGLE_PAGE: CliSurfaceOption[] = [
     field: 'maxRequestRetries',
     kind: 'scalar',
     description: 'Max request retries',
+    defaultLabel: '3',
     subcommands: ['extract', 'extract-one'],
   },
   {
@@ -236,6 +253,7 @@ const SINGLE_PAGE: CliSurfaceOption[] = [
     kind: 'scalar',
     description:
       'Extraction mode: precision (less noise), balanced (default), or recall (more content)',
+    defaultLabel: '"balanced"',
     subcommands: ['extract', 'extract-one'],
   },
   {
@@ -346,6 +364,7 @@ const CRAWL: CliSurfaceOption[] = [
     field: 'maxRequestsPerCrawl',
     kind: 'scalar',
     description: 'Max requests to handle (0 = unlimited)',
+    defaultLabel: 'unlimited',
     subcommands: ['extract'],
   },
   {
@@ -354,6 +373,7 @@ const CRAWL: CliSurfaceOption[] = [
     field: 'maxCrawlDepth',
     kind: 'scalar',
     description: 'Max link depth from start URLs (0 = unlimited)',
+    defaultLabel: 'unlimited',
     subcommands: ['extract'],
   },
   {
@@ -362,6 +382,7 @@ const CRAWL: CliSurfaceOption[] = [
     field: 'globs',
     kind: 'repeatable',
     description: 'Glob pattern to include (repeatable)',
+    defaultLabel: '[]',
     subcommands: ['extract'],
   },
   {
@@ -370,6 +391,7 @@ const CRAWL: CliSurfaceOption[] = [
     field: 'exclude',
     kind: 'repeatable',
     description: 'Glob pattern to exclude (repeatable)',
+    defaultLabel: '[]',
     subcommands: ['extract'],
   },
   {
@@ -410,6 +432,7 @@ const CRAWL: CliSurfaceOption[] = [
     field: 'maxConcurrency',
     kind: 'scalar',
     description: 'Max parallel requests',
+    defaultLabel: '3',
     subcommands: ['extract'],
   },
   {
@@ -418,6 +441,7 @@ const CRAWL: CliSurfaceOption[] = [
     field: 'maxResultsPerCrawl',
     kind: 'scalar',
     description: 'Max results per crawl (0 = unlimited)',
+    defaultLabel: 'unlimited',
     subcommands: ['extract'],
   },
   {
@@ -429,6 +453,7 @@ const CRAWL: CliSurfaceOption[] = [
       'Format-destination token, e.g. markdown-kvs, original-dataset (repeatable). ' +
       'Format: txt|markdown|json|html|original; destination: dataset|kvs. ' +
       'List a format twice to save to both. Saving original/html to the dataset risks OOM on large pages.',
+    defaultLabel: '["markdown-kvs"]',
     subcommands: ['extract'],
   },
   {
