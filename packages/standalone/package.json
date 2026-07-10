@@ -1,7 +1,7 @@
 {
   "name": "contextractor",
   "version": "0.4.14",
-  "description": "Standalone CLI and npm library for Contextractor. Built on rs-trafilatura and Crawlee.",
+  "description": "Standalone CLI and npm library for Contextractor. Built on Trafilatura Core and Crawlee.",
   "keywords": [
     "web-scraping",
     "web-crawler",
@@ -50,38 +50,32 @@
     "./schema/field-presentation.json": "./schema/field-presentation.json",
     "./schema/format-presentation.json": "./schema/format-presentation.json"
   },
-  "files": [
-    "dist",
-    "schema",
-    "README.md"
-  ],
+  "files": ["dist", "schema", "README.md"],
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "build": "pnpm run fix && tsup && pnpm run build:types",
-    "fix": "biome check . --fix --unsafe && biome format --write . && biome check .",
-    "start": "tsx src/cli.ts",
-    "test": "tsc -p tsconfig.json --noEmit && vitest run",
-    "lint": "biome check .",
+    "build": "tsup && pnpm run build:types",
+    "start": "node dist/cli.js",
     "build:types": "tsc -p tsconfig.dts.json && api-extractor run --local"
   },
   "dependencies": {
     "@ghostery/adblocker-playwright": "^2.18.1",
+    "@joplin/turndown-plugin-gfm": "^1.0.67",
+    "@mixmark-io/domino": "^2.2.0",
     "commander": "^15.0.0",
     "crawlee": "^3.17.0",
     "playwright": "^1.61.1",
+    "trafilaturacore": "0.0.0-alpha.0",
+    "turndown": "^7.2.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.2",
     "@contextractor/crawler": "workspace:*",
     "@contextractor/schema": "workspace:*",
     "@microsoft/api-extractor": "^7.58.9",
     "@types/node": "^26.1.0",
     "tsup": "^8.5.1",
-    "tsx": "^4.23.0",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "typescript": "^6.0.3"
   }
 }

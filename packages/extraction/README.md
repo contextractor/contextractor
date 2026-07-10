@@ -3,11 +3,12 @@
 Pure TypeScript content-extraction package.
 
 Contextractor is built on
-[`rs-trafilatura`](https://github.com/Murrough-Foley/rs-trafilatura)
-(Rust port of Trafilatura, accessed via a napi-rs binding) and
-[Crawlee](https://crawlee.dev/) (TypeScript crawler driving Playwright); this
-package wraps the napi-rs binding plus small pure helpers, while browser
-crawling lives in `@contextractor/crawler`.
+[Trafilatura Core](https://www.trafilatura.dev/) (the `trafilaturacore` npm
+package — a hybrid Rust + TypeScript port of Trafilatura that ships its own
+native addon) and [Crawlee](https://crawlee.dev/) (TypeScript crawler driving
+Playwright); this package wraps Trafilatura Core's `clean()` plus small pure
+helpers, while browser crawling lives in `@contextractor/crawler` and format
+rendering in `@contextractor/conversion`.
 
 ## Public API
 
@@ -18,6 +19,7 @@ import {
   type ExtractionResult,
   type Metadata,
   type OutputFormat,
+  type PageExtraction,
   type TrafilaturaConfig,
   getDefaultConfig,
   computeContentInfo,
@@ -25,19 +27,29 @@ import {
 } from '@contextractor/extraction';
 
 const extractor = new ContentExtractor({ favorPrecision: true });
-const result = extractor.extract(html, { url, format: 'markdown' });
-const metadata = extractor.extractMetadata(html, url);
-const all = extractor.extractAllFormats(html, { url });
+
+// Clean once, render every requested format (the crawler's call):
+const page = await extractor.extractPage(html, { url, formats: ['markdown', 'json'] });
+
+// Or a single format / metadata only (all methods are async):
+const result = await extractor.extract(html, { url, format: 'markdown' });
+const metadata = await extractor.extractMetadata(html, url);
+const all = await extractor.extractAllFormats(html, { url });
 
 // Content hash and byte length (MD5 over UTF-8)
 const info = computeContentInfo(html); // { hash: string, length: number }
 
 // Project raw Metadata to a flat DatasetMetadata shape
-const meta = projectMetadata(extractor.extractMetadata(html, url));
+const meta = projectMetadata(await extractor.extractMetadata(html, url));
 ```
 
-`ContentExtractor` methods:
+`ContentExtractor` methods (all **async** — the engine's `clean()` loads its
+native addon lazily and runs on the libuv threadpool):
 
+- `extractPage(html, opts: { url?: string; formats?: OutputFormat[] })` — clean
+  once and render every requested format. Returns `PageExtraction`
+  (`{ metadata, formats, pageType, confidence, messages }`) — the call a crawler
+  should make, since it pays for a single engine pass.
 - `extract(html, opts: { url?: string; format?: OutputFormat })` — single
   format. Returns `ExtractionResult | null`.
 - `extractMetadata(html, url?)` — metadata-only projection.
@@ -53,50 +65,39 @@ Top-level helper exports:
 
 ## Supported output formats
 
-`txt`, `markdown`, `json`, `html`. XML and XML-TEI are temporarily unsupported
-pending upstream `rs-trafilatura` work — the Python source supported them via
-Trafilatura.
+`txt`, `markdown`, `json`, `html`. XML and XML-TEI are not exposed —
+`@contextractor/conversion` renders these four formats only.
 
 ## `TrafilaturaConfig`
 
-| Field             | Type           | Default | Description                           |
-| ----------------- | -------------- | ------- | ------------------------------------- |
-| fast              | boolean        | `false` | Fast mode (less thorough)             |
-| favorPrecision    | boolean        | `false` | High precision, less noise            |
-| favorRecall       | boolean        | `false` | High recall, more content             |
-| includeComments   | boolean        | `true`  | Include comments                      |
-| includeTables     | boolean        | `true`  | Include tables                        |
-| includeImages     | boolean        | `false` | Include images                        |
-| includeFormatting | boolean        | `true`  | Preserve formatting                   |
-| includeLinks      | boolean        | `true`  | Include links                         |
-| deduplicate       | boolean        | `false` | Deduplicate content                   |
-| targetLanguage    | string \| null | `null`  | Target language code                  |
-| withMetadata      | boolean        | `true`  | Forward-compat — always extracted     |
-| onlyWithMetadata  | boolean        | `false` | Only return if metadata found         |
-| teiValidation     | boolean        | `false` | Forward-compat — accepted but ignored |
+| Field           | Type           | Default | Description                                                                |
+| --------------- | -------------- | ------- | -------------------------------------------------------------------------- |
+| favorPrecision  | boolean        | `false` | High precision, less noise (engine `boilerplate: 'precision'`)             |
+| favorRecall     | boolean        | `false` | High recall, more content (engine `boilerplate: 'recall'`)                 |
+| includeComments | boolean        | `true`  | Soft no-op — accepted, but the page-type profile decides comment retention |
+| includeTables   | boolean        | `true`  | Include tables                                                             |
+| includeImages   | boolean        | `false` | Include images                                                             |
+| includeLinks    | boolean        | `true`  | Include links                                                              |
+| targetLanguage  | string \| null | `null`  | Keep only content whose **declared** language matches this subtag          |
 
 ## Local prerequisites
 
-- **Rust toolchain** via `rustup` (cargo + rustc on PATH for napi build).
-- **Node 22+**, **pnpm 10+**.
+- **Node 22+**, **pnpm 10+**. The extraction engine ships prebuilt native
+  binaries via the `trafilaturacore` dependency, so no Rust toolchain is needed.
 
 ## Pitfalls
 
-- **rs-trafilatura's metadata title heuristic differs from Python
+- **Trafilatura Core's metadata title heuristic differs from Python
   Trafilatura.** Tests asserting metadata should match a regex / substring,
   not exact strings.
-- **napi-rs `Result<T>` type alias.** `#[napi]` macros read return-type
-  tokens literally; never alias `napi::bindgen_prelude::Result` (it leaks
-  into the generated `.d.ts`).
-- **`exactOptionalPropertyTypes` is incompatible with napi-rs-generated
-  optional fields.** The root `tsconfig.json` keeps it `false`.
-- **Empty Cargo workspace `members = []` fails `cargo metadata`.** The
-  napi-rs crate must exist as soon as the workspace is created.
+- **Every `ContentExtractor` method is async.** `clean()` loads its native addon
+  lazily, so `await` the calls; the only `null`/empty result is a page the
+  declared-language filter rejected.
 - **`vitest run` exits 1 on zero tests.** Apps with no tests pass
   `--passWithNoTests` so recursive `pnpm test` does not break.
 
-## XML / XML-TEI gap
+## XML / XML-TEI
 
-`rs-trafilatura` 0.2.x has no `xml` / `xmltei` output formats, so the TS
-package does not expose them. When upstream support lands, both formats can be
-added without breaking the existing surface.
+Trafilatura's Python original could emit `xml` / `xmltei`; Contextractor does
+not. `@contextractor/conversion` renders `txt`, `markdown`, `json`, and `html`
+only, and there is no plan to add the XML formats.

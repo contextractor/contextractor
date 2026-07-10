@@ -31,6 +31,10 @@ export interface ContextractorCrawlerOptions {
   sink: Sink<ExtractionResult>;
   formats?: OutputFormat[];
   mode?: 'precision' | 'balanced' | 'recall';
+  /**
+   * **Soft no-op.** Accepted for input-contract compatibility, but the engine's
+   * page-type extraction profile decides comment retention, not a tag toggle.
+   */
   includeComments?: boolean;
   includeTables?: boolean;
   includeImages?: boolean;
@@ -114,17 +118,11 @@ function toTrafilaturaConfig(opts: ContextractorCrawlerOptions): TrafilaturaConf
     includeComments: opts.includeComments ?? DEFAULT_CONFIG.includeComments,
     includeTables: opts.includeTables ?? DEFAULT_CONFIG.includeTables,
     includeImages: opts.includeImages ?? DEFAULT_CONFIG.includeImages,
-    includeFormatting: true,
     includeLinks: opts.includeLinks ?? DEFAULT_CONFIG.includeLinks,
-    deduplicate: false,
     targetLanguage:
       opts.languageCode !== undefined && opts.languageCode !== ''
         ? opts.languageCode
         : DEFAULT_CONFIG.targetLanguage,
-    withMetadata: true,
-    onlyWithMetadata: false,
-    fast: false,
-    teiValidation: false,
   };
 }
 

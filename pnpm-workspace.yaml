@@ -1,4 +1,2 @@
 packages:
   - "packages/*"
-  - "packages/*/native"
-  - "packages/*/native/npm/*"

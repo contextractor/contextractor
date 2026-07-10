@@ -13,7 +13,7 @@ and type it, and both produce dataset/key-value-store output matching
 `ContextractorOutput`.
 
 Contextractor is built on
-[`rs-trafilatura`](https://github.com/Murrough-Foley/rs-trafilatura)
+[Trafilatura Core](https://www.trafilatura.dev/)
 (extraction) and [Crawlee](https://crawlee.dev/) (TypeScript crawler driving
 Playwright); this package defines the shared input and output contracts for both surfaces.
 

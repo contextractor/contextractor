@@ -2,9 +2,8 @@
 
 Shared Crawlee + Playwright crawler package for Contextractor.
 
-Built on [`rs-trafilatura`](https://github.com/Murrough-Foley/rs-trafilatura)
-(extraction) and [Crawlee](https://crawlee.dev/) (TypeScript crawler driving
-Playwright).
+Built on [Trafilatura Core](https://www.trafilatura.dev/) (extraction) and
+[Crawlee](https://crawlee.dev/) (TypeScript crawler driving Playwright).
 
 It owns the browser-facing pieces of Contextractor:
 

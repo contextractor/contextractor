@@ -24,7 +24,7 @@ import type { Page } from 'playwright';
  *
  * Ghostery's network/cosmetic blocking hides live banners but never removes the
  * server-rendered consent text from the HTML the extractor parses, so on
- * consent-or-pay pages (e.g. idnes.cz) rs-trafilatura selects the disclaimer as
+ * consent-or-pay pages (e.g. idnes.cz) the engine selects the disclaimer as
  * "main content". Stripping these known-CMP containers before extraction stops
  * that leak. The list is intentionally conservative — only vendor-namespaced or
  * two-token (`cookie-consent`) selectors, never a bare `[id*="consent"]` (which

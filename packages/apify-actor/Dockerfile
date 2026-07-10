@@ -1,4 +1,8 @@
 # syntax=docker/dockerfile:1.7
+# Built from the public contextractor mirror, whose repo root IS the engine
+# workspace root (dockerContextDir "../../.."). `trafilaturacore` is an ordinary
+# published npm dependency here, so `pnpm install` fetches it: no sibling engine,
+# and no Rust toolchain anywhere in this image.
 
 FROM apify/actor-node-playwright-chrome:24 AS builder
 
@@ -7,14 +11,9 @@ ENV NODE_ENV=development
 WORKDIR /repo
 
 # Copy workspace + package manifests for layer-cache efficiency.
-# Only copy linux prebuilds — darwin/windows dirs are not needed.
 COPY pnpm-workspace.yaml package.json .npmrc ./
 COPY packages/schema/package.json packages/schema/
-COPY packages/extraction/native/npm/linux-x64-gnu/ packages/extraction/native/npm/linux-x64-gnu/
-COPY packages/extraction/native/npm/linux-arm64-gnu/ packages/extraction/native/npm/linux-arm64-gnu/
-COPY packages/extraction/native/package.json packages/extraction/native/
-COPY packages/extraction/native/index.d.ts packages/extraction/native/
-COPY packages/extraction/native/index.js packages/extraction/native/
+COPY packages/conversion/package.json packages/conversion/
 COPY packages/extraction/package.json packages/extraction/
 COPY packages/crawler/package.json packages/crawler/
 COPY packages/standalone/package.json packages/standalone/
@@ -29,14 +28,15 @@ COPY tsconfig.json ./
 # succeed.
 COPY NOTICE LICENSE ./
 COPY packages/schema/ packages/schema/
-COPY packages/extraction/src/ packages/extraction/src/
-COPY packages/extraction/tsconfig.json packages/extraction/
+COPY packages/conversion/ packages/conversion/
+COPY packages/extraction/ packages/extraction/
 COPY packages/crawler/ packages/crawler/
 COPY packages/standalone/ packages/standalone/
 COPY packages/apify-actor/ packages/apify-actor/
 
 # Build packages in dependency order, then deploy a self-contained bundle.
 RUN pnpm --filter @contextractor/schema build \
+    && pnpm --filter @contextractor/conversion build \
     && pnpm --filter @contextractor/extraction build \
     && pnpm --filter @contextractor/crawler build \
     && pnpm --filter contextractor build \

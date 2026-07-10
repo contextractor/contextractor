@@ -39,7 +39,7 @@
 **Crawl any website and extract clean, boilerplate-free main content** as
 **Markdown, plain text, JSON, cleaned HTML, or raw original HTML** — ready to feed
 **LLMs, RAG pipelines, and vector databases**. Contextractor uses the
-[`rs-trafilatura`](https://github.com/Murrough-Foley/rs-trafilatura) extraction
+[Trafilatura Core](https://www.trafilatura.dev/) extraction
 engine to strip away navigation, ads, and cookie banners, and an adaptive
 [Crawlee](https://crawlee.dev/) + Playwright crawler that automatically switches
 between a real browser and fast HTTP — with proxy rotation and anti-blocking
@@ -50,7 +50,7 @@ content that matters, in the exact format your AI workflow needs.
 
 ## ✨ What can Contextractor do?
 
-- **Extract clean main content** — the rs-trafilatura engine isolates the article
+- **Extract clean main content** — the Trafilatura Core engine isolates the article
   body and removes navigation, headers, footers, ads, and cookie banners.
 - **Five output formats** — Markdown, plain text (`txt`), JSON, cleaned HTML, and
   the original raw HTML, saved individually or together.
@@ -256,7 +256,7 @@ Contextractor runs a three-stage pipeline for every page:
 - **Crawl** — an adaptive Crawlee + Playwright crawler fetches each page and follows
   links within the scope you set (selectors, URL globs, depth, sitemaps), respecting
   `robots.txt` when enabled.
-- **Extract** — the rs-trafilatura engine isolates the main content and discards
+- **Extract** — the Trafilatura Core engine isolates the main content and discards
   navigation, ads, and cookie modals, using your chosen precision/balanced/recall
   mode.
 - **Output** — each page is emitted in the formats you selected, with an MD5 `hash`

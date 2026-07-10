@@ -3,9 +3,9 @@
   "projectFolder": ".",
   "mainEntryPointFilePath": "<projectFolder>/dist-types/index.d.ts",
   "bundledPackages": [
+    "@contextractor/conversion",
     "@contextractor/crawler",
     "@contextractor/extraction",
-    "@contextractor/extraction-native",
     "@contextractor/schema"
   ],
   "compiler": {

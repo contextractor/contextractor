@@ -128,13 +128,11 @@ export function createHandler(opts: HandlerOpts): RequestHandler<PlaywrightCrawl
     }
 
     const { hash: rawHtmlHash, length: rawHtmlLength } = computeContentInfo(html);
-    const metadata = projectMetadata(extractor.extractMetadata(html, url));
-
-    const formats: Partial<Record<OutputFormat, string>> = {};
-    for (const fmt of opts.formats) {
-      const extracted = extractor.extract(html, { url, format: fmt });
-      if (extracted?.content) formats[fmt] = extracted.content;
-    }
+    // One engine pass per page: the extractor cleans the HTML once, then renders
+    // every requested format from that single cleaned string.
+    const extracted = await extractor.extractPage(html, { url, formats: opts.formats });
+    const metadata = projectMetadata(extracted.metadata);
+    const formats = extracted.formats;
 
     if (opts.deduplication === 'aggressive') {
       const extractedText = Object.values(formats).join('\n');
@@ -233,13 +231,11 @@ export function createCheerioHandler(opts: HandlerOpts): RequestHandler<CheerioC
     }
 
     const { hash: rawHtmlHash, length: rawHtmlLength } = computeContentInfo(html);
-    const metadata = projectMetadata(extractor.extractMetadata(html, url));
-
-    const formats: Partial<Record<OutputFormat, string>> = {};
-    for (const fmt of opts.formats) {
-      const extracted = extractor.extract(html, { url, format: fmt });
-      if (extracted?.content) formats[fmt] = extracted.content;
-    }
+    // One engine pass per page: the extractor cleans the HTML once, then renders
+    // every requested format from that single cleaned string.
+    const extracted = await extractor.extractPage(html, { url, formats: opts.formats });
+    const metadata = projectMetadata(extracted.metadata);
+    const formats = extracted.formats;
 
     if (opts.deduplication === 'aggressive') {
       const extractedText = Object.values(formats).join('\n');
@@ -317,13 +313,11 @@ export function createAdaptiveHandler(
     }
 
     const { hash: rawHtmlHash, length: rawHtmlLength } = computeContentInfo(html);
-    const metadata = projectMetadata(extractor.extractMetadata(html, url));
-
-    const formats: Partial<Record<OutputFormat, string>> = {};
-    for (const fmt of opts.formats) {
-      const extracted = extractor.extract(html, { url, format: fmt });
-      if (extracted?.content) formats[fmt] = extracted.content;
-    }
+    // One engine pass per page: the extractor cleans the HTML once, then renders
+    // every requested format from that single cleaned string.
+    const extracted = await extractor.extractPage(html, { url, formats: opts.formats });
+    const metadata = projectMetadata(extracted.metadata);
+    const formats = extracted.formats;
 
     if (opts.deduplication === 'aggressive') {
       const extractedText = Object.values(formats).join('\n');

@@ -19,9 +19,11 @@ cibuildwheel):
         --deploy-dir _cli_deploy --keep-platform <napi-platform>
 
 ``--keep-platform`` (e.g. ``darwin-arm64``, ``win32-x64-msvc``) prunes every
-other platform's prebuilt ``.node`` so each wheel carries only its own. pnpm
-already installs only the os/cpu-matching optional dependency, so this is a
-defensive net.
+other platform's prebuilt ``.node`` so each wheel carries only its own.
+
+Contextractor itself ships no native code. The only ``.node`` files in the tree
+belong to its ``trafilaturacore`` dependency, which carries the extraction
+engine's napi addon in ``node_modules/trafilaturacore/dist/native/``.
 """
 
 from __future__ import annotations
@@ -34,11 +36,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 VENDOR = HERE.parent / "src" / "contextractor" / "_vendor"
 CLI_DEST = VENDOR / "cli"
-# Legacy layout: per-platform optionalDependency packages (defensive only —
-# the bundled CLI no longer ships @contextractor/* under node_modules).
-NATIVE_NPM_GLOB = "node_modules/@contextractor/extraction-native-*"
-# Bundled layout: every platform's prebuild staged next to the napi loader.
-NATIVE_DIST_GLOB = "dist/native/contextractor-extraction-native.*.node"
+# The extraction engine's prebuilds, staged next to its napi loader inside the
+# installed `trafilaturacore` package.
+NATIVE_DIST_GLOB = "node_modules/trafilaturacore/dist/native/trafilaturacore-native.*.node"
 
 
 def stage(deploy_dir: Path, keep_platform: str | None) -> None:
@@ -68,11 +68,7 @@ def _ensure_esm(package_json: Path) -> None:
 
 
 def _prune_other_platforms(root: Path, keep: str) -> None:
-    keep_name = f"extraction-native-{keep}"
-    for pkg_dir in root.glob(NATIVE_NPM_GLOB):
-        if pkg_dir.name != keep_name:
-            shutil.rmtree(pkg_dir, ignore_errors=True)
-    keep_file = f"contextractor-extraction-native.{keep}.node"
+    keep_file = f"trafilaturacore-native.{keep}.node"
     for node_file in root.glob(NATIVE_DIST_GLOB):
         if node_file.name != keep_file:
             node_file.unlink(missing_ok=True)

@@ -7,7 +7,7 @@ Python library: crawl pages and extract clean main-content text (`txt`, `markdow
 The library is a thin, typed wrapper that **drives a bundled Node engine** via
 subprocess — no Node.js install is required, and Python never loads the native
 `.node` module. The engine is built on
-[`rs-trafilatura`](https://github.com/Murrough-Foley/rs-trafilatura) (extraction)
+[Trafilatura Core](https://www.trafilatura.dev/) (extraction)
 and [Crawlee](https://crawlee.dev/) + [Playwright](https://playwright.dev/)
 (crawling).
 

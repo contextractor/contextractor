@@ -2,7 +2,8 @@
   "name": "@contextractor/extraction",
   "version": "0.4.14",
   "private": true,
-  "description": "Pure TypeScript content-extraction package backed by rs-trafilatura via napi-rs.",
+  "description": "Pure TypeScript content-extraction package backed by the Trafilatura Core engine.",
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -11,23 +12,16 @@
       "default": "./dist/index.js"
     }
   },
-  "files": [
-    "dist",
-    "src"
-  ],
+  "files": ["dist", "src"],
   "scripts": {
-    "build": "pnpm run fix && tsc -p tsconfig.json",
-    "fix": "biome check . --fix --unsafe && biome format --write . && biome check .",
-    "test": "vitest run",
-    "lint": "biome check ."
+    "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@contextractor/extraction-native": "workspace:*"
+    "@contextractor/conversion": "workspace:*",
+    "trafilaturacore": "0.0.0-alpha.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.2",
     "@types/node": "^26.1.0",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "typescript": "^6.0.3"
   }
 }
