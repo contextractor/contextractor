@@ -220,16 +220,21 @@ export const ContextractorInput = z.object({
     .meta({ title: 'Max request retries' }),
 
   mode: z
-    .enum(['precision', 'balanced', 'recall'])
+    .enum(['precision', 'balanced', 'recall', 'keep'])
     .default('balanced')
     .describe(
-      'Extraction mode. precision minimizes noise (may miss some content); recall maximizes content (may include noise); balanced is the default.',
+      'Extraction mode. precision minimizes noise (may miss some content); recall maximizes content (may include noise); balanced is the default; keep skips main-content extraction entirely and just sanitizes the whole document, keeping boilerplate (no page type or confidence).',
     )
     .meta({ title: 'Extraction mode' })
     .register(apifyRegistry, {
       editor: 'select',
       sectionCaption: 'Content extraction',
-      enumTitles: ['Precision (less noise)', 'Balanced (default)', 'Recall (more content)'],
+      enumTitles: [
+        'Precision (less noise)',
+        'Balanced (default)',
+        'Recall (more content)',
+        'Keep boilerplate (sanitize only)',
+      ],
     }),
 
   includeComments: z

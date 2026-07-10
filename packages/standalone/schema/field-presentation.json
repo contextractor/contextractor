@@ -160,10 +160,15 @@
     {
       "field": "mode",
       "title": "Extraction mode",
-      "description": "Extraction mode. precision minimizes noise (may miss some content); recall maximizes content (may include noise); balanced is the default.",
+      "description": "Extraction mode. precision minimizes noise (may miss some content); recall maximizes content (may include noise); balanced is the default; keep skips main-content extraction entirely and just sanitizes the whole document, keeping boilerplate (no page type or confidence).",
       "default": "balanced",
-      "enumValues": ["precision", "balanced", "recall"],
-      "enumTitles": ["Precision (less noise)", "Balanced (default)", "Recall (more content)"],
+      "enumValues": ["precision", "balanced", "recall", "keep"],
+      "enumTitles": [
+        "Precision (less noise)",
+        "Balanced (default)",
+        "Recall (more content)",
+        "Keep boilerplate (sanitize only)"
+      ],
       "cliFlags": ["--mode"],
       "apifyKey": "mode",
       "section": "Content extraction"

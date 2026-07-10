@@ -149,10 +149,10 @@
     },
     "mode": {
       "default": "balanced",
-      "description": "Extraction mode. precision minimizes noise (may miss some content); recall maximizes content (may include noise); balanced is the default.",
+      "description": "Extraction mode. precision minimizes noise (may miss some content); recall maximizes content (may include noise); balanced is the default; keep skips main-content extraction entirely and just sanitizes the whole document, keeping boilerplate (no page type or confidence).",
       "title": "Extraction mode",
       "type": "string",
-      "enum": ["precision", "balanced", "recall"]
+      "enum": ["precision", "balanced", "recall", "keep"]
     },
     "includeComments": {
       "default": true,

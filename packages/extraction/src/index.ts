@@ -12,12 +12,16 @@
 
 import { convert } from '@contextractor/conversion';
 import {
+  type BoilerplateMode,
   type CleanOptions,
   clean,
+  DEFAULT_BOILERPLATE_MODE,
   type Metadata as EngineMetadata,
   type Message,
 } from 'trafilaturacore';
 import { applyLanguageFilter } from './language.js';
+
+export type { BoilerplateMode } from 'trafilaturacore';
 
 /** Supported output formats. */
 export type OutputFormat = 'txt' | 'markdown' | 'json' | 'html';
@@ -27,12 +31,18 @@ const DEFAULT_FORMATS: readonly OutputFormat[] = ['txt', 'markdown', 'json', 'ht
 /**
  * Extraction config, mapped onto the engine's `CleanOptions`.
  *
- * `favorPrecision` / `favorRecall` select the engine's boilerplate-removal mode;
- * the three `include*` content toggles pass straight through.
+ * `boilerplate` is the engine's boilerplate-removal mode, passed straight
+ * through (Contextractor's mode vocabulary IS the engine's `BoilerplateMode`).
+ * The three `include*` content toggles also pass straight through.
  */
 export interface TrafilaturaConfig {
-  favorPrecision: boolean;
-  favorRecall: boolean;
+  /**
+   * Boilerplate-removal mode: `precision` (drops the most), `balanced` (default),
+   * `recall` (keeps more content), or `keep` (skips main-content
+   * extraction — cleans/sanitizes the whole document, keeping boilerplate; no
+   * page type or confidence).
+   */
+  boilerplate: BoilerplateMode;
   /**
    * **Soft no-op.** The engine accepts this flag, but comment retention is
    * decided by its page-type extraction profile, not by a tag-level toggle. It
@@ -52,8 +62,7 @@ export interface TrafilaturaConfig {
 
 /** Defaults matching the engine's balanced preset. */
 export const DEFAULT_CONFIG: Readonly<TrafilaturaConfig> = Object.freeze({
-  favorPrecision: false,
-  favorRecall: false,
+  boilerplate: DEFAULT_BOILERPLATE_MODE,
   includeComments: true,
   includeTables: true,
   includeImages: false,
@@ -259,11 +268,7 @@ export class ContentExtractor {
 
   private toCleanOptions(url: string | undefined): CleanOptions {
     const options: CleanOptions = {
-      boilerplate: this.config.favorPrecision
-        ? 'precision'
-        : this.config.favorRecall
-          ? 'recall'
-          : 'balanced',
+      boilerplate: this.config.boilerplate,
       includeComments: this.config.includeComments,
       includeTables: this.config.includeTables,
       // The engine keeps images unless told otherwise; Contextractor defaults

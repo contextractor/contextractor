@@ -252,7 +252,7 @@ const SINGLE_PAGE: CliSurfaceOption[] = [
     field: 'mode',
     kind: 'scalar',
     description:
-      'Extraction mode: precision (less noise), balanced (default), or recall (more content)',
+      'Extraction mode: precision (less noise), balanced (default), recall (more content), or keep (sanitize only, no extraction)',
     defaultLabel: '"balanced"',
     subcommands: ['extract', 'extract-one'],
   },

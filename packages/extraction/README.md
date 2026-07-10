@@ -26,7 +26,7 @@ import {
   projectMetadata,
 } from '@contextractor/extraction';
 
-const extractor = new ContentExtractor({ favorPrecision: true });
+const extractor = new ContentExtractor({ boilerplate: 'precision' });
 
 // Clean once, render every requested format (the crawler's call):
 const page = await extractor.extractPage(html, { url, formats: ['markdown', 'json'] });
@@ -70,15 +70,14 @@ Top-level helper exports:
 
 ## `TrafilaturaConfig`
 
-| Field           | Type           | Default | Description                                                                |
-| --------------- | -------------- | ------- | -------------------------------------------------------------------------- |
-| favorPrecision  | boolean        | `false` | High precision, less noise (engine `boilerplate: 'precision'`)             |
-| favorRecall     | boolean        | `false` | High recall, more content (engine `boilerplate: 'recall'`)                 |
-| includeComments | boolean        | `true`  | Soft no-op — accepted, but the page-type profile decides comment retention |
-| includeTables   | boolean        | `true`  | Include tables                                                             |
-| includeImages   | boolean        | `false` | Include images                                                             |
-| includeLinks    | boolean        | `true`  | Include links                                                              |
-| targetLanguage  | string \| null | `null`  | Keep only content whose **declared** language matches this subtag          |
+| Field           | Type            | Default      | Description                                                                                          |
+| --------------- | --------------- | ------------ | ---------------------------------------------------------------------------------------------------- |
+| boilerplate     | BoilerplateMode | `'balanced'` | Engine boilerplate mode: `precision`, `balanced`, `recall`, or `keep` (sanitize only, no extraction) |
+| includeComments | boolean         | `true`       | Soft no-op — accepted, but the page-type profile decides comment retention                           |
+| includeTables   | boolean         | `true`       | Include tables                                                                                       |
+| includeImages   | boolean         | `false`      | Include images                                                                                       |
+| includeLinks    | boolean         | `true`       | Include links                                                                                        |
+| targetLanguage  | string \| null  | `null`       | Keep only content whose **declared** language matches this subtag                                    |
 
 ## Local prerequisites
 

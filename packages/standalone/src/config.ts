@@ -39,7 +39,7 @@ interface CrawlConfig {
   maxRequestsPerCrawl: number;
   maxCrawlDepth: number;
   headless: boolean;
-  mode: 'precision' | 'balanced' | 'recall';
+  mode: ContextractorInputType['mode'];
   includeComments: boolean;
   includeTables: boolean;
   includeImages: boolean;

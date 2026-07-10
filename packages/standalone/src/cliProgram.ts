@@ -111,10 +111,12 @@ function parseDeduplication(value: string): ContextractorInputType['deduplicatio
   return result.data;
 }
 
+const MODE_CHOICES = ContextractorInput.shape.mode.unwrap().options;
+
 function parseMode(value: string): ContextractorInputType['mode'] {
   const result = ContextractorInput.shape.mode.safeParse(value);
   if (!result.success) {
-    throw new Error(`Invalid --mode value: '${value}'. Use precision, balanced, or recall.`);
+    throw new Error(`Invalid --mode value: '${value}'. Use ${MODE_CHOICES.join(', ')}.`);
   }
   return result.data;
 }
@@ -198,7 +200,7 @@ function addSinglePageOptions(cmd: Command): Command {
     )
     .addOption(
       new Option('--mode <mode>', cliOptionDescription('mode'))
-        .choices(['precision', 'balanced', 'recall'])
+        .choices(MODE_CHOICES)
         .argParser(parseMode)
         .default('balanced'),
     )

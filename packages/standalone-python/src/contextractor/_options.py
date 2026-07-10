@@ -124,7 +124,7 @@ class ExtractOptions(TypedDict, total=False):
     max_concurrency: int
     max_retries: int
     max_results: int
-    mode: Literal["precision", "balanced", "recall"]
+    mode: Literal["precision", "balanced", "recall", "keep"]
     language: str
     wait_for_dynamic_content: int
     wait_for_selector: str
@@ -187,7 +187,7 @@ class ExtractOneOptions(TypedDict, total=False):
     max_scroll_height: int
     user_agent: str
     max_retries: int
-    mode: Literal["precision", "balanced", "recall"]
+    mode: Literal["precision", "balanced", "recall", "keep"]
     language: str
     wait_for_dynamic_content: int
     wait_for_selector: str

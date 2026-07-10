@@ -1,4 +1,5 @@
 import {
+  type BoilerplateMode,
   DEFAULT_CONFIG,
   type OutputFormat,
   type TrafilaturaConfig,
@@ -30,7 +31,7 @@ export interface ContextractorCrawlerOptions {
   startUrls: string[];
   sink: Sink<ExtractionResult>;
   formats?: OutputFormat[];
-  mode?: 'precision' | 'balanced' | 'recall';
+  mode?: BoilerplateMode;
   /**
    * **Soft no-op.** Accepted for input-contract compatibility, but the engine's
    * page-type extraction profile decides comment retention, not a tag toggle.
@@ -113,8 +114,7 @@ export interface ContextractorCrawlerOptions {
 function toTrafilaturaConfig(opts: ContextractorCrawlerOptions): TrafilaturaConfig {
   return {
     ...DEFAULT_CONFIG,
-    favorPrecision: opts.mode === 'precision',
-    favorRecall: opts.mode === 'recall',
+    boilerplate: opts.mode ?? DEFAULT_CONFIG.boilerplate,
     includeComments: opts.includeComments ?? DEFAULT_CONFIG.includeComments,
     includeTables: opts.includeTables ?? DEFAULT_CONFIG.includeTables,
     includeImages: opts.includeImages ?? DEFAULT_CONFIG.includeImages,
