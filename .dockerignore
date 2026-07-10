@@ -9,6 +9,14 @@
 .idea
 .DS_Store
 
+# Secrets — never send these to the Docker daemon. No COPY references them and
+# the real build is git-connected (so it only sees committed files), but a local
+# `docker build` with the repo root as context would otherwise transmit them.
+.env
+.env.local
+**/.env
+**/.env.local
+
 # Build / cache outputs.
 **/node_modules
 **/dist
